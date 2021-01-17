@@ -31,7 +31,8 @@ myExit() {
   exit_msg="$2"
   cleanup "$1"
 }
-
+PARENT="$(dirname $0)"
+[[ -f "${PARENT}"/.env_branch ]] && BRANCH="$(cat "${PARENT}"/.env_branch)" || BRANCH="master"
 
 URL_RAW="https://raw.githubusercontent.com/cardano-community/guild-operators/${BRANCH}"
 URL="${URL_RAW}/scripts/cnode-helper-scripts"
