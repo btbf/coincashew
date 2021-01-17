@@ -32,29 +32,6 @@ myExit() {
   cleanup "$1"
 }
 
-clear
-
-usage() {
-  cat <<EOF
-Usage: $(basename "$0") [-o] [-b <branch name>]
-CNTools - The Cardano SPOs best friend
--o    Activate offline mode - run CNTools in offline mode without node access, a limited set of functions available
--b    Run CNTools and look for updates on alternate branch instead of master of guild repository (only for testing/development purposes)
-EOF
-}
-
-CNTOOLS_MODE="CONNECTED"
-PARENT="$(dirname $0)"
-[[ -f "${PARENT}"/.env_branch ]] && BRANCH="$(cat "${PARENT}"/.env_branch)" || BRANCH="master"
-
-while getopts :ob: opt; do
-  case ${opt} in
-    o ) CNTOOLS_MODE="OFFLINE" ;;
-    b ) BRANCH=${OPTARG}; echo "${BRANCH}" > "${PARENT}"/.env_branch ;;
-    \? ) myExit 1 "$(usage)" ;;
-    esac
-done
-shift $((OPTIND -1))
 
 URL_RAW="https://raw.githubusercontent.com/cardano-community/guild-operators/${BRANCH}"
 URL="${URL_RAW}/scripts/cnode-helper-scripts"
