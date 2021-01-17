@@ -122,20 +122,6 @@ exec 7>&2 # Link file descriptor #7 with normal stderr.
 exec 8>&1 # Link file descriptor #8 with custom stdout.
 exec 9>&2 # Link file descriptor #9 with custom stderr.
 
-
-
-  # Validate protocol parameters
-  if grep -q "Network.Socket.connect" <<< "${PROT_PARAMS}"; then
-    myExit 1 "${FG_YELLOW}WARN${NC}: node socket path wrongly configured or node not running, please verify that socket set in env file match what is used to run the node\n\n\
-${FG_BLUE}INFO${NC}: re-run CNTools in offline mode with -o parameter if you want to access CNTools with limited functionality"
-  elif [[ -z "${PROT_PARAMS}" ]] || ! jq -er . <<< "${PROT_PARAMS}" &>/dev/null; then
-    myExit 1 "${FG_YELLOW}WARN${NC}: failed to query protocol parameters, ensure your node is running with correct genesis (the node needs to be in sync to 1 epoch after the hardfork)\n\n\
-Error message: ${PROT_PARAMS}\n\n\
-${FG_BLUE}INFO${NC}: re-run CNTools in offline mode with -o parameter if you want to access CNTools with limited functionality"
-  fi
-  echo "${PROT_PARAMS}" > "${TMP_FOLDER}"/protparams.json
-fi
-
 # Verify if the combinator network is already on shelley and if so, the epoch of transition
 if [[ "${PROTOCOL}" == "Cardano" ]]; then
   shelleyTransitionEpoch=$(cat "${SHELLEY_TRANS_FILENAME}" 2>/dev/null)
