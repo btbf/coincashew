@@ -123,14 +123,14 @@ exec 8>&1 # Link file descriptor #8 with custom stdout.
 exec 9>&2 # Link file descriptor #9 with custom stderr.
 
 # check for required command line tools
-if ! need_cmd "curl" || \
-   ! need_cmd "jq" || \
-   ! need_cmd "bc" || \
-   ! need_cmd "sed" || \
-   ! need_cmd "awk" || \
-   ! need_cmd "column" || \
-   ! protectionPreRequisites; then waitForInput "Missing one or more of the required command line tools, press any key to exit"; myExit 1
-fi
+#if ! need_cmd "curl" || \
+#   ! need_cmd "jq" || \
+#   ! need_cmd "bc" || \
+#   ! need_cmd "sed" || \
+#   ! need_cmd "awk" || \
+#   ! need_cmd "column" || \
+#   ! protectionPreRequisites; then waitForInput "Missing one or more of the required command line tools, press any key to exit"; myExit 1
+#fi
 
 if [[ "$CNTOOLS_PATCH_VERSION" -eq 999  ]]; then
   # CNTools was updated using special 999 patch tag, apply correct version in cntools.library and update variables already sourced
