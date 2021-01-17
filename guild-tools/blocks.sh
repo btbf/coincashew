@@ -122,77 +122,7 @@ exec 7>&2 # Link file descriptor #7 with normal stderr.
 exec 8>&1 # Link file descriptor #8 with custom stdout.
 exec 9>&2 # Link file descriptor #9 with custom stderr.
 
-# check for required command line tools
-#if ! need_cmd "curl" || \
-#   ! need_cmd "jq" || \
-#   ! need_cmd "bc" || \
-#   ! need_cmd "sed" || \
-#   ! need_cmd "awk" || \
-#   ! need_cmd "column" || \
-#   ! protectionPreRequisites; then waitForInput "Missing one or more of the required command line tools, press any key to exit"; myExit 1
-#fi
 
-if [[ "$CNTOOLS_PATCH_VERSION" -eq 999  ]]; then
-  # CNTools was updated using special 999 patch tag, apply correct version in cntools.library and update variables already sourced
-  sed -i "s/CNTOOLS_MAJOR_VERSION=[[:digit:]]\+/CNTOOLS_MAJOR_VERSION=$((++CNTOOLS_MAJOR_VERSION))/" "${PARENT}/cntools.library"
-  sed -i "s/CNTOOLS_MINOR_VERSION=[[:digit:]]\+/CNTOOLS_MINOR_VERSION=0/" "${PARENT}/cntools.library"
-  sed -i "s/CNTOOLS_PATCH_VERSION=[[:digit:]]\+/CNTOOLS_PATCH_VERSION=0/" "${PARENT}/cntools.library"
-  # CNTOOLS_MAJOR_VERSION variable already updated in sed replace command
-  CNTOOLS_MINOR_VERSION=0
-  CNTOOLS_PATCH_VERSION=0
-  CNTOOLS_VERSION="${CNTOOLS_MAJOR_VERSION}.${CNTOOLS_MINOR_VERSION}.${CNTOOLS_PATCH_VERSION}"
-fi
-
-# Do some checks when run in connected mode
-if [[ ${CNTOOLS_MODE} = "CONNECTED" ]]; then
-  # check to see if there are any updates available
-  clear
-  println "DEBUG" "CNTools version check...\n"
-  if curl -s -m ${CURL_TIMEOUT} -o "${TMP_FOLDER}"/cntools.library "${URL}/cntools.library" && [[ -f "${TMP_FOLDER}"/cntools.library ]]; then
-    GIT_MAJOR_VERSION=$(grep -r ^CNTOOLS_MAJOR_VERSION= "${TMP_FOLDER}"/cntools.library |sed -e "s#.*=##")
-    GIT_MINOR_VERSION=$(grep -r ^CNTOOLS_MINOR_VERSION= "${TMP_FOLDER}"/cntools.library |sed -e "s#.*=##")
-    GIT_PATCH_VERSION=$(grep -r ^CNTOOLS_PATCH_VERSION= "${TMP_FOLDER}"/cntools.library |sed -e "s#.*=##")
-    if [[ "$GIT_PATCH_VERSION" -eq 999  ]]; then
-      ((GIT_MAJOR_VERSION++))
-      GIT_MINOR_VERSION=0
-      GIT_PATCH_VERSION=0
-    fi
-    GIT_VERSION="${GIT_MAJOR_VERSION}.${GIT_MINOR_VERSION}.${GIT_PATCH_VERSION}"
-    if ! versionCheck "${GIT_VERSION}" "${CNTOOLS_VERSION}"; then
-      println "DEBUG" "A new version of CNTools is available"
-      echo
-      println "DEBUG" "Installed Version : ${CNTOOLS_VERSION}"
-      println "DEBUG" "Available Version : ${FG_GREEN}${GIT_VERSION}${NC}"
-      println "DEBUG" "\nGo to Update section for upgrade\n\nAlternately, follow https://cardano-community.github.io/guild-operators/#/basics?id=pre-requisites to update cntools as well alongwith any other files"
-      waitForInput "press any key to proceed"
-    else
-      # check if CNTools was recently updated, if so show whats new
-      if curl -s -m ${CURL_TIMEOUT} -o "${TMP_FOLDER}"/cntools-changelog.md "${URL_DOCS}/cntools-changelog.md"; then
-        if ! cmp -s "${TMP_FOLDER}"/cntools-changelog.md "${PARENT}/cntools-changelog.md"; then
-          # Latest changes not shown, show whats new and copy changelog
-          clear 
-          exec >&6 # normal stdout
-          sleep 0.1
-          if [[ ! -f "${PARENT}/cntools-changelog.md" ]]; then 
-            # special case for first installation or 5.0.0 upgrade, print release notes until previous major version
-            println "OFF" "~ CNTools - What's New ~\n\n" "$(sed -n "/\[${CNTOOLS_MAJOR_VERSION}\.${CNTOOLS_MINOR_VERSION}\.${CNTOOLS_PATCH_VERSION}\]/,/\[$((CNTOOLS_MAJOR_VERSION-1))\.[0-9]\.[0-9]\]/p" "${TMP_FOLDER}"/cntools-changelog.md | head -n -2)" | less -X
-          else
-            # print release notes from current until previously installed version
-            [[ $(cat "${PARENT}/cntools-changelog.md") =~ \[([[:digit:]])\.([[:digit:]])\.([[:digit:]])\] ]]
-            cat <(println "OFF" "~ CNTools - What's New ~\n") <(awk "1;/\[${BASH_REMATCH[1]}\.${BASH_REMATCH[2]}\.${BASH_REMATCH[3]}\]/{exit}" "${TMP_FOLDER}"/cntools-changelog.md | head -n -2 | tail -n +7) <(echo -e "\n [Press 'q' to quit and proceed to CNTools main menu]\n") | less -X
-          fi
-          exec >&8 # custom stdout
-          cp "${TMP_FOLDER}"/cntools-changelog.md "${PARENT}/cntools-changelog.md"
-        fi
-      else
-        println "ERROR" "\n${FG_RED}ERROR${NC}: failed to download changelog from GitHub!"
-        waitForInput "press any key to proceed"
-      fi
-    fi
-  else
-    println "ERROR" "\n${FG_RED}ERROR${NC}: failed to download cntools.library from GitHub, unable to perform version check!"
-    waitForInput "press any key to proceed"
-  fi
 
   # Validate protocol parameters
   if grep -q "Network.Socket.connect" <<< "${PROT_PARAMS}"; then
@@ -205,31 +135,6 @@ ${FG_BLUE}INFO${NC}: re-run CNTools in offline mode with -o parameter if you wan
   fi
   echo "${PROT_PARAMS}" > "${TMP_FOLDER}"/protparams.json
 fi
-
-# check if there are pools in need of KES key rotation
-clear
-kes_rotation_needed="no"
-while IFS= read -r -d '' pool; do
-  if [[ -f "${pool}/${POOL_CURRENT_KES_START}" ]]; then
-    kesExpiration "$(cat "${pool}/${POOL_CURRENT_KES_START}")"
-    if [[ ${expiration_time_sec_diff} -lt ${KES_ALERT_PERIOD} ]]; then
-      kes_rotation_needed="yes"
-      println "\n** WARNING **\nPool ${FG_GREEN}$(basename ${pool})${NC} in need of KES key rotation"
-      if [[ ${expiration_time_sec_diff} -lt 0 ]]; then
-        println "DEBUG" "${FG_RED}Keys expired!${NC} : ${FG_RED}$(showTimeLeft ${expiration_time_sec_diff:1})${NC} ago"
-      else
-        println "DEBUG" "Remaining KES periods : ${FG_RED}${remaining_kes_periods}${NC}"
-        println "DEBUG" "Time left             : ${FG_RED}$(showTimeLeft ${expiration_time_sec_diff})${NC}"
-      fi
-    elif [[ ${expiration_time_sec_diff} -lt ${KES_WARNING_PERIOD} ]]; then
-      kes_rotation_needed="yes"
-      println "DEBUG" "\nPool ${FG_GREEN}$(basename ${pool})${NC} soon in need of KES key rotation"
-      println "DEBUG" "Remaining KES periods : ${FG_YELLOW}${remaining_kes_periods}${NC}"
-      println "DEBUG" "Time left             : ${FG_YELLOW}$(showTimeLeft ${expiration_time_sec_diff})${NC}"
-    fi
-  fi
-done < <(find "${POOL_FOLDER}" -mindepth 1 -maxdepth 1 -type d -print0 | sort -z)
-[[ ${kes_rotation_needed} = "yes" ]] && waitForInput "press any key to proceed"
 
 # Verify if the combinator network is already on shelley and if so, the epoch of transition
 if [[ "${PROTOCOL}" == "Cardano" ]]; then
