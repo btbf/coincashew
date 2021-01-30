@@ -6,7 +6,7 @@ description: >-
 # ステークプールブロックログ導入手順
 
 {% hint style="info" %}
-最終更新日：2021/1/24 0:26  
+最終更新日：2021/1/30 23:43  
 {% endhint %}
 
 ## 🎉 ∞ お知らせ
@@ -45,8 +45,8 @@ description: >-
 * **gLiveView.sh** (ノード監視ツール)
  
 {% hint style="info" %}
-12/27以前に日本語マニュアルの18.13項目で**gLiveView.sh** と **env**をダウンロード済みの方も、こちらで再度設定をお願いします。  
-（ダウンロードフォルダを変更しておりますので、$NODE_HOME直下のファイルは削除していただいて構いません）
+すでに導入済みの方は、
+
 {% endhint %}
 
 ## 🏁 1. CNCLIをインストールする
@@ -150,8 +150,8 @@ cd $NODE_HOME
 mkdir scripts
 cd $NODE_HOME/scripts
 wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/cncli.sh
-wget -N https://raw.githubusercontent.com/btbf/coincashew/master/guild-tools/cntools.config
-wget -N https://raw.githubusercontent.com/btbf/coincashew/master/guild-tools/cntools.library
+wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/cntools.config
+wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/cntools.library
 wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/env
 wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/logMonitor.sh
 wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/gLiveView.sh
@@ -186,17 +186,10 @@ CNODE_HOME=/home/<user_name>/cardano-my-node
 CNODE_PORT=6000
 CONFIG="${CNODE_HOME}/mainnet-config.json"
 SOCKET="${CNODE_HOME}/db/socket"
-TOPOLOGY="${CNODE_HOME}/mainnet-topology.json"
-LOG_DIR="${CNODE_HOME}/logs"
-DB_DIR="${CNODE_HOME}/db"
-EKG_HOST=127.0.0.1
-EKG_PORT=12788
-BLOCKLOG_DIR="${CNODE_HOME}/guild-db/blocklog"
-BLOCKLOG_TZ="Asia/Tokyo"
+BLOCKLOG_TZ="Asia/Tokyo"　　
+　　
 POOL_FOLDER="${CNODE_HOME}"
 POOL_ID_FILENAME="stakepoolid.txt"
-POOL_VRF_VK_FILENAME="vrf.vkey"
-POOL_VRF_SK_FILENAME="vrf.skey"
 ```
 
 cncli.shファイルを編集します。
@@ -205,25 +198,13 @@ cncli.shファイルを編集します。
 nano cncli.sh
 ```
 
-ファイル内上部にある設定値を変更します。  
-先頭の **#** を外し、ご自身の環境に合わせ**user_name**、プールIDやファイル名を設定します。
+ファイル内の設定値を変更します。  
+先頭の **#** を外し、ご自身の環境に合わせてプールIDやファイル名を設定します。
 
 ```bash
-[[ -z "${CNODE_HOME}" ]] && CNODE_HOME="/home/<user_name>/cardano-my-node"
-
 POOL_ID="<Pool-ID>"
 POOL_VRF_SKEY="${CNODE_HOME}/vrf.skey"
 POOL_VRF_VKEY="${CNODE_HOME}/vrf.vkey"
-```
-
-blocks.shファイルを編集します。
-
-```bash
-nano blocks.sh
-```
-ファイル内上部にある**user_name**を変更します。
-```bash
-. /home/<user_name>/cardano-my-node/scripts/env
 ```
 
 ## 🏁 4.サービスファイル4種類を作成・登録します。
@@ -616,3 +597,82 @@ blocks・・・blocks.sh
 glive・・・gLiveView.sh  
 
 {% endhint %}
+
+
+## 🏁 10. 1月30日以前から導入済みの方はこちら
+
+### 10-1.各種サービスをストップする
+
+```bash
+sudo systemctl stop cnode-cncli-sync.service
+#[パスワードを入力する]
+sudo systemctl stop cnode-cncli-validate.service
+sudo systemctl stop cnode-cncli-leaderlog.service
+sudo systemctl stop cnode-logmonitor.service
+```
+
+### 10-2.各種ファイルをアップデートする
+
+```bash
+cd $NODE_HOME/scripts
+wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/cncli.sh
+wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/cntools.config
+wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/cntools.library
+wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/env
+wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/logMonitor.sh
+wget -N https://raw.githubusercontent.com/btbf/coincashew/master/guild-tools/blocks.sh
+```
+
+### 10-3.各種ファイルを編集する
+
+envファイルを編集します
+
+```bash
+cd scripts
+nano env
+```
+
+ファイル内上部にある設定値を変更します。  
+先頭の **#** を外し、ご自身の環境に合わせ**user_name**パスやファイル名、ポート番号を設定します。  
+下記以外の**#**がついている項目はそのままで良い、または今回のプログラムでは使わないです。
+```bash
+CCLI="/usr/local/bin/cardano-cli"
+CNODE_HOME=/home/<user_name>/cardano-my-node
+CNODE_PORT=6000
+CONFIG="${CNODE_HOME}/mainnet-config.json"
+SOCKET="${CNODE_HOME}/db/socket"
+BLOCKLOG_TZ="Asia/Tokyo"　　
+　　
+POOL_FOLDER="${CNODE_HOME}"
+POOL_ID_FILENAME="stakepoolid.txt"
+```
+
+cncli.shファイルを編集します。
+
+```bash
+nano cncli.sh
+```
+
+ファイル内の設定値を変更します。  
+先頭の **#** を外し、ご自身の環境に合わせてプールIDやファイル名を設定します。
+
+```bash
+POOL_ID="<Pool-ID>"
+POOL_VRF_SKEY="${CNODE_HOME}/vrf.skey"
+POOL_VRF_VKEY="${CNODE_HOME}/vrf.vkey"
+```
+
+### 10-4.サービスをスタートする
+
+```bash
+sudo systemctl start cnode-cncli-sync.service
+sudo systemctl start cnode-cncli-validate.service
+sudo systemctl start cnode-cncli-leaderlog.service
+sudo systemctl start cnode-logmonitor.service
+```
+
+### 10-5. 起動確認する
+```
+cd $NODE_HOME/scripts
+./blocks.sh
+```
