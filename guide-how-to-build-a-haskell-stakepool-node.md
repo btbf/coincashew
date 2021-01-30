@@ -242,7 +242,46 @@ echo export CARDANO_NODE_SOCKET_PATH="$NODE_HOME/db/socket" >> $HOME/.bashrc
 source $HOME/.bashrc
 ```
 
-## 🔮 4. ブロックプロデューサーノードを構築する
+## 🛸 4. リレーノードを構築します。
+
+{% hint style="warning" %}
+🚧 リレーサーバを増設する場合は、**リレーノードN**として1～3の手順を同様にセットアップします。
+{% endhint %}
+
+自身のリレーノード上で以下のコマンドを実行します。 「addr」には自身のブロックプロデューサーノードのパプリックIPアドレスを記述します。 **IOHKのノード情報は削除しないで下さい**
+
+{% tabs %}
+{% tab title="relaynode1" %}
+```bash
+cat > $NODE_HOME/${NODE_CONFIG}-topology.json << EOF 
+ {
+    "Producers": [
+      {
+        "addr": "<ブロックプロデューサーノードのパブリックIPアドレス>",
+        "port": 6000,
+        "valency": 1
+      },
+      {
+        "addr": "relays-new.cardano-mainnet.iohk.io",
+        "port": 3001,
+        "valency": 2
+      }
+    ]
+  }
+EOF
+```
+{% endtab %}
+{% endtabs %}
+
+{% hint style="info" %}
+Valencyが0の場合、アドレスは無視されます。
+{% endhint %}
+
+{% hint style="danger" %}
+\*\*\*\*✨ **ポート開放について:** ブロックプロデューサーノード上で、ここで設定したポート番号を開放してください。
+{% endhint %}
+
+## 🔮 5. ブロックプロデューサーノードを構築する
 
 {% hint style="info" %}
 ブロックプロデューサーノードは、ブロック生成に必要なペアキー \(cold keys, KES hot keys and VRF hot keys\)を用いて起動します。リレーノードのみに接続します。
@@ -287,45 +326,6 @@ EOF
 ```
 {% endtab %}
 {% endtabs %}
-
-## 🛸 5. リレーノードを構築します。
-
-{% hint style="warning" %}
-🚧 リレーサーバを増設する場合は、**リレーノードN**として1～3の手順を同様にセットアップします。
-{% endhint %}
-
-自身のリレーノード上で以下のコマンドを実行します。 「addr」には自身のブロックプロデューサーノードのパプリックIPアドレスを記述します。 **IOHKのノード情報は削除しないで下さい**
-
-{% tabs %}
-{% tab title="relaynode1" %}
-```bash
-cat > $NODE_HOME/${NODE_CONFIG}-topology.json << EOF 
- {
-    "Producers": [
-      {
-        "addr": "<ブロックプロデューサーノードのパブリックIPアドレス>",
-        "port": 6000,
-        "valency": 1
-      },
-      {
-        "addr": "relays-new.cardano-mainnet.iohk.io",
-        "port": 3001,
-        "valency": 2
-      }
-    ]
-  }
-EOF
-```
-{% endtab %}
-{% endtabs %}
-
-{% hint style="info" %}
-Valencyが0の場合、アドレスは無視されます。
-{% endhint %}
-
-{% hint style="danger" %}
-\*\*\*\*✨ **ポート開放について:** ブロックプロデューサーノード上で、ここで設定したポート番号を開放してください。
-{% endhint %}
 
 ## 🔏 6. エアギャップオフラインマシンを構成する
 
