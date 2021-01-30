@@ -45,7 +45,7 @@ description: >-
 * **gLiveView.sh** (ノード監視ツール)
  
 {% hint style="info" %}
-すでに導入済みの方は、[1月30日以前から導入済みの方はこちら](https://dev.xstakepool.com/guild-tools#10-1-30-karaminohakochira)から  
+すでに導入済みの方は、[1月30日以前から導入済みの方はこちら](./README.md#10-1-30-karaminohakochira)から  
 ファイルアップデートをお願いします。
 
 {% endhint %}
@@ -678,4 +678,4 @@ cd $NODE_HOME/scripts
 ./blocks.sh
 ```
 
-[3プログラムのログ画面](https://dev.xstakepool.com/guild-tools#7-1-3puroguramunoroguwoshimasu)も合わせてご確認ください。
+[3プログラムのログ画面](./README.md#7-1-3puroguramunoroguwoshimasu)も合わせてご確認ください。
