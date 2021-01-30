@@ -676,3 +676,5 @@ sudo systemctl start cnode-logmonitor.service
 cd $NODE_HOME/scripts
 ./blocks.sh
 ```
+
+[3プログラムのログ画面](https://dev.xstakepool.com/guild-tools#7-1-3puroguramunoroguwoshimasu)も合わせてご確認ください。
