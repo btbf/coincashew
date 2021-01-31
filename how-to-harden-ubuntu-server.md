@@ -195,6 +195,11 @@ SSHがGoogle Authenticator PAM モジュールを使用するために、`/etc/p
 sudo nano /etc/pam.d/sshd 
 ```
 
+先頭の **@include common-auth**を#を付与してコメントアウトする
+```
+#@include common-auth
+```
+
 以下の行を追加します。
 
 ```text
