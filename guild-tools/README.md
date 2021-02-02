@@ -379,27 +379,7 @@ sudo systemctl enable cnode-cncli-leaderlog.service
 sudo systemctl enable cnode-logmonitor.service
 ```
 
-## 🏁 5.ブロックチェーンとDBを同期する
-
-**cncli-sync**サービスを開始し、ログ画面を表示します
-```bash
-sudo systemctl start cnode-cncli-sync.service
-tmux a -t cncli
-```
-
-{% hint style="info" %}
-「100.00% synced」になるまで待ちます。  
-100%になったら、Ctrl+bを押した後に d を押し元の画面に戻ります(バックグラウンド実行に切り替え)
-{% endhint %}
-
-## 🏁 6.過去のブロック生成実績をDBに登録します。
-
-```bash
-cd $NODE_HOME/scripts
-./cncli.sh init
-```
-
-### 6-1.ログファイルを作成するように設定する
+### 4-3.ログファイルを作成するように設定する
  ```bash
 nano mainnet-config.json
  ```
@@ -437,6 +417,28 @@ Ctrl+Oでファイルを保存し、Ctrl+Xで閉じる
 ノードを再起動する
 ```bash
 sudo systemctl reload-or-restart cardano-node
+```
+
+
+## 🏁 5.ブロックチェーンとDBを同期する
+
+**cncli-sync**サービスを開始し、ログ画面を表示します
+```bash
+sudo systemctl start cnode-cncli-sync.service
+tmux a -t cncli
+```
+
+{% hint style="info" %}
+「100.00% synced」になるまで待ちます。  
+100%になったら、Ctrl+bを押した後に d を押し元の画面に戻ります(バックグラウンド実行に切り替え)
+{% endhint %}
+
+
+## 🏁 6.過去のブロック生成実績をDBに登録します。
+
+```bash
+cd $NODE_HOME/scripts
+./cncli.sh init
 ```
 
 
