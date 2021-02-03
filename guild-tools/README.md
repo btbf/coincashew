@@ -381,6 +381,7 @@ sudo systemctl enable cnode-logmonitor.service
 
 ### 4-3.ログファイルを作成するように設定する
  ```bash
+cd $NODE_HOME
 nano mainnet-config.json
  ```
 * defaultScribesを下記のように書き換える
