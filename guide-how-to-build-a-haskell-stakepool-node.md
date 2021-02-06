@@ -1748,11 +1748,6 @@ cardano-cli query ledger-state --mainnet --allegra-era | grep publicKey | grep $
 バージョン1.21.1ではP2P\(ピア・ツー・ピア\)ノードを自動検出しないため、手動でトポロジーを構成する必要があります。この手順をスキップすると生成したブロックがブロックチェーン外で孤立するため、必須の設定項目となります。
 {% endhint %}
 
-トポロジーファイルを構成するには、２つの方法があります。
-
-* **topologyUpdate.shメソッドは**自動化されており、設定から4時間後に機能します。 
-* **Pooltool.ioメソッドは** 接続先を選択できる代わりに、毎回手動で設定する必要があります。
-
 {% tabs %}
 {% tab title="topologyUpdater.shで更新する場合" %}
 ### 🚀 topologyUpdater.shを使用してリレーノードを公開する
@@ -1895,6 +1890,7 @@ sudo systemctl reload-or-restart cardano-node
 {% endhint %}
 {% endtab %}
 
+<!-- 
 {% tab title="Pooltool.ioで更新する場合" %}
 ※非推奨※ 1. [https://pooltool.io/](https://pooltool.io/)へアクセスします。 2. アカウントを作成してログインします。 3. あなたのステークプールを探します。 4. **Pool Details** &gt; **Manage** &gt; **CLAIM THIS POOL**をクリックします。 5. プール名とプールURLがある場合は入力します。 6. あなたのリレーノード情報を入力します。
 
@@ -2008,6 +2004,7 @@ Pooltool.ioでリクエストが承認されたら、その都度get\_buddies.sh
 {% endhint %}
 {% endtab %}
 {% endtabs %}
+-->
 
 {% hint style="danger" %}
 \*\*\*\*🔥 **重要な確認事項:** ブロックを生成するには、「TXs processed」が増加していることを確認する必要があります。万一、増加していない場合にはトポロジーファイルの内容を再確認して下さい。「peers」数はリレーノードが他ノードと接続している数を表しています。
