@@ -2003,8 +2003,9 @@ sudo systemctl reload-or-restart cardano-node
 Pooltool.ioでリクエストが承認されたら、その都度get\_buddies.shスクリプトを実行して、最新のトポロジーファイルに更新して下さい。その後ステークプールを再起動します。
 {% endhint %}
 {% endtab %}
-{% endtabs %}
 -->
+{% endtabs %}
+
 
 {% hint style="danger" %}
 \*\*\*\*🔥 **重要な確認事項:** ブロックを生成するには、「TXs processed」が増加していることを確認する必要があります。万一、増加していない場合にはトポロジーファイルの内容を再確認して下さい。「peers」数はリレーノードが他ノードと接続している数を表しています。
