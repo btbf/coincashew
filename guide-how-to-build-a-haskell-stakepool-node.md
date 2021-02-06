@@ -1464,6 +1464,38 @@ minPoolCostは 340000000 lovelace \(340 ADA\)です。
 
 ステークプールの登録証明書を作成します。 **メタデータのURL**と**リレーノード情報**を追記し構成します。リレーノード構成にはDNSベースまたはIPベースのどちらかを選択できます。
 
+{% hint style="warning" %}
+**metadata-url**は64文字以内とし、あなたの環境に合わせて修正してください。
+{% endhint %}
+
+ブロックプロデューサーノードにある**vrf.vkey**をエアギャップオフラインマシンcardano-my-nodeディレクトリにコピーします。
+
+{% tabs %}
+{% tab title="エアギャップオフラインマシン" %}
+```bash
+cardano-cli stake-pool registration-certificate \
+    --cold-verification-key-file $HOME/cold-keys/node.vkey \
+    --vrf-verification-key-file vrf.vkey \
+    --pool-pledge 100000000 \
+    --pool-cost 345000000 \
+    --pool-margin 0.15 \
+    --pool-reward-account-verification-key-file stake.vkey \
+    --pool-owner-stake-verification-key-file stake.vkey \
+    --mainnet \
+    --single-host-pool-relay <dns based relay, example ~ relaynode1.myadapoolnamerocks.com> \
+    --pool-relay-port 6000 \
+    --metadata-url <poolMetaData.jsonをアップロードしたURLを記述> \
+    --metadata-hash $(cat poolMetaDataHash.txt) \
+    --out-file pool.cert
+```
+{% endtab %}
+{% endtabs %}
+
+{% hint style="info" %}
+ここでは345ADAの固定費と15%のプールマージン、100ADAの誓約を設定しています。 ご自身の設定値に変更してください。
+{% endhint %}
+
+
 {% hint style="info" %}
 ノード管理を簡単にするために、DNSベースのリレー設定をお勧めします。 もしリレーサーバを変更する場合、IPアドレスが変わるため、その都度登録証明書を再送する必要がありますがDNSベースで登録しておけば、IPアドレスが変更になってもお使いのドメイン管理画面にてIPアドレスを変更するだけで完了します。
 {% endhint %}
@@ -1495,37 +1527,6 @@ minPoolCostは 340000000 lovelace \(340 ADA\)です。
     --pool-relay-port 6000 \
     --pool-relay-ipv4 <your second relay node public IP address> \
 ```
-{% endhint %}
-
-{% hint style="warning" %}
-**metadata-url**は64文字以内とし、あなたの環境に合わせて修正してください。
-{% endhint %}
-
-ブロックプロデューサーノードにある**vrf.vkey**をエアギャップオフラインマシンcardano-my-nodeディレクトリにコピーします。
-
-{% tabs %}
-{% tab title="エアギャップオフラインマシン" %}
-```bash
-cardano-cli stake-pool registration-certificate \
-    --cold-verification-key-file $HOME/cold-keys/node.vkey \
-    --vrf-verification-key-file vrf.vkey \
-    --pool-pledge 100000000 \
-    --pool-cost 345000000 \
-    --pool-margin 0.15 \
-    --pool-reward-account-verification-key-file stake.vkey \
-    --pool-owner-stake-verification-key-file stake.vkey \
-    --mainnet \
-    --single-host-pool-relay <dns based relay, example ~ relaynode1.myadapoolnamerocks.com> \
-    --pool-relay-port 6000 \
-    --metadata-url <poolMetaData.jsonをアップロードしたURLを記述> \
-    --metadata-hash $(cat poolMetaDataHash.txt) \
-    --out-file pool.cert
-```
-{% endtab %}
-{% endtabs %}
-
-{% hint style="info" %}
-ここでは345ADAの固定費と15%のプールマージン、100ADAの誓約を設定しています。 ご自身の設定値に変更してください。
 {% endhint %}
 
 ステークプールにステークを誓約するファイルを作成します。
