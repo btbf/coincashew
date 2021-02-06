@@ -1508,16 +1508,16 @@ cardano-cli stake-pool registration-certificate \
 **DNSレコードに1つのエントリーの場合**
 
 ```bash
-    --single-host-pool-relay <your first relay node public IP address> \
+    --single-host-pool-relay <your first relay node address> \
     --pool-relay-port 6000 \
-    --single-host-pool-relay <your Second relay node public IP address> \
+    --single-host-pool-relay <your Second relay node address> \
     --pool-relay-port 6000 \
 ```
 
 **ラウンドロビンDNSベース** [**SRV DNS record**](https://support.dnsimple.com/articles/srv-record/)の場合
 
 ```bash
-    --multi-host-pool-relay <your first relay node public IP address> \
+    --multi-host-pool-relay <your first relay node address> \
     --pool-relay-port 6000 \
 ```
 
