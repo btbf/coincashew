@@ -1468,8 +1468,9 @@ minPoolCostは 340000000 lovelace \(340 ADA\)です。
 **metadata-url**は64文字以内とし、あなたの環境に合わせて修正してください。
 {% endhint %}
 
-ブロックプロデューサーノードにある**vrf.vkey**をエアギャップオフラインマシンcardano-my-nodeディレクトリにコピーします。
+ブロックプロデューサーノードにある**vrf.vkey**をエアギャップオフラインマシンcardano-my-nodeディレクトリにコピーします。　　
 
+pool.certを作成する
 {% tabs %}
 {% tab title="エアギャップオフラインマシン" %}
 ```bash
@@ -1497,6 +1498,7 @@ cardano-cli stake-pool registration-certificate \
 
 
 {% hint style="info" %}
+上記のpool.cert作成時、自身のリレー情報を以下の3パターンの記述方法があります。
 ノード管理を簡単にするために、DNSベースのリレー設定をお勧めします。 もしリレーサーバを変更する場合、IPアドレスが変わるため、その都度登録証明書を再送する必要がありますがDNSベースで登録しておけば、IPアドレスが変更になってもお使いのドメイン管理画面にてIPアドレスを変更するだけで完了します。
 {% endhint %}
 
