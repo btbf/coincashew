@@ -1843,14 +1843,41 @@ crontab -l | cat - crontab-fragment.txt >crontab.txt && crontab crontab.txt
 rm crontab-fragment.txt
 ```
 
+> no crontab for ~~
+というメッセージは、Cron初回設定時に表示されるメッセージとなりますので、問題ありません。
+
+```
+crontab -l
+```
+以下が返り値として表示されればOK。
+>22 * * * * /home/***/cardano-my-node/topologyUpdater.sh
+
+
 {% hint style="success" %}
 4時間の間で4回スクリプトが実行された後に、ノードがオンライン状態で有ることが認められた場合にノードIPがトポロジーフェッチリストに登録されます。
 {% endhint %}
 
+### トポロジーフェッチリストに登録されたか確認する
+
+```bash
+cd $NODE_HOME/logs
+cat topologyUpdater_lastresult.json
+```
+
+以下の内容が表示されていれば登録成功  
+resultcodeが400番台・500番台の場合は、サーバ設定に問題があります。
+```
+{ "resultcode": "201", "datetime":"2021-01-10 18:30:06", "clientIp": "000.000.000.000", "iptype": 4, "msg": "nice to meet you" }
+{ "resultcode": "203", "datetime":"2021-01-10 19:30:03", "clientIp": "000.000.000.000", "iptype": 4, "msg": "welcome to the topology" }
+{ "resultcode": "204", "datetime":"2021-01-10 20:30:04", "clientIp": "000.000.000.000", "iptype": 4, "msg": "glad you're staying with us" }
+```
+
+
+
 ### 🤹♀ リレーノードトポロジーファイルを更新する
 
 {% hint style="danger" %}
-リレーノードIPがトポロジーフェッチリストに登録される、4時間後に以下のセクションを実行して下さい。
+リレーノードIPがトポロジーフェッチリストに登録されたことを確認後、以下のセクションを実行して下さい。
 {% endhint %}
 
 トポロジーファイルを更新する`relay-topology_pull.sh`スクリプトを作成します。 コマンドラインに送信する際に、**自身のブロックプロデューサーのIPアドレスとポート番号に書き換えて下さい**  
