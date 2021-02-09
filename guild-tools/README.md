@@ -211,8 +211,9 @@ POOL_VRF_VKEY="${CNODE_HOME}/vrf.vkey"
 ## 🏁 4.サービスファイル4種類を作成・登録します。
 
 ```bash
+cd $NODE_HOME
 mkdir service
-cd $NODE_HOME/service
+cd service
 ```
 
 {% tabs %}
