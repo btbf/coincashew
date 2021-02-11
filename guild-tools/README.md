@@ -125,10 +125,11 @@ cncli --version
 sudo systemctl start cnode-cncli-sync.service
 tmux a -t cncli
 ```
-> cncli.shのバージョンアップ確認があれば「Yes」
+> cncli.shのバージョンアップ確認があれば「Yes」を選択  
 > 再度実行し、sync 100%になることを確認する。
 
 残りのサービスを開始する
+```bash
 sudo systemctl start cnode-cncli-validate.service
 sudo systemctl start cnode-cncli-leaderlog.service
 ```
