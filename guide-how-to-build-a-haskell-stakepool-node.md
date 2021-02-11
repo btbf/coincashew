@@ -242,44 +242,291 @@ echo export CARDANO_NODE_SOCKET_PATH="$NODE_HOME/db/socket" >> $HOME/.bashrc
 source $HOME/.bashrc
 ```
 
-## 🛸 4. リレーノードを構築します。
+## 🤖 7. ノード起動スクリプトを作成する。
 
-{% hint style="warning" %}
-🚧 リレーサーバを増設する場合は、**リレーノードN**として1～3の手順を同様にセットアップします。
-{% endhint %}
+起動スクリプトには、ディレクトリ、ポート番号、DBパス、構成ファイルパス、トポロジーファイルパスなど、カルダノノードを実行するために必要な変数が含まれています。
 
-自身のリレーノード上で以下のコマンドを実行します。 「addr」には自身のブロックプロデューサーノードのパプリックIPアドレスを記述します。 **IOHKのノード情報は削除しないで下さい**
+全行をコピーしコマンドラインに送信します。
 
 {% tabs %}
-{% tab title="relaynode1" %}
+{% tab title="ブロックプロデューサーノード" %}
 ```bash
-cat > $NODE_HOME/${NODE_CONFIG}-topology.json << EOF 
- {
-    "Producers": [
-      {
-        "addr": "<ブロックプロデューサーノードのパブリックIPアドレス>",
-        "port": 6000,
-        "valency": 1
-      },
-      {
-        "addr": "relays-new.cardano-mainnet.iohk.io",
-        "port": 3001,
-        "valency": 2
-      }
-    ]
-  }
+cat > $NODE_HOME/startBlockProducingNode.sh << EOF 
+#!/bin/bash
+DIRECTORY=\$NODE_HOME
+PORT=6000
+HOSTADDR=0.0.0.0
+TOPOLOGY=\${DIRECTORY}/${NODE_CONFIG}-topology.json
+DB_PATH=\${DIRECTORY}/db
+SOCKET_PATH=\${DIRECTORY}/db/socket
+CONFIG=\${DIRECTORY}/${NODE_CONFIG}-config.json
+cardano-node run --topology \${TOPOLOGY} --database-path \${DB_PATH} --socket-path \${SOCKET_PATH} --host-addr \${HOSTADDR} --port \${PORT} --config \${CONFIG}
+EOF
+```
+{% endtab %}
+
+{% tab title="リレーノード1" %}
+```bash
+cat > $NODE_HOME/startRelayNode1.sh << EOF 
+#!/bin/bash
+DIRECTORY=\$NODE_HOME
+PORT=6000
+HOSTADDR=0.0.0.0
+TOPOLOGY=\${DIRECTORY}/${NODE_CONFIG}-topology.json
+DB_PATH=\${DIRECTORY}/db
+SOCKET_PATH=\${DIRECTORY}/db/socket
+CONFIG=\${DIRECTORY}/${NODE_CONFIG}-config.json
+cardano-node run --topology \${TOPOLOGY} --database-path \${DB_PATH} --socket-path \${SOCKET_PATH} --host-addr \${HOSTADDR} --port \${PORT} --config \${CONFIG}
 EOF
 ```
 {% endtab %}
 {% endtabs %}
 
+## ✅ 4. ノードを起動します。
+
+起動スクリプトに実行権限を付与し、ブロックチェーンの同期を開始します。  
+リレーノードから実施します。
+
+{% tabs %}
+{% tab title="リレーノード" %}
+```bash
+cd $NODE_HOME
+chmod +x startRelayNode1.sh
+./startRelayNode1.sh
+```
+{% endtab %}
+
+{% tab title="ブロックプロデューサーノード" %}
+```bash
+cd $NODE_HOME
+chmod +x startBlockProducingNode.sh
+./startBlockProducingNode.sh
+```
+{% endtab %}
+{% endtabs %}
+
 {% hint style="info" %}
-Valencyが0の場合、アドレスは無視されます。
+🛑 ノードを停止するには「Ctrl」+「c」を押します。
 {% endhint %}
 
-{% hint style="danger" %}
-\*\*\*\*✨ **ポート開放について:** ブロックプロデューサーノード上で、ここで設定したポート番号を開放してください。
+{% hint style="info" %}
+✨ **ヒント**: 複数のノードをセットアップする場合、同期が完了したDBディレクトリを他のサーバにコピーすることにより、同期時間を節約することができます。
 {% endhint %}
+
+一旦ノードを停止します。
+```
+Ctrl+C
+```
+
+### 🛠 4-1.自動起動とバックグラウンド起動を設定する(systemd＋tmux)
+
+先程のスクリプトだけでは、ターミナル画面を閉じるとノードが終了してしまうので、スクリプトをサービスとして登録し、自動起動設定と別セッションで起動するように設定しましょう
+
+#### 🍰 ステークプールにsystemdを使用するメリット
+
+1. メンテナンスや停電など、自動的にコンピュータが再起動したときステークプールを自動起動します。
+2. クラッシュしたステークプールプロセスを自動的に再起動します。
+3. ステークプールの稼働時間とパフォーマンスをレベルアップさせます。
+
+#### 🛠 セットアップ手順
+
+始める前にステークプールが停止しているか確認してください。
+
+```bash
+killall -s 2 cardano-node
+```
+
+以下のコードを実行して、ユニットファイルを作成します。
+
+{% tabs %}
+{% tab title="リレーノード1" %}
+```bash
+cat > $NODE_HOME/cardano-node.service << EOF 
+# The Cardano node service (part of systemd)
+# file: /etc/systemd/system/cardano-node.service 
+
+[Unit]
+Description     = Cardano node service
+Wants           = network-online.target
+After           = network-online.target 
+
+[Service]
+User            = $(whoami)
+Type            = forking
+WorkingDirectory= $NODE_HOME
+ExecStart       = /usr/bin/tmux new -d -s cnode
+ExecStartPost   = /usr/bin/tmux send-keys -t cnode $NODE_HOME/startRelayNode1.sh Enter 
+KillSignal=SIGINT
+RestartKillSignal=SIGINT
+TimeoutStopSec=2
+LimitNOFILE=32768
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy	= multi-user.target
+EOF
+```
+{% endtab %}
+
+{% tab title="ブロックプロデューサーノード" %}
+```bash
+cat > $NODE_HOME/cardano-node.service << EOF 
+# The Cardano node service (part of systemd)
+# file: /etc/systemd/system/cardano-node.service 
+
+[Unit]
+Description     = Cardano node service
+Wants           = network-online.target
+After           = network-online.target 
+
+[Service]
+User            = $(whoami)
+Type            = forking
+WorkingDirectory= $NODE_HOME
+ExecStart       = /usr/bin/tmux new -d -s cnode
+ExecStartPost   = /usr/bin/tmux send-keys -t cnode $NODE_HOME/startBlockProducingNode.sh Enter 
+KillSignal=SIGINT
+RestartKillSignal=SIGINT
+TimeoutStopSec=2
+LimitNOFILE=32768
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy	= multi-user.target
+EOF
+```
+{% endtab %}
+{% endtabs %}
+
+`/etc/systemd/system`にユニットファイルをコピーして、権限を付与します。
+
+```bash
+sudo cp $NODE_HOME/cardano-node.service /etc/systemd/system/cardano-node.service
+```
+
+```bash
+sudo chmod 644 /etc/systemd/system/cardano-node.service
+```
+
+次のコマンドを実行して、OS起動時にサービスの自動起動を有効にします。
+
+```text
+sudo systemctl daemon-reload
+sudo systemctl enable cardano-node
+sudo systemctl start cardano-node
+```
+
+「4-2.gLiveView ノードステータスモニターをインストールします」に進んでください。
+
+
+{% hint style="success" %}
+以下は、systemdを有効活用するためのコマンドです。
+{% endhint %}
+
+\*\*\*\*⛓ **システム起動後に、ログモニターを表示します**
+
+```text
+tmux a -t cnode
+```
+
+**バックグラウンド起動中のセッション(別画面)を確認する**
+
+```text
+tmux ls
+```
+
+#### 🚧 セッションをバックグラウンド実行に切り替え、コマンドラインを表示します。
+
+```text
+press Ctrl + b を押した後、すぐに d (デタッチ)
+```
+
+#### ✅ ノードが実行されているか確認します。
+
+```text
+sudo systemctl is-active cardano-node
+```
+
+#### 🔎 ノードのステータスを表示します。
+
+```text
+sudo systemctl status cardano-node
+```
+
+#### 🔄 ノードサービスを再起動します。
+
+```text
+sudo systemctl reload-or-restart cardano-node
+```
+
+#### 🛑 ノードサービスを停止します。
+
+```text
+sudo systemctl stop cardano-node
+```
+
+#### 🗄 ログのフィルタリング
+
+```bash
+journalctl --unit=cardano-node --since=yesterday
+journalctl --unit=cardano-node --since=today
+journalctl --unit=cardano-node --since='2020-07-29 00:00:00' --until='2020-07-29 12:00:00'
+```
+
+
+
+### 🛠 4-2.gLiveView ノードステータスモニターをインストールします
+
+現在のcardano-nodeはログが流れる画面で、何が表示されているのかよくわかりません。  
+それを視覚的に確認できるツールが**gLiveView**です。
+
+
+{% hint style="info" %}
+gLiveViewは重要なノードステータス情報を表示し、systemdサービスとうまく連携します。1.23.0から正式にLiveViewが削除されgLiveViewは代替ツールとして利用できます。このツールを作成した [Guild Operators](https://cardano-community.github.io/guild-operators/#/Scripts/gliveview) の功績によるものです。
+{% endhint %}
+
+Guild LiveViewをインストールします。
+
+```bash
+mkdir $NODE_HOME/scripts
+cd $NODE_HOME/scripts
+sudo apt install bc tcptraceroute -y
+curl -s -o gLiveView.sh https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/gLiveView.sh
+curl -s -o env https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/env
+chmod 755 gLiveView.sh
+```
+
+**env** ファイルによってファイル構成を指定できます。  
+ノードのポート番号を6000以外に設定している場合は、envファイルを開いて修正してください。   
+```bash
+sed -i env \
+    -e "s/\#CONFIG=\"\${CNODE_HOME}\/files\/config.json\"/CONFIG=\"\${NODE_HOME}\/mainnet-config.json\"/g" \
+    -e "s/\#SOCKET=\"\${CNODE_HOME}\/sockets\/node0.socket\"/SOCKET=\"\${NODE_HOME}\/db\/socket\"/g"
+```
+
+Guild Liveviewを起動します。
+
+```text
+./gLiveView.sh
+```
+{% hint style="info" %}
+**このツールを立ち上げてもノードは起動しません。ノードは別途起動しておく必要があります**  
+リレー／BPは自動判別されます。  
+リレーノードでは基本情報に加え、トポロジー接続状況を確認できます。  
+BPノードでは基本情報に加え、KES有効期限、ブロック生成状況を確認できます。  
+
+[p]リレーノード用リモートピア分析について
+ピアにpingを送信する際ICMPpingを使用します。リモートピアのファイアウォールがICMPトラフィックを受け付ける場合のみ機能します。
+{% endhint %}
+
+![Guild Live View](../../../.gitbook/assets/gliveview-core.png)
+
+詳しくは開発元のドキュメントを参照してください [official Guild Live View docs.](https://cardano-community.github.io/guild-operators/#/Scripts/gliveview)
+
+この画面が表示され、ノードが同期したら準備完了です。
+
 
 ## 🔮 5. ブロックプロデューサーノードを構築する
 
@@ -353,289 +600,6 @@ mkdir -p $NODE_HOME
 {% hint style="danger" %}
 最も安全な構成を維持するには、USBなどを利用してホット環境とコールド環境間でファイルを物理的に移動することが望ましいです。
 {% endhint %}
-
-## 🤖 7. ノード起動スクリプトを作成する。
-
-起動スクリプトには、ディレクトリ、ポート番号、DBパス、構成ファイルパス、トポロジーファイルパスなど、カルダノノードを実行するために必要な変数が含まれています。
-
-全行をコピーしコマンドラインに送信します。
-
-{% tabs %}
-{% tab title="ブロックプロデューサーノード" %}
-```bash
-cat > $NODE_HOME/startBlockProducingNode.sh << EOF 
-#!/bin/bash
-DIRECTORY=\$NODE_HOME
-PORT=6000
-HOSTADDR=0.0.0.0
-TOPOLOGY=\${DIRECTORY}/${NODE_CONFIG}-topology.json
-DB_PATH=\${DIRECTORY}/db
-SOCKET_PATH=\${DIRECTORY}/db/socket
-CONFIG=\${DIRECTORY}/${NODE_CONFIG}-config.json
-cardano-node run --topology \${TOPOLOGY} --database-path \${DB_PATH} --socket-path \${SOCKET_PATH} --host-addr \${HOSTADDR} --port \${PORT} --config \${CONFIG}
-EOF
-```
-{% endtab %}
-
-{% tab title="リレーノード1" %}
-```bash
-cat > $NODE_HOME/startRelayNode1.sh << EOF 
-#!/bin/bash
-DIRECTORY=\$NODE_HOME
-PORT=6000
-HOSTADDR=0.0.0.0
-TOPOLOGY=\${DIRECTORY}/${NODE_CONFIG}-topology.json
-DB_PATH=\${DIRECTORY}/db
-SOCKET_PATH=\${DIRECTORY}/db/socket
-CONFIG=\${DIRECTORY}/${NODE_CONFIG}-config.json
-cardano-node run --topology \${TOPOLOGY} --database-path \${DB_PATH} --socket-path \${SOCKET_PATH} --host-addr \${HOSTADDR} --port \${PORT} --config \${CONFIG}
-EOF
-```
-{% endtab %}
-{% endtabs %}
-
-## ✅ 8. ノードを起動します。
-
-ターミナルウィンドウを新規に立ち上げます。
-
-起動スクリプトに実行権限を付与し、ブロックチェーンの同期を開始します。
-
-{% tabs %}
-{% tab title="ブロックプロデューサーノード" %}
-```bash
-cd $NODE_HOME
-chmod +x startBlockProducingNode.sh
-./startBlockProducingNode.sh
-```
-{% endtab %}
-
-{% tab title="relaynode1" %}
-```bash
-cd $NODE_HOME
-chmod +x startRelayNode1.sh
-./startRelayNode1.sh
-```
-{% endtab %}
-{% endtabs %}
-
-{% hint style="info" %}
-🛑 ノードを停止するには「Ctrl」+「c」を押します。
-{% endhint %}
-
-{% hint style="info" %}
-✨ **ヒント**: 複数のノードをセットアップする場合、同期が完了したDBディレクトリを他のサーバにコピーすることにより、同期時間を節約することができます。
-{% endhint %}
-
-一旦ノードを停止します。
-```
-Ctrl+C
-```
-
-### 🛠 8-1.自動起動とバックグラウンド起動を設定する(systemd＋tmux)
-
-先程のスクリプトだけでは、ターミナル画面を閉じるとノードが終了してしまうので、スクリプトをサービスとして登録し、自動起動設定と別セッションで起動するように設定しましょう
-
-#### 🍰 ステークプールにsystemdを使用するメリット
-
-1. メンテナンスや停電など、自動的にコンピュータが再起動したときステークプールを自動起動します。
-2. クラッシュしたステークプールプロセスを自動的に再起動します。
-3. ステークプールの稼働時間とパフォーマンスをレベルアップさせます。
-
-#### 🛠 セットアップ手順
-
-始める前にステークプールが停止しているか確認してください。
-
-```bash
-killall -s 2 cardano-node
-```
-
-以下のコードを実行して、ユニットファイルを作成します。
-
-{% tabs %}
-{% tab title="ブロックプロデューサーノード" %}
-```bash
-cat > $NODE_HOME/cardano-node.service << EOF 
-# The Cardano node service (part of systemd)
-# file: /etc/systemd/system/cardano-node.service 
-
-[Unit]
-Description     = Cardano node service
-Wants           = network-online.target
-After           = network-online.target 
-
-[Service]
-User            = $(whoami)
-Type            = forking
-WorkingDirectory= $NODE_HOME
-ExecStart       = /usr/bin/tmux new -d -s cnode
-ExecStartPost   = /usr/bin/tmux send-keys -t cnode $NODE_HOME/startBlockProducingNode.sh Enter 
-KillSignal=SIGINT
-RestartKillSignal=SIGINT
-TimeoutStopSec=2
-LimitNOFILE=32768
-Restart=always
-RestartSec=5
-
-[Install]
-WantedBy	= multi-user.target
-EOF
-```
-{% endtab %}
-
-{% tab title="リレーノード1" %}
-```bash
-cat > $NODE_HOME/cardano-node.service << EOF 
-# The Cardano node service (part of systemd)
-# file: /etc/systemd/system/cardano-node.service 
-
-[Unit]
-Description     = Cardano node service
-Wants           = network-online.target
-After           = network-online.target 
-
-[Service]
-User            = $(whoami)
-Type            = forking
-WorkingDirectory= $NODE_HOME
-ExecStart       = /usr/bin/tmux new -d -s cnode
-ExecStartPost   = /usr/bin/tmux send-keys -t cnode $NODE_HOME/startRelayNode1.sh Enter 
-KillSignal=SIGINT
-RestartKillSignal=SIGINT
-TimeoutStopSec=2
-LimitNOFILE=32768
-Restart=always
-RestartSec=5
-
-[Install]
-WantedBy	= multi-user.target
-EOF
-```
-{% endtab %}
-{% endtabs %}
-
-`/etc/systemd/system`にユニットファイルをコピーして、権限を付与します。
-
-```bash
-sudo cp $NODE_HOME/cardano-node.service /etc/systemd/system/cardano-node.service
-```
-
-```bash
-sudo chmod 644 /etc/systemd/system/cardano-node.service
-```
-
-次のコマンドを実行して、OS起動時にサービスの自動起動を有効にします。
-
-```text
-sudo systemctl daemon-reload
-sudo systemctl enable cardano-node
-sudo systemctl start cardano-node
-```
-
-{% hint style="success" %}
-以下は、systemdを有効活用するためのコマンドです。
-{% endhint %}
-
-\*\*\*\*⛓ **システム起動後に、ログモニターを表示します**
-
-```text
-tmux a -t cnode
-```
-
-**バックグラウンド起動中のセッション(別画面)を確認する**
-
-```text
-tmux ls
-```
-
-#### 🚧 セッションをバックグラウンド実行に切り替え、コマンドラインを表示します。
-
-```text
-press Ctrl + b を押した後、すぐに d (デタッチ)
-```
-
-#### ✅ ノードが実行されているか確認します。
-
-```text
-sudo systemctl is-active cardano-node
-```
-
-#### 🔎 ノードのステータスを表示します。
-
-```text
-sudo systemctl status cardano-node
-```
-
-#### 🔄 ノードサービスを再起動します。
-
-```text
-sudo systemctl reload-or-restart cardano-node
-```
-
-#### 🛑 ノードサービスを停止します。
-
-```text
-sudo systemctl stop cardano-node
-```
-
-#### 🗄 ログのフィルタリング
-
-```bash
-journalctl --unit=cardano-node --since=yesterday
-journalctl --unit=cardano-node --since=today
-journalctl --unit=cardano-node --since='2020-07-29 00:00:00' --until='2020-07-29 12:00:00'
-```
-
-
-
-### 🛠 8-2.gLiveView ノードステータスモニターをインストールします
-
-現在のcardano-nodeはログが流れる画面で、何が表示されているのかよくわかりません。  
-それを視覚的に確認できるツールが**gLiveView**です。
-
-
-{% hint style="info" %}
-gLiveViewは重要なノードステータス情報を表示し、systemdサービスとうまく連携します。1.23.0から正式にLiveViewが削除されgLiveViewは代替ツールとして利用できます。このツールを作成した [Guild Operators](https://cardano-community.github.io/guild-operators/#/Scripts/gliveview) の功績によるものです。
-{% endhint %}
-
-Guild LiveViewをインストールします。
-
-```bash
-mkdir $NODE_HOME/scripts
-cd $NODE_HOME/scripts
-sudo apt install bc tcptraceroute -y
-curl -s -o gLiveView.sh https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/gLiveView.sh
-curl -s -o env https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/env
-chmod 755 gLiveView.sh
-```
-
-**env** ファイルによってファイル構成を指定できます。  
-ノードのポート番号を6000以外に設定している場合は、envファイルを開いて修正してください。   
-```bash
-sed -i env \
-    -e "s/\#CONFIG=\"\${CNODE_HOME}\/files\/config.json\"/CONFIG=\"\${NODE_HOME}\/mainnet-config.json\"/g" \
-    -e "s/\#SOCKET=\"\${CNODE_HOME}\/sockets\/node0.socket\"/SOCKET=\"\${NODE_HOME}\/db\/socket\"/g"
-```
-
-Guild Liveviewを起動します。
-
-```text
-./gLiveView.sh
-```
-{% hint style="info" %}
-**このツールを立ち上げてもノードは起動しません。ノードは別途起動しておく必要があります**  
-リレー／BPは自動判別されます。  
-リレーノードでは基本情報に加え、トポロジー接続状況を確認できます。  
-BPノードでは基本情報に加え、KES有効期限、ブロック生成状況を確認できます。  
-
-[p]リレーノード用リモートピア分析について
-ピアにpingを送信する際ICMPpingを使用します。リモートピアのファイアウォールがICMPトラフィックを受け付ける場合のみ機能します。
-{% endhint %}
-
-![Guild Live View](../../../.gitbook/assets/gliveview-core.png)
-
-詳しくは開発元のドキュメントを参照してください [official Guild Live View docs.](https://cardano-community.github.io/guild-operators/#/Scripts/gliveview)
-
-この画面が表示され、ノードが同期したら準備完了です。
 
 
 ## ⚙ 9. ブロックプロデューサーキーを生成する。
