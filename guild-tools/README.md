@@ -110,7 +110,6 @@ sudo systemctl stop cnode-cncli-sync.service
 ```bash
 sudo systemctl stop cnode-cncli-validate.service
 sudo systemctl stop cnode-cncli-leaderlog.service
-sudo systemctl stop cnode-logmonitor.service
 ```
 
 ```bash
@@ -124,9 +123,14 @@ cncli --version
 
 ```bash
 sudo systemctl start cnode-cncli-sync.service
+tmux a -t cncli
+```
+> cncli.shのバージョンアップ確認があれば「Yes」
+> 再度実行し、sync 100%になることを確認する。
+
+残りのサービスを開始する
 sudo systemctl start cnode-cncli-validate.service
 sudo systemctl start cnode-cncli-leaderlog.service
-sudo systemctl start cnode-logmonitor.service
 ```
 {% endhint %}
 
