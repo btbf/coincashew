@@ -307,6 +307,12 @@ chmod +x startBlockProducingNode.sh
 {% endtabs %}
 
 {% hint style="info" %}
+slot番号などが表示され、勢いよくログが流れていたら起動成功です  
+ただ、このままでは画面を閉じるとノードが終了するので次の工程に移ってください。
+{% endhint %}
+
+
+{% hint style="info" %}
 🛑 ノードを停止するには「Ctrl」+「c」を押します。
 {% endhint %}
 
