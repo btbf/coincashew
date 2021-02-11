@@ -249,9 +249,9 @@ source $HOME/.bashrc
 全行をコピーしコマンドラインに送信します。
 
 {% tabs %}
-{% tab title="ブロックプロデューサーノード" %}
+{% tab title="リレーノード1" %}
 ```bash
-cat > $NODE_HOME/startBlockProducingNode.sh << EOF 
+cat > $NODE_HOME/startRelayNode1.sh << EOF 
 #!/bin/bash
 DIRECTORY=\$NODE_HOME
 PORT=6000
@@ -265,9 +265,9 @@ EOF
 ```
 {% endtab %}
 
-{% tab title="リレーノード1" %}
+{% tab title="ブロックプロデューサーノード" %}
 ```bash
-cat > $NODE_HOME/startRelayNode1.sh << EOF 
+cat > $NODE_HOME/startBlockProducingNode.sh << EOF 
 #!/bin/bash
 DIRECTORY=\$NODE_HOME
 PORT=6000
