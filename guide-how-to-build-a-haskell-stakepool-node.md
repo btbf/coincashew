@@ -419,7 +419,7 @@ sudo systemctl enable cardano-node
 sudo systemctl start cardano-node
 ```
 
-「4-2.gLiveView ノードステータスモニターをインストールします」に進んでください。
+[5-2.gLiveView ノードステータスモニターをインストールします](./guide-how-to-build-a-haskell-stakepool-node.md#5-2-gliveview-ndosuttasumonitwoinsutrushimasu)に進んでください。
 
 
 {% hint style="success" %}
