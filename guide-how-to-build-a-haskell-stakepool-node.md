@@ -1739,11 +1739,13 @@ cardano-cli query ledger-state --mainnet --allegra-era | grep publicKey | grep $
 {% endhint %}
 
 ノード情報をトポロジーフェッチリストに公開するスクリプト「`topologyUpdater.sh`」を作成します。
+10行目の"CHANGE ME"をリレーノードのIPアドレスに変えます。  
+※29行目の"CHANGE ME"はそのままでお願いします。  
+  
+以下コードをリレー用サーバで実施してください。  
+  
 
 ```bash
-###
-### On relaynode1
-###
 cat > $NODE_HOME/topologyUpdater.sh << EOF
 #!/bin/bash
 # shellcheck disable=SC2086,SC2034
