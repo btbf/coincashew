@@ -1831,7 +1831,7 @@ rm crontab-fragment.txt
 crontab -l
 ```
 以下が返り値として表示されればOK。
->22 * * * * /home/***/cardano-my-node/topologyUpdater.sh
+> "22 * * * * /home/***/cardano-my-node/topologyUpdater.sh"
 
 
 {% hint style="success" %}
