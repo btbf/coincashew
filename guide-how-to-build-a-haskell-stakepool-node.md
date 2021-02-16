@@ -348,21 +348,21 @@ killall -s 2 cardano-node
 {% tabs %}
 {% tab title="リレーノード1" %}
 ```bash
-cat > $NODE_HOME/cardano-node.service << EOF 
+cat > $NODE_HOME/cardano-node.service << EOF
 # The Cardano node service (part of systemd)
-# file: /etc/systemd/system/cardano-node.service 
+# file: /etc/systemd/system/cardano-node.service
 
 [Unit]
 Description     = Cardano node service
 Wants           = network-online.target
-After           = network-online.target 
+After           = network-online.target
 
 [Service]
 User            = $(whoami)
 Type            = forking
 WorkingDirectory= $NODE_HOME
 ExecStart       = /usr/bin/tmux new -d -s cnode
-ExecStartPost   = /usr/bin/tmux send-keys -t cnode $NODE_HOME/startRelayNode1.sh Enter 
+ExecStartPost   = /usr/bin/tmux send-keys -t cnode $NODE_HOME/startRelayNode1.sh Enter
 KillSignal=SIGINT
 RestartKillSignal=SIGINT
 TimeoutStopSec=2
@@ -378,21 +378,21 @@ EOF
 
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
-cat > $NODE_HOME/cardano-node.service << EOF 
+cat > $NODE_HOME/cardano-node.service << EOF
 # The Cardano node service (part of systemd)
-# file: /etc/systemd/system/cardano-node.service 
+# file: /etc/systemd/system/cardano-node.service
 
 [Unit]
 Description     = Cardano node service
 Wants           = network-online.target
-After           = network-online.target 
+After           = network-online.target
 
 [Service]
 User            = $(whoami)
 Type            = forking
 WorkingDirectory= $NODE_HOME
 ExecStart       = /usr/bin/tmux new -d -s cnode
-ExecStartPost   = /usr/bin/tmux send-keys -t cnode $NODE_HOME/startBlockProducingNode.sh Enter 
+ExecStartPost   = /usr/bin/tmux send-keys -t cnode $NODE_HOME/startBlockProducingNode.sh Enter
 KillSignal=SIGINT
 RestartKillSignal=SIGINT
 TimeoutStopSec=2
