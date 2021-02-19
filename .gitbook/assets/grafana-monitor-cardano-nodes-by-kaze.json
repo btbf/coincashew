@@ -649,7 +649,7 @@
       "pluginVersion": "7.1.5",
       "targets": [
         {
-          "expr": "cardano_node_metrics_nodeStartTime_int / (1000000000)",
+          "expr": "cardano_node_metrics_nodeStartTime_int",
           "instant": false,
           "interval": "",
           "legendFormat": "{{alias}}",
