@@ -1138,7 +1138,7 @@ rm -rf $NODE_HOME/cardano-wallet-shelley-2020.7.28
 次のコードを実行し。支払いアドレスを表示させ、このアドレスに送金します。
 
 ```bash
-cat payment.addr
+echo "$(cat payment.addr)"
 ```
 {% endtab %}
 
@@ -1152,7 +1152,7 @@ cat payment.addr
 次のコードを実行し。支払いアドレスを表示させます。
 
 ```text
-cat payment.addr
+echo "$(cat payment.addr)"
 ```
 {% endtab %}
 
@@ -1162,7 +1162,7 @@ cat payment.addr
 次のコードを実行し。支払いアドレスを表示させます。
 
 ```text
-cat payment.addr
+echo "$(cat payment.addr)"
 ```
 
 このアドレスを上記ページのリクエスト欄に貼り付けます。
