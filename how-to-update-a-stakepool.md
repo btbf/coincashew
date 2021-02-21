@@ -290,6 +290,17 @@ cardano-cli version
 sudo systemctl start cardano-node
 ```
 
+{% hint style="info" %}
+**●ブロックログを導入している場合は、各種サービスを再起動してください**
+```
+sudo systemctl reload-or-restart cnode-cncli-sync.service
+sudo systemctl reload-or-restart cnode-cncli-validate.service
+sudo systemctl reload-or-restart cnode-cncli-leaderlog.service
+sudo systemctl reload-or-restart cnode-logmonitor.service
+```
+{% endhint %}
+
+
 最後に、前バージョンで使用していたバイナリフォルダをリネームし、バックアップとして保持します。最新バージョンを構築したフォルダをcardano-nodeとして使用します。
 
 ```bash

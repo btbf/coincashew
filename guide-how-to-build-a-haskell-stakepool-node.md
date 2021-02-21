@@ -2366,6 +2366,16 @@ sudo systemctl reload-or-restart cardano-node
 {% endtabs %}
 
 {% hint style="info" %}
+**●ブロックログを導入している場合は、各種サービスを再起動してください**
+```
+sudo systemctl reload-or-restart cnode-cncli-sync.service
+sudo systemctl reload-or-restart cnode-cncli-validate.service
+sudo systemctl reload-or-restart cnode-cncli-leaderlog.service
+sudo systemctl reload-or-restart cnode-logmonitor.service
+```
+{% endhint %}
+
+{% hint style="info" %}
 \*\*\*\*✨ **ヒント:** ホットキーを作成したら、コールドキーへのアクセス件を変更しセキュリティを向上させることができます。これによって誤削除、誤った編集などから保護できます。
 
 ロックするには
