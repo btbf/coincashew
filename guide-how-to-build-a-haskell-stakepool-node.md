@@ -1625,7 +1625,7 @@ echo fee: $fee
 {% endtabs %}
 
 {% hint style="info" %}
-残高が、手数料コスト+minPoolCostよりも大きいことを確認してください。小さい場合は機能しません。
+payment.addrの残高が、手数料コスト+poolDeposit(500ADA)よりも大きいことを確認してください。小さい場合は機能しません。
 {% endhint %}
 
 計算結果を出力します。
