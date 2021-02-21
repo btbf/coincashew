@@ -2428,6 +2428,7 @@ poolMetaData.jsonを変更する場合は、メタデータファイルのハッ
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```text
+cd $NODE_HOME
 cardano-cli stake-pool metadata-hash --pool-metadata-file poolMetaData.json > poolMetaDataHash.txt
 ```
 {% endtab %}
