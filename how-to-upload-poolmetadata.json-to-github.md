@@ -3,8 +3,8 @@
 ## poolMetaData.jsonをホストするクイックステップ
 
 1. Githubアカウントを作成しログインします [https://github.com/](https://github.com/)
-2. 短い名前で**new repository** を名を作成します。
-3. **Create repository**をクリックします。
+2. 右上の＋マークをクリックし**new repository** をクリックします。
+3. **Repository name**に任意のリポジトリ名を入力し、**Create repository**をクリックします。
 4. 小さい文字で書かれた"**creating a new file**"をクリックします。
 
 ![](.gitbook/assets/git1.png)
