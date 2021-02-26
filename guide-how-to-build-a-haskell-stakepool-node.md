@@ -1396,6 +1396,7 @@ JSONファイルを作成してプールのメタデータを作成します。
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
+cd $NODE_HOME
 cat > poolMetaData.json << EOF
 {
 "name": "MyPoolName",
