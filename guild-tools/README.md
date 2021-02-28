@@ -125,6 +125,16 @@ cncli --version
 sudo systemctl start cnode-cncli-sync.service
 tmux a -t cncli
 ```
+
+```
+#cncliの更新がある場合は、以下メッセージが出ますので「y」を入力してEnter
+A new version is available, do you want to upgrade? (yes/no): y
+
+###同じ画面内で以下コマンドを入力しcncliを再起動
+cd $NOHE_HOME/scripts
+./cncli.sh sync
+```
+  
 > cncli.shのバージョンアップ確認があれば「Yes」を選択  
 > 再度実行し、sync 100%になることを確認する。
 
