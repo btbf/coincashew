@@ -24,19 +24,25 @@ ssh username@server.ip.address
 新しいユーザーの追加　(例：cardano)
 
 ```text
-useradd -m -s /bin/bash cardano
+adduser cardano
 ```
+```
+New password:           # ユーザーのパスワードを設定
+Retype new password:    # 確認再入力
 
-cardanoにパスワードを設定します。
+Enter the new value, or press ENTER for the default
+        Full Name []:   # フルネーム等の情報を設定 (不要であればブランクでも OK)
+        Room Number []:
+        Work Phone []:
+        Home Phone []:
+        Other []:
 
-```text
-passwd cardano
 ```
 
 cardanoをsudoグループに追加する
 
 ```text
-usermod -aG sudo cardano
+usermod -G sudo cardano
 ```
 
 ## \*\*\*\*🔏 **SSHパスワード認証を無効化し、SSH鍵認証方式のみを使用する**
