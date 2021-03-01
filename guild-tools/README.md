@@ -131,7 +131,7 @@ tmux a -t cncli
 A new version is available, do you want to upgrade? (yes/no): y
 
 ###同じ画面内で以下コマンドを入力しcncliを再起動
-cd $NOHE_HOME/scripts
+cd $NODE_HOME/scripts
 ./cncli.sh sync
 ```
   
