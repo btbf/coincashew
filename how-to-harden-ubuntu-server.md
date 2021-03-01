@@ -36,7 +36,7 @@ Enter the new value, or press ENTER for the default
         Work Phone []:
         Home Phone []:
         Other []:
-
+Is the information correct? [Y/n]:y
 ```
 
 cardanoをsudoグループに追加する
