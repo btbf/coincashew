@@ -833,7 +833,7 @@ sudo systemctl start cardano-node
 ```bash
 cardano-cli query protocol-parameters \
     --mainnet \
-    --allegra-era \
+    --mary-era \
     --out-file params.json
 ```
 {% endtab %}
@@ -1184,7 +1184,7 @@ echo "$(cat payment.addr)"
 cardano-cli query utxo \
     --address $(cat payment.addr) \
     --mainnet \
-    --allegra-era
+    --mary-era
 ```
 {% endtab %}
 {% endtabs %}
@@ -1235,7 +1235,7 @@ echo Current Slot: $currentSlot
 cardano-cli query utxo \
     --address $(cat payment.addr) \
     --mainnet \
-    --allegra-era > fullUtxo.out
+    --mary-era > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
 
@@ -1289,7 +1289,7 @@ cardano-cli transaction build-raw \
     --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee 0 \
     --out-file tx.tmp \
-    --allegra-era \
+    --mary-era \
     --certificate stake.cert
 ```
 {% endtab %}
@@ -1339,7 +1339,7 @@ cardano-cli transaction build-raw \
     --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee ${fee} \
     --certificate-file stake.cert \
-    --allegra-era \
+    --mary-era \
     --out-file tx.raw
 ```
 {% endtab %}
@@ -1549,7 +1549,7 @@ echo Current Slot: $currentSlot
 cardano-cli query utxo \
     --address $(cat payment.addr) \
     --mainnet \
-    --allegra-era > fullUtxo.out
+    --mary-era > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
 
@@ -1600,7 +1600,7 @@ cardano-cli transaction build-raw \
     --fee 0 \
     --certificate-file pool.cert \
     --certificate-file deleg.cert \
-    --allegra-era \
+    --mary-era \
     --out-file tx.tmp
 ```
 {% endtab %}
@@ -1651,7 +1651,7 @@ cardano-cli transaction build-raw \
     --fee ${fee} \
     --certificate-file pool.cert \
     --certificate-file deleg.cert \
-    --allegra-era \
+    --mary-era \
     --out-file tx.raw
 ```
 {% endtab %}
@@ -1709,7 +1709,7 @@ cat stakepoolid.txt
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
-cardano-cli query ledger-state --mainnet --allegra-era | grep publicKey | grep $(cat stakepoolid.txt)
+cardano-cli query ledger-state --mainnet --mary-era | grep publicKey | grep $(cat stakepoolid.txt)
 ```
 {% endtab %}
 {% endtabs %}
@@ -2065,7 +2065,7 @@ CERT=\${DIRECTORY}/node.cert
 cardano-cli query stake-address-info \
  --address $(cat stake.addr) \
  --mainnet \
- --allegra-era
+ --mary-era
 ```
 {% endtab %}
 {% endtabs %}
@@ -2517,7 +2517,7 @@ echo Current Slot: $currentSlot
 cardano-cli query utxo \
     --address $(cat payment.addr) \
     --mainnet \
-    --allegra-era > fullUtxo.out
+    --mary-era > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
 
@@ -2557,7 +2557,7 @@ cardano-cli transaction build-raw \
     --fee 0 \
     --certificate-file pool.cert \
     --certificate-file deleg.cert \
-    --allegra-era \
+    --mary-era \
     --out-file tx.tmp
 ```
 {% endtab %}
@@ -2604,7 +2604,7 @@ cardano-cli transaction build-raw \
     --fee ${fee} \
     --certificate-file pool.cert \
     --certificate-file deleg.cert \
-    --allegra-era \
+    --mary-era \
     --out-file tx.raw
 ```
 {% endtab %}
@@ -2647,7 +2647,7 @@ cardano-cli transaction submit \
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
-cardano-cli query ledger-state --mainnet --allegra-era --out-file ledger-state.json
+cardano-cli query ledger-state --mainnet --mary-era --out-file ledger-state.json
 jq -r '.esLState._delegationState._pstate._pParams."'"$(cat stakepoolid.txt)"'"  // empty' ledger-state.json
 ```
 {% endtab %}
@@ -2774,7 +2774,7 @@ echo destinationAddress: $destinationAddress
 cardano-cli query utxo \
     --address $(cat payment.addr) \
     --mainnet \
-    --allegra-era > fullUtxo.out
+    --mary-era > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
 
@@ -2809,7 +2809,7 @@ cardano-cli transaction build-raw \
     --tx-out ${destinationAddress}+0 \
     --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee 0 \
-    --allegra-era \
+    --mary-era \
     --out-file tx.tmp
 ```
 {% endtab %}
@@ -2855,7 +2855,7 @@ cardano-cli transaction build-raw \
     --tx-out ${destinationAddress}+${amountToSend} \
     --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee ${fee} \
-    --allegra-era \
+    --mary-era \
     --out-file tx.raw
 ```
 {% endtab %}
@@ -2899,7 +2899,7 @@ cardano-cli transaction submit \
 cardano-cli query utxo \
     --address ${destinationAddress} \
     --mainnet \
-    --allegra-era
+    --mary-era
 ```
 {% endtab %}
 {% endtabs %}
@@ -2962,7 +2962,7 @@ echo Current Slot: $currentSlot
 ```bash
 rewardBalance=$(cardano-cli query stake-address-info \
     --mainnet \
-    --allegra-era \
+    --mary-era \
     --address $(cat stake.addr) | jq -r ".[0].rewardAccountBalance")
 echo rewardBalance: $rewardBalance
 ```
@@ -2988,7 +2988,7 @@ echo destinationAddress: $destinationAddress
 ```bash
 cardano-cli query utxo \
     --address $(cat payment.addr) \
-    --allegra-era \
+    --mary-era \
     --mainnet > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
@@ -3026,7 +3026,7 @@ cardano-cli transaction build-raw \
     --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee 0 \
     --withdrawal ${withdrawalString} \
-    --allegra-era \
+    --mary-era \
     --out-file tx.tmp
 ```
 {% endtab %}
@@ -3072,7 +3072,7 @@ cardano-cli transaction build-raw \
     --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee ${fee} \
     --withdrawal ${withdrawalString} \
-    --allegra-era \
+    --mary-era \
     --out-file tx.raw
 ```
 {% endtab %}
@@ -3116,7 +3116,7 @@ cardano-cli transaction submit \
 ```bash
 cardano-cli query utxo \
     --address ${destinationAddress} \
-    --allegra-era \
+    --mary-era \
     --mainnet
 ```
 {% endtab %}
@@ -3169,7 +3169,7 @@ echo destinationAddress: $destinationAddress
 ```bash
 rewardBalance=$(cardano-cli query stake-address-info \
     --mainnet \
-    --allegra-era \
+    --mary-era \
     --address $(cat stake.addr) | jq -r ".[0].rewardAccountBalance")
 echo rewardBalance: $rewardBalance
 ```
@@ -3185,7 +3185,7 @@ echo rewardBalance: $rewardBalance
 cardano-cli query utxo \
     --address $(cat payment.addr) \
     --mainnet \
-    --allegra-era > fullUtxo.out
+    --mary-era > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
 
@@ -3224,7 +3224,7 @@ cardano-cli transaction build-raw \
     --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee 0 \
     --withdrawal ${withdrawalString} \
-    --allegra-era \
+    --mary-era \
     --out-file tx.tmp
 ```
 {% endtab %}
@@ -3271,7 +3271,7 @@ cardano-cli transaction build-raw \
     --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee ${fee} \
     --withdrawal ${withdrawalString} \
-    --allegra-era \
+    --mary-era \
     --out-file tx.raw
 ```
 {% endtab %}
@@ -3315,7 +3315,7 @@ cardano-cli transaction submit \
 ```bash
 cardano-cli query utxo \
     --address ${destinationAddress} \
-    --allegra-era \
+    --mary-era \
     --mainnet
 ```
 {% endtab %}
@@ -3403,7 +3403,7 @@ cardano-cli stake-pool deregistration-certificate \
 ```bash
 cardano-cli query utxo \
     --address $(cat payment.addr) \
-    --allegra-era \
+    --mary-era \
     --mainnet > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
@@ -3439,7 +3439,7 @@ cardano-cli transaction build-raw \
     --invalid-hereafter $(( ${slotNo} + 10000)) \
     --fee 0 \
     --certificate-file pool.dereg \
-    --allegra-era \
+    --mary-era \
     --out-file tx.tmp
 ```
 {% endtab %}
@@ -3485,7 +3485,7 @@ cardano-cli transaction build-raw \
     --invalid-hereafter $(( ${slotNo} + 10000)) \
     --fee ${fee} \
     --certificate-file pool.dereg \
-    --allegra-era \
+    --mary-era \
     --out-file tx.raw
 ```
 {% endtab %}
@@ -3533,7 +3533,7 @@ cardano-cli transaction submit \
 {% tabs %}
 {% tab title="ブロックプロデューサノード" %}
 ```bash
-cardano-cli query ledger-state --mainnet --allegra-era --out-file ledger-state.json
+cardano-cli query ledger-state --mainnet --mary-era --out-file ledger-state.json
 jq -r '.esLState._delegationState._pstate._pParams."'"$(cat stakepoolid.txt)"'"  // empty' ledger-state.json
 ```
 {% endtab %}
