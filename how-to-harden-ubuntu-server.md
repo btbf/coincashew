@@ -2,11 +2,18 @@
 description: ノード保護のためのセキュリティ強化方法です。
 ---
 
-# Ubuntuサーバーを強化する手順
+# Ubuntuサーバーを強化する手順(初期設定)
 
 <!--{% hint style="success" %}
 Thank you for your support and kind messages! It really energizes us to keep creating the best crypto guides. Use [cointr.ee to find our donation ](https://cointr.ee/coincashew)addresses and share your message. 🙏 
 {% endhint %}-->
+
+## オススメのターミナルソフト
+
+1.R-Login(Winodws)[http://nanno.dip.jp/softlib/man/rlogin/](http://nanno.dip.jp/softlib/man/rlogin/) 
+2.Terminal(Mac)[https://www.webdesignleaves.com/pr/plugins/mac_terminal_basics_01.html](https://www.webdesignleaves.com/pr/plugins/mac_terminal_basics_01.html)  
+  
+
 
 ## 🧙♂ ルート権限を付与したユーザーアカウントの作成
 
@@ -15,13 +22,12 @@ Thank you for your support and kind messages! It really energizes us to keep cre
 rootアカウントで誤ってrmコマンドを使用すると、サーバ全体が完全消去されます。
 {% endhint %}
 
-<!--SSH to your server
-
-```text
-ssh username@server.ip.address
-```-->
 
 新しいユーザーの追加　(例：cardano)
+
+1.上記ターミナルソフトを使用し、サーバーに割り当てられた初期アカウント(rootなど)でログインする。  
+
+2.新しいユーザーアカウントを作る(任意のアルファベット文字)  
 
 ```text
 adduser cardano
@@ -45,6 +51,16 @@ cardanoをsudoグループに追加する
 usermod -G sudo cardano
 ```
 
+rootユーザーからログアウトする
+
+```
+exit
+```
+
+3.ターミナルソフトのユーザーをパスワードを上記で作成した内容に書き換えて再接続。
+
+
+
 ## \*\*\*\*🔏 **SSHパスワード認証を無効化し、SSH鍵認証方式のみを使用する**
 
 {% hint style="info" %}
@@ -58,25 +74,34 @@ SSHを強化する基本的なルールは次の通りです。
 
 ### 鍵ペアーの作成
 
-ローカルマシンに新しいSSH公開鍵と秘密鍵のペアキーを作成する。ファイル名(キーネーム)を入力するように求められます。
-
-```text
+```
 ssh-keygen -t rsa
 ```
+> パスワードは設定しなくてもOK
 
-公開鍵(***.pub)をリモートノードへ転送する。
-{% hint style="info" %}
-ssh-copy-id コマンドを使用することで、リモートサーバへ「.ssh/authorized_keys」として転送してくれます。
-{% endhint %}
-```bash
-ssh-copy-id -i $HOME/.ssh/<キーネーム>.pub cardano@server.ip.address
+```
+cd ~/.ssh
+ls
+```
+id_rsa（秘密鍵）とid_rsa.pub（公開鍵）というファイルが作成されているか確認する。
+
+```
+cd ~/.ssh/
+cat id_rsa.pub >> authorized_keys
+chmod 600 authorized_keys
+chmod 700 ~/.ssh
+rm id_rsa.pub
 ```
 
-先程作成したユーザーアカウント(cardano)でログインする
+### id_rsaファイルをローカルパソコンへダウンロードする  
 
-```text
-ssh cardano@server.ip.address
-```
+1.R-loginの場合はファイル転送ウィンドウを開く  
+2.左側ウィンドウ(ローカル側)は任意の階層にフォルダを作成する。  
+3.右側ウィンドウ(サーバ側)は「.ssh」フォルダを選択する  
+4.右側ウィンドウから、id_rsaファイルの上で右クリックして「ファイルのダウンロード」を選択する  
+5.一旦サーバからログアウトする
+6.R-Loginのサーバ接続編集画面を開き、「SSH認証鍵」をクリックし4でダウンロードしたファイルを選ぶ
+7.サーバへ接続する
 
 ### SSHの設定変更
 
@@ -110,7 +135,8 @@ PermitRootLogin no
 PermitEmptyPasswords no
 ```
 
-ポート番号をランダムな数値へ変更する
+ポート番号をランダムな数値へ変更する (49513～65535までの番号)
+
 {% hint style="info" %}
 ローカルマシンからSSHログインする際、ポート番号を以下で設定した番号に合わせてください。
 {% endhint %}
@@ -118,6 +144,8 @@ PermitEmptyPasswords no
 ```bash
 Port <port number>
 ```
+
+> Ctrl+O で保存し、Ctrl+Xで閉じる
 
 SSH構文にエラーがないかチェックします。
 
@@ -137,17 +165,10 @@ sudo service sshd reload
 exit
 ```
 
-```text
-ssh cardano@server.ip.address
-```
 
 {% hint style="info" %}
 上記でログイン出来ない場合は、SSHキーを指定してログインします。
 
-```bash
-ssh -i <path to your SHH_key_name.pub> cardano@server.ip.address
-```
-{% endhint %}
 
 ## \*\*\*\*🤖 **システムを更新する**
 
@@ -181,97 +202,6 @@ sudo passwd -l root
 # 何らかの理由でrootアカウントを有効にする必要がある場合は、-uオプションを使用します。
 sudo passwd -u root
 ```
-
-## 🛠 SSHの2段階認証を設定する
-
-{% hint style="warning" %}
-設定に失敗するとログインできなくなる場合があるので、設定前に２つのウィンドウでログインしておいてください。  
-万が一ログインできなくなった場合、復旧できます。
-{% endhint %}
-
-{% hint style="info" %}
-SSHはリモートアクセスに使用されますが、重要なデータを含むコンピュータとの接続としても使われるため、別のセキュリティーレイヤーの導入をお勧めします。2段階認証(2FA)  
-事前にお手元のスマートフォンに「Google認証システムアプリ」のインストールが必要です
-{% endhint %}
-
-```text
-sudo apt update
-sudo apt upgrade
-sudo apt install libpam-google-authenticator -y
-```
-
-SSHがGoogle Authenticator PAM モジュールを使用するために、`/etc/pam.d/sshd`ファイルを編集します。
-
-```text
-sudo nano /etc/pam.d/sshd 
-```
-
-先頭の **@include common-auth**を#を付与してコメントアウトする
-```
-#@include common-auth
-```
-
-以下の行を追加します。
-
-```text
-auth required pam_google_authenticator.so
-```
-
-以下を使用して`sshd`デーモンを再起動します。
-
-```text
-sudo systemctl restart sshd.service
-```
-
-`/etc/ssh/sshd_config` ファイルを開きます。
-
-```text
-sudo nano /etc/ssh/sshd_config
-```
-
-**ChallengeResponseAuthentication**の項目を「yes」にします。
-
-```text
-ChallengeResponseAuthentication yes
-```
-
-**UsePAM**の項目を「yes」にします。
-
-```text
-UsePAM yes
-```
-
-最後の行に1行追加します。(SSH公開鍵秘密鍵ログインを利用の場合)
-
-```text
-AuthenticationMethods publickey,keyboard-interactive
-```
-
-ファイルを保存して閉じます。
-
-以下を使用して`sshd`デーモンを再起動します。
-
-```text
-sudo systemctl restart sshd.service
-```
-
-**google-authenticator** コマンドを実行します。
-
-```text
-google-authenticator
-```
-
-いくつか質問事項が表示されます。推奨項目は以下のとおりです。
-
-* Make tokens “time-base”": yes
-* Update the `.google_authenticator` file: yes
-* Disallow multiple uses: yes
-* Increase the original generation time limit: no
-* Enable rate-limiting: yes
-
-プロセス中に大きなQRコードが表示されますが、その下には緊急時のスクラッチコードがひょうじされますので、忘れずに書き留めておいて下さい。
-
-スマートフォンでGoogle認証システムアプリを開き、QRコードを読み取り2段階認証を機能させます。
 
 ## 🧩 安全な共有メモリー
 
@@ -373,6 +303,98 @@ ufw status numbered
 netstat -tulpn
 ss -tulpn
 ```
+
+
+## 🛠 SSHの2段階認証を設定する
+
+{% hint style="warning" %}
+設定に失敗するとログインできなくなる場合があるので、設定前に２つのウィンドウでログインしておいてください。  
+万が一ログインできなくなった場合、復旧できます。
+{% endhint %}
+
+{% hint style="info" %}
+SSHはリモートアクセスに使用されますが、重要なデータを含むコンピュータとの接続としても使われるため、別のセキュリティーレイヤーの導入をお勧めします。2段階認証(2FA)  
+事前にお手元のスマートフォンに「Google認証システムアプリ」のインストールが必要です
+{% endhint %}
+
+```text
+sudo apt update
+sudo apt upgrade
+sudo apt install libpam-google-authenticator -y
+```
+
+SSHがGoogle Authenticator PAM モジュールを使用するために、`/etc/pam.d/sshd`ファイルを編集します。
+
+```text
+sudo nano /etc/pam.d/sshd 
+```
+
+先頭の **@include common-auth**を#を付与してコメントアウトする
+```
+#@include common-auth
+```
+
+以下の行を追加します。
+
+```text
+auth required pam_google_authenticator.so
+```
+
+以下を使用して`sshd`デーモンを再起動します。
+
+```text
+sudo systemctl restart sshd.service
+```
+
+`/etc/ssh/sshd_config` ファイルを開きます。
+
+```text
+sudo nano /etc/ssh/sshd_config
+```
+
+**ChallengeResponseAuthentication**の項目を「yes」にします。
+
+```text
+ChallengeResponseAuthentication yes
+```
+
+**UsePAM**の項目を「yes」にします。
+
+```text
+UsePAM yes
+```
+
+最後の行に1行追加します。(SSH公開鍵秘密鍵ログインを利用の場合)
+
+```text
+AuthenticationMethods publickey,keyboard-interactive
+```
+
+ファイルを保存して閉じます。
+
+以下を使用して`sshd`デーモンを再起動します。
+
+```text
+sudo systemctl restart sshd.service
+```
+
+**google-authenticator** コマンドを実行します。
+
+```text
+google-authenticator
+```
+
+いくつか質問事項が表示されます。推奨項目は以下のとおりです。
+
+* Make tokens “time-base”": yes
+* Update the `.google_authenticator` file: yes
+* Disallow multiple uses: yes
+* Increase the original generation time limit: no
+* Enable rate-limiting: yes
+
+プロセス中に大きなQRコードが表示されますが、その下には緊急時のスクラッチコードがひょうじされますので、忘れずに書き留めておいて下さい。
+
+スマートフォンでGoogle認証システムアプリを開き、QRコードを読み取り2段階認証を機能させます。
 
 ## 🚀 参考文献
 
