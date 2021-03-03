@@ -14,7 +14,7 @@ description: >-
 {% hint style="success" %}
 このマニュアルは、カルダノノードv1.25.1に対応しています。(CLIコマンド修正済み)    
 [ドキュメント更新情報はこちら](README.md)  
-最終更新日：2021年3月2日の時点guide version 3.3.0「Mary-era 対応！」
+最終更新日：2021年3月4日の時点guide version 3.3.1「Mary-era 対応！」
 {% endhint %}
 
 ## 🏁 0. 前提条件
@@ -61,19 +61,14 @@ description: >-
 * **電力:** 無停電電源装置\(UPS\)による電源管理
 * **ADA残高:** ステークプールに対する保証金をご自身で定める分
 
-### 🔓 ステークプールの推奨セキュリティ設定
+### 🔓 Ubuntuセットアップガイド
 
-ステークプールのサーバを強化するには、以下の内容を実施して下さい。
-
-{% hint style="info" %}
-[Ubuntuサーバーのセキュリティを強化する手順](how-to-harden-ubuntu-server.md)
-{% endhint %}
-
-### 🛠 Ubuntuセットアップガイド
+ステークプールのサーバ初期設定とセキュリティ強化するには、以下の内容を実施して下さい。
 
 {% hint style="info" %}
-絶賛翻訳中
+[Ubuntuサーバー初期設定(+セキュリティ設定)](how-to-harden-ubuntu-server.md)
 {% endhint %}
+
 
 ### 🧱 ノードを再構築したい場合
 
