@@ -729,6 +729,7 @@ echo startKesPeriod: ${startKesPeriod}
 {% tabs %}
 {% tab title="エアギャップオフラインマシン" %}
 ```bash
+cd $NODE_HOME
 cardano-cli node issue-op-cert \
     --kes-verification-key-file kes.vkey \
     --cold-signing-key-file $HOME/cold-keys/node.skey \
@@ -746,6 +747,7 @@ VRFペアキーを作成します。
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
+cd $NODE_HOME
 cardano-cli node key-gen-VRF \
     --verification-key-file vrf.vkey \
     --signing-key-file vrf.skey
@@ -1343,6 +1345,7 @@ paymentとstakeの秘密鍵でトランザクションファイルに署名し�
 {% tabs %}
 {% tab title="エアギャップオフラインマシン" %}
 ```bash
+cd $NODE_HOME
 cardano-cli transaction sign \
     --tx-body-file tx.raw \
     --signing-key-file payment.skey \
@@ -1655,6 +1658,7 @@ cardano-cli transaction build-raw \
 {% tabs %}
 {% tab title="エアギャップオフラインマシン" %}
 ```bash
+cd $NODE_HOME
 cardano-cli transaction sign \
     --tx-body-file tx.raw \
     --signing-key-file payment.skey \
@@ -2608,6 +2612,7 @@ cardano-cli transaction build-raw \
 {% tabs %}
 {% tab title="エアギャップオフラインマシン" %}
 ```bash
+cd $NODE_HOME
 cardano-cli transaction sign \
     --tx-body-file tx.raw \
     --signing-key-file payment.skey \
