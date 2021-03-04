@@ -560,6 +560,30 @@ BPノードでは基本情報に加え、KES有効期限、ブロック生成状
 * ブロックプロデューサーノードでは、自身のリレーノード情報のみ記述します。
 {% endhint %}
 
+{% tabs %}
+{% tab title="リレーノード" %}
+```bash
+cat > $NODE_HOME/${NODE_CONFIG}-topology.json << EOF 
+ {
+    "Producers": [
+      {
+        "addr": "relays-new.cardano-mainnet.iohk.io",
+        "port": 3001,
+        "valency": 2
+      },
+      {
+        "addr": "***.**.**.**", #BPノードのIPアドレスに書き換える
+        "port": 6000,　#BPノードのポートに書き換える
+        "valency": 1
+      }
+    ]
+  }
+EOF
+```
+{% endtab %}
+{% endtabs %}
+
+
 自身のブロックプロデューサーノード上で以下のコマンドを実行します。 「addr」にはリレーノードのパプリックIPアドレスを記述します。
 
 {% tabs %}
@@ -569,8 +593,8 @@ cat > $NODE_HOME/${NODE_CONFIG}-topology.json << EOF
  {
     "Producers": [
       {
-        "addr": "<リレーノード1のパブリックIPアドレス>",
-        "port": 6000,
+        "addr": "***.**.**.**", #リレーノードのIPアドレスに書き換える
+        "port": 6000,　　#リレーノードのポートに書き換える
         "valency": 1
       }
     ]
