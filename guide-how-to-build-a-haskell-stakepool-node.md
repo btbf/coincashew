@@ -720,10 +720,6 @@ echo startKesPeriod: ${startKesPeriod}
 **kes.vkey** をエアギャップオフラインマシンのcardano-my-nodeディレクトリにコピーします。
 
 
-{% hint style="warning" %}
-[バージョン 1.19.0](https://github.com/input-output-hk/cardano-node/issues/1742)ではstartKesPeriodの値を\(kesPeriod-1\)に設定する必要があります。
-{% endhint %}
-
 {% hint style="info" %}
 ステークプールオペレータは、プールを実行する権限があることを確認するための運用証明書を発行する必要があります。証明書には、オペレータの署名が含まれプールに関する情報（アドレス、キーなど）が含まれます。
 {% endhint %}
