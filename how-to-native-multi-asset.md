@@ -157,12 +157,12 @@ echo Number of UTXOs: ${txcnt}
 
 ```
 cardano-cli transaction build-raw \
-	     --mary-era \
-             --fee 0 \
-             ${tx_in} \
-             --tx-out $(cat payment.addr)+$(( ${total_balance}+"${token_t_supply} ${new_asset}.${token_name}" \
-             --mint="${token_t_supply} ${new_asset}.${token_name}" \
-             --out-file tx.tmp
+      ${tx_in} \
+      --tx-out $(cat payment.addr)+$(( ${total_balance}+"${token_t_supply} ${new_asset}.${token_name}" \
+      --mint="${token_t_supply} ${new_asset}.${token_name}" \
+      --mary-era \
+      --fee 0 \
+      --out-file tx.tmp
 ```
 
 トランザクション手数料を計算する

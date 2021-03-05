@@ -854,6 +854,7 @@ sudo systemctl start cardano-node
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
+cd $NODE_HOME
 cardano-cli query protocol-parameters \
     --mainnet \
     --mary-era \
@@ -1231,6 +1232,7 @@ cardano-cli query utxo \
 {% tabs %}
 {% tab title="エアギャップオフラインマシン" %}
 ```text
+cd $NODE_HOME
 cardano-cli stake-address registration-certificate \
     --stake-verification-key-file stake.vkey \
     --out-file stake.cert
@@ -1473,6 +1475,7 @@ pool.certを作成する
 {% tabs %}
 {% tab title="エアギャップオフラインマシン" %}
 ```bash
+cd $NODE_HOME
 cardano-cli stake-pool registration-certificate \
     --cold-verification-key-file $HOME/cold-keys/node.vkey \
     --vrf-verification-key-file vrf.vkey \
