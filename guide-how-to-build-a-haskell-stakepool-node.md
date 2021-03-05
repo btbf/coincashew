@@ -880,13 +880,11 @@ paymentキーは支払い用アドレスに使用され、stakeキーはプー�
 
 
 {% tabs %}
-{% tab title="Cardano-CLIを使用する方法" %}
+{% tab title="エアギャップオフラインマシン" %}
+以下は、エアギャップオフラインマシンで行ってください。
 支払い用アドレスのペアキーを作成します。: `payment.skey` & `payment.vkey`
 
 ```bash
-###
-### On エアギャップオフラインマシン,
-###
 cd $NODE_HOME
 cardano-cli address key-gen \
     --verification-key-file payment.vkey \
@@ -896,9 +894,6 @@ cardano-cli address key-gen \
 ステークアドレス用のペアキーを作成します。 `stake.skey` & `stake.vkey`
 
 ```bash
-###
-### On エアギャップオフラインマシン,
-###
 cardano-cli stake-address key-gen \
     --verification-key-file stake.vkey \
     --signing-key-file stake.skey
@@ -907,9 +902,6 @@ cardano-cli stake-address key-gen \
 ステークアドレス検証キーから、ステークアドレスファイルを作成します。 `stake.addr`
 
 ```bash
-###
-### On エアギャップオフラインマシン,
-###
 cardano-cli stake-address build \
     --stake-verification-key-file stake.vkey \
     --out-file stake.addr \
@@ -919,9 +911,6 @@ cardano-cli stake-address build \
 ステークアドレスに委任する支払い用アドレスを作成します。
 
 ```bash
-###
-### On エアギャップオフラインマシン,
-###
 cardano-cli address build \
     --payment-verification-key-file payment.vkey \
     --stake-verification-key-file stake.vkey \
@@ -931,9 +920,6 @@ cardano-cli address build \
 
 上書きされないようパーミッションを変更する。
 ```bash
-###
-### On エアギャップオフラインマシン,
-###
 chmod 400 payment.vkey
 chmod 400 payment.skey
 chmod 400 stake.vkey
