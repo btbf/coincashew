@@ -80,9 +80,9 @@ cardano-cli query protocol-parameters \
 
 **__以下の３つの値(赤文字)を書き換えてください。__** 
 ```
-token_folder="<span style="color:red">Xcoin</span>" #任意のフォルダ名
-token_name="<span style="color:red">Xcoin</span>"   #任意のコイン名
-token_t_supply=<span style="color:red">70000000</span>  #総供給量
+token_folder="Xcoin" #任意のフォルダ名
+token_name="Xcoin"   #任意のコイン名
+token_t_supply=70000000  #総供給量
 ```
 ### 1.ポリシーを作成する
 
@@ -231,10 +231,10 @@ cardano-cli transaction submit \
 送信するトークンを指定する
 **__以下の内容、赤文字部分を書き換えてください__**
 ```
-token_name="<span style="color:red">Xcoin</span>"
-send_addres=<span style="color:red">addr1q8vaew5l4sgvkgc4krng3uf3smctvlvdl2amcqwjcxgcqeakhpc4qxjp3gywuxugp7rz9m07sd8538x36wkvn2j7gyyqah3dq5</span>
-send_token=<span style="color:red">100</span>
-send_ada=<span style="color:red">2000000</span> #lovelace
+token_name="Xcoin"
+send_addres=addr1q8vaew5l4sgvkgc4krng3uf3smctvlvdl2amcqwjcxgcqeakhpc4qxjp3gywuxugp7rz9m07sd8538x36wkvn2j7gyyqah3dq5
+send_token=100
+send_ada=2000000 #lovelace
 ```
 
 ウォレットの残高とUTXOsを出力
