@@ -231,10 +231,10 @@ cardano-cli transaction submit \
 送信するトークンを指定する
 **__以下の内容、青文字部分を書き換えてください__**
 ```bash
-token_name="Xcoin"
-send_addres="addr1q8vaew5l4sgvkgc4krng3uf3smctvlvdl2amcqwjcxgcqeakhpc4qxjp3gywuxugp7rz9m07sd8538x36wkvn2j7gyyqah3dq5"
-send_token="100"
-send_ada="2000000" #lovelace
+token_name="Xcoin" #送信するトークン名
+send_addres="addr1q8vaew5l4sgvkgc4krng3uf3smctvlvdl2amcqwjcxgcqeakhpc4qxjp3gywuxugp7rz9m07sd8538x36wkvn2j7gyyqah3dq5"　#送信先アドレス
+send_token="100" #送信するトークン量
+send_ada="2000000" #lovelace #送信するADA量
 ```
 
 ウォレットの残高とUTXOsを出力
