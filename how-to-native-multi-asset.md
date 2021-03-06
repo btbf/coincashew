@@ -4,10 +4,15 @@ description: カルダノネイティブトークンCLIコマンド手順
 
 # カルダノネイティブトークン　CLI操作コマンド手順
 
-🛑前提条件
+🛑前提条件  
 この操作マニュアルはCardano-nodeコマンドライン(CLI)を用いています。  
+  
 操作にはUbuntuサーバにインストールされたCardano-nodeを起動する必要があります。  
-ただし、リレーノードで完結できます。  
+ただし、リレーノードで完結できます。 
+
+{% hint style="info" %}
+更新日：2021/3/6
+{% endhint %}
 
 {% hint style="info" %}
 この手順では、新しいウォレットを作成しトークンを作成する方法を掲載しています。
@@ -73,7 +78,7 @@ cardano-cli query protocol-parameters \
 
 ### 0.トークン名と総発行量を設定する
 
-以下の３つの値を書き換えてください。  
+**__以下の３つの値を書き換えてください。__** 
 ```
 token_folder="Xcoin" #任意のフォルダ名
 token_name="Xcoin"   #任意のコイン名
@@ -217,10 +222,10 @@ cardano-cli transaction submit \
 ```
 
 
-## トークンの送信
+## トークンを別のアドレスへ送信する
 
 送信するトークンを指定する
-
+**__以下の内容、「=」の後を書き換えてください__**
 ```
 token_name="Xcoin"
 send_addres=addr1q8vaew5l4sgvkgc4krng3uf3smctvlvdl2amcqwjcxgcqeakhpc4qxjp3gywuxugp7rz9m07sd8538x36wkvn2j7gyyqah3dq5
@@ -327,3 +332,4 @@ cardano-cli transaction submit \
 
 ##　トークンのBurn(焼却)
 
+作成中
