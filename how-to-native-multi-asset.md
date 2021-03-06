@@ -221,6 +221,10 @@ cardano-cli transaction submit \
     --mainnet
 ```
 
+{% hint style="danger" %}
+🛑 **作業をしない時は、payment.skey/payment.vkeyはエアギャップマシンへ移動してください** 🚧
+{% endhint %}
+
 
 ## トークンを別のアドレスへ送信する
 
@@ -329,6 +333,10 @@ cardano-cli transaction submit \
     --tx-file matx.signed \
     --mainnet
 ```
+
+{% hint style="danger" %}
+🛑 **作業をしない時は、payment.skey/payment.vkeyはエアギャップマシンへ移動してください** 🚧
+{% endhint %}
 
 ##　トークンのBurn(焼却)
 
