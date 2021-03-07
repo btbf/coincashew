@@ -1744,7 +1744,7 @@ cardano-cli query ledger-state --mainnet --mary-era | grep publicKey | grep $(ca
 ## ⚙ 14. トポロジーファイルを構成する。
 
 {% hint style="info" %}
-この項目はリレーノードで実施します。
+この項目はリレーノードで実施します。  
 **リレーノードが起動しているか確認してください** 例）tmux a -t cnode
 {% endhint %}
 
