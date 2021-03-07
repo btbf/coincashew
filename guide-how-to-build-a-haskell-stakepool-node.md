@@ -1397,6 +1397,7 @@ payment.addrに入金されている必要があります。
 
 JSONファイルを作成してプールのメタデータを作成します。
 
+
 {% hint style="warning" %}
 **ticker**名の長さは3～5文字にする必要があります。文字はA-Zと0-9のみで構成する必要があります。
 {% endhint %}
@@ -1405,13 +1406,17 @@ JSONファイルを作成してプールのメタデータを作成します。
 **description**の長さは255文字以内となります。
 {% endhint %}
 
+{% hint style="warning" %}
+#下記は参考フォーマットとなります。ご自身のプール名、Ticker名に書き換えてから、ターミナルで実行してください。
+{% endhint %}
+
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
 cd $NODE_HOME
 cat > poolMetaData.json << EOF
 {
-"name": "MyPoolName",
+"name": "MyPoolName", 
 "description": "My pool description",
 "ticker": "MPN",
 "homepage": "https://myadapoolnamerocks.com"
