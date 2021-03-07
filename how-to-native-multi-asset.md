@@ -340,4 +340,108 @@ cardano-cli transaction submit \
 
 ##　トークンのBurn(焼却)
 
-作成中
+送信するトークンを指定する
+**__以下の内容、青文字部分を書き換えてください__**
+```bash
+token_name="Xcoin" #Burnするトークン名
+Burn_token="274" #焼却するトークン量
+asset_totla="37000274" #トークン総供給量
+```
+# 総供給量-現在の量-焼却トークン
+
+ウォレットの残高とUTXOsを出力
+```
+cardano-cli query utxo \
+    --address $(cat payment.addr) \
+    --mainnet \
+    --mary-era > fullUtxo.out
+
+tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
+
+cat balance.out
+
+tx_in=""
+total_balance=0
+while read -r utxo; do
+    in_addr=$(awk '{ print $1 }' <<< "${utxo}")
+    idx=$(awk '{ print $2 }' <<< "${utxo}")
+    utxo_balance=$(awk '{ print $3 }' <<< "${utxo}")
+    asset_balance=$(awk '{ print $6 }' <<< "${utxo}")
+    asset=$(awk '{ print $7 }' <<< "${utxo}")
+    total_balance=$((${total_balance}+${utxo_balance}))
+    echo TxHash: ${in_addr}#${idx}
+    echo ADA: ${utxo_balance}
+    tx_in="${tx_in} --tx-in ${in_addr}#${idx}"
+done < balance.out
+asset=(${asset//./ })
+txcnt=$(cat balance.out | wc -l)
+echo Total ADA balance: ${total_balance}
+echo Number of UTXOs: ${txcnt}
+echo Asset Name: ${asset[1]}
+echo Asset ID: ${asset[0]}
+echo Asset balance: ${asset_balance}
+```
+
+### 2.トランザクションを構築する
+
+```
+cardano-cli transaction build-raw \
+      ${tx_in} \
+      --tx-out ${send_addres}+${send_ada}+"${send_token} ${asset[0]}.${token_name}" \
+      --tx-out $(cat payment.addr)+${total_balance}+"${asset_balance} ${asset[0]}.${token_name}" \
+      --mary-era \
+      --fee 0 \
+      --out-file tx.tmp
+```
+
+トランザクション手数料を計算する
+
+```
+fee=$(cardano-cli transaction calculate-min-fee \
+    --tx-body-file tx.tmp \
+    --tx-in-count ${txcnt} \
+    --tx-out-count 2 \
+    --witness-count 1 \
+    --mainnet \
+    --protocol-params-file params.json | awk '{ print $1 }')
+echo fee: $fee
+```
+
+手数料を計算します
+```
+txOut2=$((${total_balance}-${fee}-${send_ada}))
+echo txOut: ${txOut2}
+asOut=$((${asset_balance}-${send_token}))
+echo asOut: ${asOut}
+```
+
+手数料をもとにトランザクションを再構築する
+
+
+```
+cardano-cli transaction build-raw \
+      ${tx_in} \
+      --tx-out ${send_addres}+${send_ada}+"${send_token} ${asset[0]}.${token_name}" \
+      --tx-out $(cat payment.addr)+${txOut2}+"${asOut} ${asset[0]}.${token_name}" \
+      --mary-era \
+      --fee ${fee} \
+      --out-file matx.raw
+```
+
+トランザクションに署名する
+
+```
+cardano-cli transaction sign \
+	     --signing-key-file payment.skey \
+	     --mainnet \
+	     --tx-body-file matx.raw \
+      --out-file matx.signed
+```
+
+トランザクションを送信する
+
+```
+cardano-cli transaction submit \
+    --tx-file matx.signed \
+    --mainnet
+```
