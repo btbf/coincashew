@@ -1433,6 +1433,8 @@ cardano-cli stake-pool metadata-hash --pool-metadata-file poolMetaData.json > po
   
 **poolMetaDataHash.txt**をエアギャップオフラインマシンへコピーしてください  
 **poolMetaData.json**をあなたの公開用WEBサーバへアップロードしてください。  
+WEBサーバ(ホームページ)をまた持っていいない場合は、[Githubでホストする方法](./how-to-upload-poolmetadata.json-to-github.md)を参照して下さい。  
+
 
 最小プールコストを出力します。
 
