@@ -1478,7 +1478,7 @@ cardano-cli stake-pool registration-certificate \
     --pool-reward-account-verification-key-file stake.vkey \
     --pool-owner-stake-verification-key-file stake.vkey \
     --mainnet \
-    --single-host-pool-relay <dns based relay, example ~ relaynode1.myadapoolnamerocks.com> \
+    --pool-relay-ipv4 ***.***.**.** \ #リレーノードパプリックIPに書き換えて下さい
     --pool-relay-port 6000 \
     --metadata-url <poolMetaData.jsonをアップロードしたURLを記述> \
     --metadata-hash $(cat poolMetaDataHash.txt) \
