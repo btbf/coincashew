@@ -1403,7 +1403,7 @@ JSONファイルを作成してプールのメタデータを作成します。
 {% endhint %}
 
 {% hint style="warning" %}
-**description**の長さは255文字以内となります。
+**description**の長さは255文字以内(255byte)となります。（ひらがな、漢字、カタカナは1文字2byte）
 {% endhint %}
 
 {% hint style="warning" %}
