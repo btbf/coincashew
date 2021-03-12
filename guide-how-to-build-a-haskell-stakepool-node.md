@@ -3191,6 +3191,7 @@ echo destinationAddress: $destinationAddress
 {% tabs %}
 {% tab title="ブロックプロデューサノード" %}
 ```bash
+cd $NODE_HOME
 rewardBalance=$(cardano-cli query stake-address-info \
     --mainnet \
     --mary-era \
@@ -3308,6 +3309,7 @@ cardano-cli transaction build-raw \
 {% tabs %}
 {% tab title="エアギャップオフラインマシン" %}
 ```bash
+cd $NODE_HOME
 cardano-cli transaction sign \
     --tx-body-file tx.raw \
     --signing-key-file payment.skey \
