@@ -2456,7 +2456,7 @@ echo minPoolCost: ${minPoolCost}
 minPoolCost は340000000 lovelace \(340 ADA\)です。 `--pool-cost`は最低でもこの値以上に指定します。
 {% endhint %}
 
-poolMetaData.jsonを変更する場合は、メタデータファイルのハッシュを再計算し、更新されたpoolMetaData.jsonをWEBサーバへアップロードしてください。 詳細については [項目9](guide-how-to-build-a-haskell-stakepool-node.md#9-register-your-stakepool)を参照して下さい。
+poolMetaData.jsonを変更する場合は、メタデータファイルのハッシュを再計算し、更新されたpoolMetaData.jsonをWEBサーバへアップロードしてください。 詳細については [項目11](guide-how-to-build-a-haskell-stakepool-node.md#11-sutkupruwoshimasu)を参照して下さい。
 
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
@@ -2469,7 +2469,7 @@ cardano-cli stake-pool metadata-hash --pool-metadata-file poolMetaData.json > po
 
 登録証明書トランザクションを作成します。
 
-複数のリレーノードを設定する場合は [**項目12**](guide-how-to-build-a-haskell-stakepool-node.md#12-register-your-stake-pool) を参考にパラメーターを指定して下さい。  
+複数のリレーノードを設定する場合は [**こちら**](guide-how-to-build-a-haskell-stakepool-node.md#norirndowosuru) を参考にパラメーターを指定して下さい。  
   
 **poolMetaDataHash.txt** をエアギャップオフラインマシンのcardano-my-nodeディレクトリにコピーします。
 
