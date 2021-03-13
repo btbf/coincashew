@@ -1405,7 +1405,7 @@ JSONファイルを作成してプールのメタデータを作成します。
 
 {% hint style="warning" %}
 こちらの手順は初回プール登録時のみ有効です。  
-プール登録後にメタ情報、誓約、固定費、変動費を変更する場合は、[18.4](./guide-how-to-build-a-haskell-stakepool-node.md#184-prumetayamarginno)の変更手順を実施してください。
+プール登録後にメタ情報、誓約、固定費、変動費、リレー情報を変更する場合は、[18.4](./guide-how-to-build-a-haskell-stakepool-node.md#184-prumetayamarginno)の変更手順を実施してください。
 {% endhint %}
 
 {% hint style="warning" %}
