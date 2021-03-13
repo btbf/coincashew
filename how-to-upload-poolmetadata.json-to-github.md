@@ -32,6 +32,6 @@
 12.短縮されたURLを`--metadata-url` に記述します。
 
 > 例:  
-> [--metadata-url　https://git.io/JUcnl](https://git.io/JUcnl)
+> --metadata-url https://git.io/JUcnl
 
 
