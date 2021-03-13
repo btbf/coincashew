@@ -21,7 +21,7 @@
 
 8.**Rawボタン**をクリックします。
 
-9.URLをコピーします。
+9. 「https://raw」から始まるURLをコピーします。
 
 > 例: [https://raw.githubusercontent.com/coincashew/test/master/poolMetaData.json](https://raw.githubusercontent.com/coincashew/test/master/poolMetaData.json)
 
@@ -29,8 +29,9 @@
 
 11.9でコピーしたURLを貼り付けます。
 
-> 例:  
-> [https://git.io/JUcnl](https://git.io/JUcnl)
-
 12.短縮されたURLを`--metadata-url` に記述します。
+
+> 例:  
+> [--metadata-url　https://git.io/JUcnl](https://git.io/JUcnl)
+
 
