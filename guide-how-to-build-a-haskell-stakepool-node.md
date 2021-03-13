@@ -1399,11 +1399,13 @@ JSONファイルを作成してプールのメタデータを作成します。
 
 
 {% hint style="warning" %}
-**ticker**名の長さは3～5文字にする必要があります。文字はA-Zと0-9のみで構成する必要があります。
+**ticker**名の長さは3～5文字にする必要があります。文字はA-Zと0-9のみで構成する必要があります。  
+**description**の長さは255文字以内(255byte)となります。（ひらがな、漢字、カタカナは1文字2byte）
 {% endhint %}
 
 {% hint style="warning" %}
-**description**の長さは255文字以内(255byte)となります。（ひらがな、漢字、カタカナは1文字2byte）
+こちらの手順は初回プール登録時のみ有効です。  
+メタ情報、誓約、固定費、変動費を変更する場合は、[18.4](./guide-how-to-build-a-haskell-stakepool-node.md#184-prumetayamarginno)の変更手順を実施してください。
 {% endhint %}
 
 {% hint style="warning" %}
