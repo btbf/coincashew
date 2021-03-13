@@ -1391,22 +1391,16 @@ cardano-cli transaction submit \
 ## 📄 11. ステークプールを登録します。
 
 {% hint style="warning" %}
+こちらの手順は初回プール登録時のみ有効です。  
+プール登録後にメタ情報、誓約、固定費、変動費、リレー情報を変更する場合は、[18.4](./guide-how-to-build-a-haskell-stakepool-node.md#184-prumetayamarginno)の変更手順を実施してください。
+{% endhint %}
+
+{% hint style="warning" %}
 ステークプール登録には**500ADA**の登録料が必要です。  
 payment.addrに入金されている必要があります。
 {% endhint %}
 
 JSONファイルを作成してプールのメタデータを作成します。
-
-
-{% hint style="warning" %}
-**ticker**名の長さは3～5文字にする必要があります。文字はA-Zと0-9のみで構成する必要があります。  
-**description**の長さは255文字以内(255byte)となります。（ひらがな、漢字、カタカナは1文字2byte）
-{% endhint %}
-
-{% hint style="warning" %}
-こちらの手順は初回プール登録時のみ有効です。  
-プール登録後にメタ情報、誓約、固定費、変動費、リレー情報を変更する場合は、[18.4](./guide-how-to-build-a-haskell-stakepool-node.md#184-prumetayamarginno)の変更手順を実施してください。
-{% endhint %}
 
 {% hint style="warning" %}
 下記は参考フォーマットとなります。ご自身のプール名、Ticker名に書き換えてから、ターミナルで実行してください。
@@ -1427,6 +1421,11 @@ EOF
 ```
 {% endtab %}
 {% endtabs %}
+
+{% hint style="warning" %}
+**ticker**名の長さは3～5文字にする必要があります。文字はA-Zと0-9のみで構成する必要があります。  
+**description**の長さは255文字以内(255byte)となります。（ひらがな、漢字、カタカナは1文字2byte）
+{% endhint %}
 
 メタデータファイルのハッシュ値を計算します。
 
