@@ -1742,7 +1742,7 @@ cardano-cli query ledger-state --mainnet --mary-era | grep publicKey | grep $(ca
 
 あなたのステークプールを次のサイトで確認することが出来ます。 [https://pooltool.io/](https://pooltool.io/)
 
-## ⚙ 14. トポロジーファイルを構成する。
+## ⚙ 13. トポロジーファイルを構成する。
 
 {% hint style="info" %}
 この項目はリレーノードで実施します。  
@@ -2079,7 +2079,7 @@ CERT=\${DIRECTORY}/node.cert
 おめでとうございます！ステークプールが登録され、ブロックを作成する準備が出来ました。
 {% endhint %}
 
-## 🎇 15. ステークプール報酬を確認する
+## 🎇 14. ステークプール報酬を確認する
 
 ブロックが正常に生成できた後、エポック終了後に報酬を確認しましょう！
 
@@ -2094,11 +2094,11 @@ cardano-cli query stake-address-info \
 {% endtab %}
 {% endtabs %}
 
-## 🔮 16. 監視ツール「Prometheus」および「Grafana Dashboard」のセットアップ
+## 🔮 15. 監視ツール「Prometheus」および「Grafana Dashboard」のセットアップ
 
 プロメテウスはターゲットに指定したメトリックHTTPエンドポイントをスクレイピングし、情報を収集する監視ツールです。[オフィシャルドキュメントはこちら](https://prometheus.io/docs/introduction/overview/) グラファナは収集されたデータを視覚的に表示させるダッシュボードツールです。
 
-### 🐣 16.1 インストール
+### 🐣 15.1 インストール
 
 「prometheus」および「prometheus node exporter」をインストールします。 この手順では、リレーノード1でprometheusとGrafana本体を稼働させ、リレーノード1およびブロックプロデューサーノードの情報を取得する手順です。
 
@@ -2261,7 +2261,7 @@ sudo systemctl reload-or-restart cardano-node
 {% endtab %}
 {% endtabs %}
 
-### 📶 16.2 Grafanaダッシュボードの設定
+## 📶 16 Grafanaダッシュボードの設定
 
 1. リレーノード1で、ローカルブラウザから [http://localhost:3000](http://localhost:3000) または http://&lt;リレーノードIPアドレス&gt;:3000 を開きます。 事前に 3000番ポートを開いておく必要があります。
 2. ログイン名・PWは次のとおりです。 **admin** / **admin**
