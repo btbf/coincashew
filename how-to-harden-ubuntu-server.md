@@ -279,13 +279,13 @@ sudo systemctl restart fail2ban
 * ブロックプロデューサーノードでは、リレーノードのIPのみ受け付ける用に設定してください。
 
 ```bash
-ufw allow <22またはランダムなポート番号>/tcp
+sudo ufw allow <22またはランダムなポート番号>/tcp
 #リレーノードのIPを指定する場合
 #ufw allow from <リレーノードIP> to any port <ノード用のポート番号>
-ufw allow 6000/tcp
-ufw allow 3000/tcp
-ufw enable
-ufw status numbered
+sudo ufw allow 6000/tcp
+sudo ufw allow 3000/tcp
+sudo ufw enable
+sudo ufw status numbered
 ```
 
 設定が有効であることを確認します。
