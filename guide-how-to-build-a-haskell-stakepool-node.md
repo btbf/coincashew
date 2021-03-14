@@ -1758,11 +1758,11 @@ cardano-cli query ledger-state --mainnet --mary-era | grep publicKey | grep $(ca
 ### 🚀 topologyUpdater.shを使用してリレーノードを公開する
 
 {% hint style="info" %}
-この方法を提案して頂いた [GROWPOOL](https://twitter.com/PoolGrow) および [CNTOOLS Guild OPS](https://cardano-community.github.io/guild-operators/Scripts/topologyupdater.html) へのクレジット表記。
+この方法を提案して頂いた [GROWPOOL](https://twitter.com/PoolGrow) および [CNTOOLS Guild OPS](https://cardano-community.github.io/guild-operators/#/Scripts/topologyupdater) へのクレジット表記。
 {% endhint %}
 
 ノード情報をトポロジーフェッチリストに公開するスクリプト「`topologyUpdater.sh`」を作成します。
-10行目の"CHANGE ME"をリレーノードのIPアドレスに変えます。  
+7行目の"CHANGE ME"をリレーノードのIPアドレスに変えます。  
 ※26行目の"CHANGE ME"はそのままでお願いします。  
   
 以下コードをリレー用サーバで実施してください。  
