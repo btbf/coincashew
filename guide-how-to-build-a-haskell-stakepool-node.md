@@ -1232,6 +1232,7 @@ ttlパラメータを設定するには、最新のスロット番号を取得�
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
+cd $NODE_HOME
 currentSlot=$(cardano-cli query tip --mainnet | jq -r '.slotNo')
 echo Current Slot: $currentSlot
 ```
