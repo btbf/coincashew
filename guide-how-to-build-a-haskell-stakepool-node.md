@@ -1217,7 +1217,7 @@ cardano-cli query utxo \
 
 {% tabs %}
 {% tab title="エアギャップオフラインマシン" %}
-```text
+```bash
 cd $NODE_HOME
 cardano-cli stake-address registration-certificate \
     --stake-verification-key-file stake.vkey \
