@@ -610,6 +610,11 @@ EOF
 {% endtab %}
 {% endtabs %}
 
+BPノードを再起動する
+```
+sudo systemctl reload-or-restart cardano-node
+```
+
 ## 🔏 7. エアギャップオフラインマシンを構成する
 
 {% hint style="info" %}
