@@ -1734,19 +1734,6 @@ cardano-cli stake-pool id --cold-verification-key-file $HOME/cold-keys/node.vkey
 **stakepoolid.txt**をブロックプロデューサーノードcardano-my-nodeディレクトリにコピーします。
 
 このファイルを用いて、自分のステークプールがブロックチェーンに登録されているか確認します。
-<!--
-{% tabs %}
-{% tab title="ブロックプロデューサーノード" %}
-```bash
-cardano-cli query ledger-state --mainnet --mary-era | grep publicKey | grep $(cat stakepoolid.txt)
-```
-{% endtab %}
-{% endtabs %}
-
-{% hint style="info" %}
-文字列による戻り値が返ってきた場合は、正常に登録されています 👏
-{% endhint %}
--->
 ```
 cat stakepoolid.txt
 ```
