@@ -1735,7 +1735,7 @@ cat stakepoolid.txt
 **stakepoolid.txt**をブロックプロデューサーノードcardano-my-nodeディレクトリにコピーします。
 
 このファイルを用いて、自分のステークプールがブロックチェーンに登録されているか確認します。
-
+<!-->
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
@@ -1747,7 +1747,7 @@ cardano-cli query ledger-state --mainnet --mary-era | grep publicKey | grep $(ca
 {% hint style="info" %}
 文字列による戻り値が返ってきた場合は、正常に登録されています 👏
 {% endhint %}
-
+-->
 あなたのステークプールを次のサイトで確認することが出来ます。 [https://pooltool.io/](https://pooltool.io/)
 
 ## ⚙ 13. トポロジーファイルを構成する。
