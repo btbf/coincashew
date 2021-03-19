@@ -1900,7 +1900,7 @@ curl -4 -s -o $NODE_HOME/${NODE_CONFIG}-topology.json "https://api.clio.one/htop
 EOF
 ```
 
-shファイルに権限を追加し実行します。
+shファイルに権限を追加し、relay-topology_pull.shを実行して新しいトポロジーファイル\(mainnet-topology.json\)を生成します。
 
 ```bash
 ###
