@@ -1906,6 +1906,7 @@ shファイルに権限を追加し実行します。
 ###
 ### On relaynode1
 ###
+cd $NODE_HOME
 chmod +x relay-topology_pull.sh
 ./relay-topology_pull.sh
 ```
