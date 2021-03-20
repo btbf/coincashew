@@ -2268,7 +2268,7 @@ sudo systemctl reload-or-restart cardano-node
 3. パスワードを変更します。
 4. 左メニューの歯車アイコンから データソースを追加します。
 5. 「Add data source」をクリックし、「Prometheus」を選択します。
-6. 名前は **Prometheus**"としてください。
+6. 名前は **Prometheus**としてください。
 7. **URL** を [http://localhost:9090](http://localhost:9090)に設定します。
 8. **Save & Test**をクリックします。
 9. 次の[JSONファイル](https://raw.githubusercontent.com/btbf/coincashew/master/guild-tools/grafana-monitor-cardano-nodes-by-kaze.json)を開き、内容を全選択してコピーします。
