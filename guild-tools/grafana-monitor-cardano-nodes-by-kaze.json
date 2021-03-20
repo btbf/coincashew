@@ -1128,7 +1128,7 @@
           "format": "time_series",
           "instant": true,
           "interval": "",
-          "legendFormat": "Expiry period",
+          "legendFormat": "KES満了",
           "refId": "B"
         },
         {
