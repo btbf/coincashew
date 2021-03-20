@@ -2195,6 +2195,14 @@ scrape_configs:
           alias: 'relaynode1'
           type:  'cardano-node'
 EOF
+```
+{% endtab %}
+{% endtabs %}
+
+prometheus.ymlを移動します
+{% tabs %}
+{% tab title="リレーノード1" %}
+```bash
 sudo mv prometheus.yml /etc/prometheus/prometheus.yml
 ```
 {% endtab %}
