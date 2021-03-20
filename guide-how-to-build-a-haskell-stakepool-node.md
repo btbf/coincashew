@@ -2185,8 +2185,8 @@ scrape_configs:
 
     static_configs:
       - targets: ['localhost:9100']
-      - targets: ['<ブロックプロデューサーIPアドレス>:9100']
-      - targets: ['<ブロックプロデューサーIPアドレス>:12798']
+      - targets: ['ブロックプロデューサーIPアドレス:9100']
+      - targets: ['ブロックプロデューサーIPアドレス:12798']
         labels:
           alias: 'block-producing-node'
           type:  'cardano-node'
