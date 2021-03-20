@@ -50,7 +50,7 @@
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -324,7 +324,7 @@
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -639,7 +639,7 @@
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -649,7 +649,7 @@
       "pluginVersion": "7.1.5",
       "targets": [
         {
-          "expr": "cardano_node_metrics_nodeStartTime_int",
+          "expr": "rts_gc_wall_ms / 1000",
           "instant": false,
           "interval": "",
           "legendFormat": "{{alias}}",
@@ -981,7 +981,7 @@
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -1038,7 +1038,7 @@
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -1106,7 +1106,7 @@
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -1120,7 +1120,7 @@
           "format": "time_series",
           "instant": true,
           "interval": "",
-          "legendFormat": "Current period",
+          "legendFormat": "現在のKES",
           "refId": "A"
         },
         {
@@ -1145,9 +1145,17 @@
           "format": "time_series",
           "instant": true,
           "interval": "",
-          "legendFormat": "Days left",
+          "legendFormat": "KES有効残り日数",
           "refId": "D"
         }
+        {
+         "expr": "cardano_node_metrics_currentKESPeriod_int - cardano_node_metrics_operationalCertificateStartKESPeriod_int + cardano_node_metrics_remainingKESPeriods_int",
+         "format": "time_series",
+         "instant": true,
+         "interval": "",
+         "legendFormat": "KES整合性",
+         "refId": "E"
+       }
       ],
       "timeFrom": null,
       "timeShift": null,
