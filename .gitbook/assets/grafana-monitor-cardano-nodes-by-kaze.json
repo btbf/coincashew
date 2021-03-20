@@ -1147,7 +1147,7 @@
           "interval": "",
           "legendFormat": "KES有効残り日数",
           "refId": "D"
-        }
+        },
         {
          "expr": "cardano_node_metrics_currentKESPeriod_int - cardano_node_metrics_operationalCertificateStartKESPeriod_int + cardano_node_metrics_remainingKESPeriods_int",
          "format": "time_series",
