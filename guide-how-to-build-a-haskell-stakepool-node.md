@@ -423,8 +423,9 @@ sudo systemctl start cardano-node
 [5-2.gLiveView ノードステータスモニターをインストールします](./guide-how-to-build-a-haskell-stakepool-node.md#5-2-gliveview-ndosuttasumonitwoinsutrushimasu)に進んでください。
 
 
-{% hint style="success" %}
-以下は、systemdを有効活用するためのコマンドです。
+{% hint style="danger" %}
+以下は、systemdを有効活用するためのコマンドです。  
+必要に応じで実行するようにし、一連の流れで実行しないでください
 {% endhint %}
 
 \*\*\*\*⛓ **システム起動後に、ログモニターを表示します**
