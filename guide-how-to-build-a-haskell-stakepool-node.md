@@ -2186,7 +2186,13 @@ scrape_configs:
 
     static_configs:
       - targets: ['localhost:9100']
+        labels:
+          alias: 'relaynode1'
+          type:  'system'
       - targets: ['ブロックプロデューサーIPアドレス:9100']
+        labels:
+          alias: 'block-producing-node'
+          type:  'system'
       - targets: ['ブロックプロデューサーIPアドレス:12798']
         labels:
           alias: 'block-producing-node'
