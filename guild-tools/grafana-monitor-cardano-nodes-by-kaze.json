@@ -463,7 +463,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "100 - (avg by(alias) (irate(node_cpu_seconds_total{mode=\"idle\"}[1m])) * 100)",
+          "expr": "avg without(cpu) (irate(node_cpu_seconds_total{job=\"prometheus\", mode=\"user\"}[1m]))",
           "interval": "",
           "legendFormat": "{{alias}}",
           "refId": "A"
@@ -489,7 +489,7 @@
       },
       "yaxes": [
         {
-          "format": "percent",
+          "format": "percentunit",
           "label": null,
           "logBase": 1,
           "max": null,
