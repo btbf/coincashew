@@ -148,7 +148,7 @@ PermitEmptyPasswords no
 {% endhint %}
 
 ```bash
-Port <port number>
+Port xxxxx　先頭の#を外して下さい
 ```
 
 > Ctrl+O で保存し、Ctrl+Xで閉じる
