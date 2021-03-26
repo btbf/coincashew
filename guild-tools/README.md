@@ -570,7 +570,7 @@ Ctrl+b d でバックグラウンド実行に切り替えます(デタッチ)
 {% hint style="info" %}
 各エポックのスロットリーダースケジュールは
 エポックの約1.5日前から算出されます。
-その際、leaderlogサービスを再起動する必要があります。  
+その際、leaderlogサービスを再起動する必要があります。(算出されるまでに数分かかります。) 
 ```bash
 sudo systemctl reload-or-restart cnode-cncli-leaderlog.service
 ```
