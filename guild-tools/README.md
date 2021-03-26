@@ -340,7 +340,7 @@ cat > $NODE_HOME/service/cnode-logmonitor.service << EOF
 # file: /etc/systemd/system/cnode-logmonitor.service
 
 [Unit]
-Description=Cardano Node - CNCLI Leaderlog
+Description=Cardano Node - CNCLI logmonitor
 BindsTo=cnode-logmonitor.service
 After=cnode-logmonitor.service
 
