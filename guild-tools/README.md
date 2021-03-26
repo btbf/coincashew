@@ -565,7 +565,18 @@ Ctrl+b d でバックグラウンド実行に切り替えます(デタッチ)
 
 {% endtabs %}
 
+###  7-1.　各エポックごとのスロットリーダーを算出する
 
+{% hint style="info" %}
+各エポックのスロットリーダースケジュールは
+エポックの約1.5日前から算出されます。
+その際、leaderlogサービスを再起動する必要があります。  
+```bash
+sudo systemctl reload-or-restart cnode-cncli-leaderlog.service
+```
+
+
+{% endhint %}
 
 ## 🏁 8.ブロックログを表示する
 
@@ -578,7 +589,7 @@ cd $NODE_HOME/scripts
 
 ![](./../.gitbook/assets/blocklog.JPG)
 
-{% hint style="info" %}
+
 ブロックステータス:  
 * **Leader**   - ブロック生成予定スロット  
 * **Ideal**     - アクティブステーク（シグマ）に基づいて割り当てられたブロック数の期待値/理想値  
