@@ -281,7 +281,7 @@ sudo systemctl restart fail2ban
 ```bash
 sudo ufw allow <22またはランダムなポート番号>/tcp
 #リレーノードのIPを指定する場合
-#ufw allow from <リレーノードIP> to any port <ノード用のポート番号>
+#sudo ufw allow from <リレーノードIP> to any port <BP用のポート番号>
 sudo ufw allow 6000/tcp
 sudo ufw allow 3000/tcp
 sudo ufw enable
