@@ -83,7 +83,8 @@ SSHを強化する基本的なルールは次の通りです。
 ```
 ssh-keygen -t rsa
 ```
-次のような返り値があります。
+次のような返り値があります。  
+それぞれ何も入力せずにEnterを押してください
 ```
 Enter file in which to save the key (/home/cardano/.ssh/id_rsa):  #このままEnter
 lsEnter passphrase (empty for no passphrase): #このままEnter
