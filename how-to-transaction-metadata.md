@@ -133,4 +133,3 @@ cardano-cli transaction submit \
     --tx-file tx.signed \
     --mainnet
 ```
-
