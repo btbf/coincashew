@@ -118,6 +118,9 @@ cardano-cli transaction build-raw \
 ```
 
 ## トランザクションファイルに署名します
+
+{% tabs %}
+{% tab title="エアギャップマシン" %}
 ```bash
 cardano-cli transaction sign \
     --tx-body-file tx.raw \
@@ -125,6 +128,7 @@ cardano-cli transaction sign \
     --mainnet \
     --out-file tx.signed
 ```
+{% endtab %}
 
 
 ## トランザクションを送信します。
