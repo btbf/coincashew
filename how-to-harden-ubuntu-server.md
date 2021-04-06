@@ -6,6 +6,10 @@ AWS EC2及びlightsailは特殊環境なため、このマニュアル通りに�
 不明な点はGuildコミュニティで質問してみてください。
 {% endhint %}
 
+{% hint style="info" %}
+この手順はエアギャップオフラインマシン(VirtualBox上のUbuntu)では実施する必要はありません
+{% endhint %}
+
 
 # Ubuntuサーバーを強化する手順(初期設定)
 
