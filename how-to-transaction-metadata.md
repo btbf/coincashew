@@ -20,7 +20,7 @@ cat > $NODE_HOME/metadata/sendMetadata.json << EOF
 }
 EOF
 ```
-> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx　を任意の文字列(ハッシュ値)に置き換えてください
+> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx　を任意の文字列またはハッシュ値に置き換えてください
 
 ## 送金金額を指定します。（最低送金額は1ADA)
 ```
