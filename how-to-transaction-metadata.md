@@ -1,9 +1,10 @@
----
-description:　以下の内容は、cardano-cliを使用して、payment.addrから任意のアドレスにメタデータを添付してトランザクションを送信する方法です。 トランザクションを送信するには最低1ADA必要です。
----
+
 
 # cardano-cliを使用してメタデータ付きトランザクションを送信する方法
 
+{% hint style="info" %}
+以下の内容は、cardano-cliを使用して、payment.addrから任意のアドレスにメタデータを添付してトランザクションを送信する方法です。 トランザクションを送信するには最低1ADA必要です。
+{% endhint %}
 
 ## metadataフォルダを作成します
 ```bash
