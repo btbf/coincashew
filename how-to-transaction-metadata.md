@@ -117,6 +117,8 @@ cardano-cli transaction build-raw \
     --out-file tx.raw
 ```
 
+tx.rawをエアギャップマシンのcardano-my-nodeにコピーしてください。
+
 ## トランザクションファイルに署名します
 
 {% tabs %}
@@ -131,6 +133,7 @@ cardano-cli transaction sign \
 {% endtab %}
 {% endtabs %}
 
+tx.signedをBPのcardano-my-nodeにコピーしてください
 
 ## トランザクションを送信します。
 ```bash
