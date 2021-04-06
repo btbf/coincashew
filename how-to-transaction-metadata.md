@@ -103,7 +103,7 @@ txOut=$((${total_balance}-${fee}-${amountToSend}))
 echo Change Output: ${txOut}
 ```
 
-トランザクションファイルを再構築します
+## トランザクションファイルを再構築します
 ```bash
 cardano-cli transaction build-raw \
     ${tx_in} \
