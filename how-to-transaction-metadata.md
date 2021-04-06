@@ -129,6 +129,7 @@ cardano-cli transaction sign \
     --out-file tx.signed
 ```
 {% endtab %}
+{% endtabs %}
 
 
 ## トランザクションを送信します。
