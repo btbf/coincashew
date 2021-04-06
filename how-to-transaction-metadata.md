@@ -133,3 +133,6 @@ cardano-cli transaction submit \
     --tx-file tx.signed \
     --mainnet
 ```
+
+以下のサイトで、自分が送信したメタデータ付きトランザクションが記録されているか、確認してみましょう！  
+[Cardanoscan-Metadata](https://cardanoscan.io/metadata)
