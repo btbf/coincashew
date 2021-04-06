@@ -20,18 +20,21 @@ cat > $NODE_HOME/metadata/sendMetadata.json << EOF
 }
 EOF
 ```
+> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx　を任意の文字列(ハッシュ値)に置き換えてください
 
-## 送金金額を指定します。（最低送金額は1ADA
+## 送金金額を指定します。（最低送金額は1ADA)
 ```
 amountToSend=1000000
 echo amountToSend: $amountToSend
 ```
+> ここで指定しているのは1,000,000 lovelace (1ADA)
 
 ## 送金先アドレスを指定します
 ```
 destinationAddress=addr1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 echo destinationAddress: $destinationAddress
 ```
+> addr1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx を任意のアドレスに置き換えてください
 
 ## 現在のスロット番号を算出します
 ```bash
