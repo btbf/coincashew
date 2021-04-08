@@ -2681,16 +2681,22 @@ cardano-cli transaction submit \
 {% endtab %}
 {% endtabs %}
 
-変更は次のエポックで有効になります。次のエポック移行後にプール設定が正しいことを確認してください。
+プール名、ティッカー名、WebsiteURLは数分後～数時間で反映します。  
+誓約や手数料の変更は次のエポックで有効になります。  
 
+
+
+<!--
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
-cardano-cli query ledger-state --mainnet --out-file ledger-state.json
+cd $NODE_HOME
+cardano-cli query ledger-state --mainnet > ledger-state.json
 jq -r '.esLState._delegationState._pstate._pParams."'"$(cat stakepoolid.txt)"'"  // empty' ledger-state.json
 ```
 {% endtab %}
 {% endtabs %}
+-->
 
 ### 🧩 18.5 SSHを介したファイルの転送
 
@@ -3557,7 +3563,8 @@ cardano-cli transaction submit \
 {% tabs %}
 {% tab title="ブロックプロデューサノード" %}
 ```bash
-cardano-cli query ledger-state --mainnet --out-file ledger-state.json
+cd $NODE_HOME
+cardano-cli query ledger-state --mainnet > ledger-state.json
 jq -r '.esLState._delegationState._pstate._pParams."'"$(cat stakepoolid.txt)"'"  // empty' ledger-state.json
 ```
 {% endtab %}
