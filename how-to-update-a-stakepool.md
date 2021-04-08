@@ -99,7 +99,8 @@ echo -e "package cardano-crypto-praos\n flags: -external-libsodium-vrf" > cabal.
 cabal build cardano-node cardano-cli
 ```
 
-
+> ビルド完了までに15分～40分ほどかかります。
+> 
 
 ## 1-4.バージョン確認
 
@@ -227,6 +228,10 @@ sed -i env \
     -e "s/\#CONFIG=\"\${CNODE_HOME}\/files\/config.json\"/CONFIG=\"\${NODE_HOME}\/mainnet-config.json\"/g" \
     -e "s/\#SOCKET=\"\${CNODE_HOME}\/sockets\/node0.socket\"/SOCKET=\"\${NODE_HOME}\/db\/socket\"/g"
 ```
+
+{% hint style="info" %}
+リレーノードのポート番号を変更している場合は、"nano env" でファイルを開きポート番号を変更してください。
+{% endhint %}
 
 ## 2-1-3 gLiveViewを起動する
 
