@@ -77,18 +77,18 @@ source $HOME/.cargo/env
 rustup install stable
 rustup default stable
 rustup update
+rustup component add clippy rustfmt
 ```
 
 依存関係をインストールし、cncliをビルドします
 
 ```bash
 source $HOME/.cargo/env
-sudo apt-get update -y
-sudo apt-get install automake build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make g++ tmux git jq wget libncursesw5 libtool autoconf -y
+sudo apt-get update -y && sudo apt-get install -y automake build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make g++ tmux git jq wget libncursesw5 libtool autoconf
 cd $HOME/git
 git clone https://github.com/AndrewWestberg/cncli
 cd cncli
-git checkout v1.5.1
+git checkout v2.0.0
 cargo install --path . --force
 ```
 
@@ -116,7 +116,7 @@ sudo systemctl stop cnode-cncli-leaderlog.service
 rustup update
 cd $HOME/git/cncli
 git fetch --all --prune
-git checkout v1.5.1
+git checkout v2.0.0
 cargo install --path . --force
 cncli --version
 ```
@@ -172,6 +172,7 @@ wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/mast
 wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/logMonitor.sh
 wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/gLiveView.sh
 wget -N https://raw.githubusercontent.com/btbf/coincashew/master/guild-tools/blocks.sh
+wget -N https://raw.githubusercontent.com/btbf/coincashew/master/guild-tools/leaderlog_auto.sh
 ```
 
 ###  3-1.パーミッションを設定する
@@ -180,6 +181,7 @@ chmod 755 cncli.sh
 chmod 755 logMonitor.sh
 chmod 755 gLiveView.sh
 chmod 755 blocks.sh
+chmod 755 leaderlog_auto.sh
 cd ../
 chmod 400 vrf.vkey
 ```
@@ -367,6 +369,39 @@ WantedBy=cnode-logmonitor.service
 EOF
 ```
 {% endtab %}
+
+{% tab title="autoleaderlog" %}
+```bash
+cat > $NODE_HOME/service/autoleaderlog.service << EOF
+# The Cardano node service (part of systemd)
+# file: /etc/systemd/system/autoleaderlog.service
+
+[Unit]
+Description     = autoleaderlog.service
+BindsTo         = autoleaderlog.service
+After           = autoleaderlog.service
+
+[Service]
+User            = $(whoami)
+Type=oneshot
+RemainAfterExit=yes
+Restart=on-failure
+RestartSec=20
+WorkingDirectory= $NODE_HOME
+ExecStart       = /usr/bin/tmux new -d -s autoleaderlog
+ExecStartPost   = /usr/bin/tmux send-keys -t autoleaderlog $NODE_HOME/scripts/leaderlog_auto.sh Enter
+ExecStop=/usr/bin/tmux kill-session -t autoleaderlog
+KillSignal=SIGINT
+RestartKillSignal=SIGINT
+TimeoutStopSec=2
+LimitNOFILE=32768
+
+[Install]
+WantedBy    = autoleaderlog.service
+EOF
+```
+{% endtab %}
+
 {% endtabs %}
 
 ###  4-1サービスファイルをシステムフォルダにコピーして権限を付与します。  
@@ -377,6 +412,7 @@ sudo cp $NODE_HOME/service/cnode-cncli-sync.service /etc/systemd/system/cnode-cn
 sudo cp $NODE_HOME/service/cnode-cncli-validate.service /etc/systemd/system/cnode-cncli-validate.service
 sudo cp $NODE_HOME/service/cnode-cncli-leaderlog.service /etc/systemd/system/cnode-cncli-leaderlog.service
 sudo cp $NODE_HOME/service/cnode-logmonitor.service /etc/systemd/system/cnode-logmonitor.service
+sudo cp $NODE_HOME/service/autoleaderlog.service /etc/systemd/system/autoleaderlog.service
 ```
 
 ```bash
@@ -384,6 +420,7 @@ sudo chmod 644 /etc/systemd/system/cnode-cncli-sync.service
 sudo chmod 644 /etc/systemd/system/cnode-cncli-validate.service
 sudo chmod 644 /etc/systemd/system/cnode-cncli-leaderlog.service
 sudo chmod 644 /etc/systemd/system/cnode-logmonitor.service
+sudo chmod 644 /etc/systemd/system/autoleaderlog.service
 ```
 
 ###  4-2サービスファイルを有効化します
@@ -394,6 +431,7 @@ sudo systemctl enable cnode-cncli-sync.service
 sudo systemctl enable cnode-cncli-validate.service
 sudo systemctl enable cnode-cncli-leaderlog.service
 sudo systemctl enable cnode-logmonitor.service
+sudo systemctl enable autoleaderlog
 ```
 
 ### 4-3.ログファイルを作成するように設定する
@@ -468,6 +506,7 @@ cd $NODE_HOME/scripts
 sudo systemctl start cnode-cncli-validate.service
 sudo systemctl start cnode-cncli-leaderlog.service
 sudo systemctl start cnode-logmonitor.service
+sudo systemctl start autoleaderlog
 ```
 
 tmux起動確認
@@ -483,6 +522,7 @@ tmux ls
 * leaderlog
 * logmonitor
 * validate
+* autoleaderlog
 {% endhint %}
 
 
@@ -522,7 +562,7 @@ tmux a -t validate
 ~ CNCLI Block Validation started ~
 ```
   
-Ctrl+b d でバックグラウンド実行に切り替えます(デタッチ)
+Ctrl+bを押した後すぐにd でバックグラウンド実行に切り替えます(デタッチ)
 {% endtab %}
 
 {% tab title="leaderlog" %}
@@ -531,17 +571,19 @@ Ctrl+b d でバックグラウンド実行に切り替えます(デタッチ)
 こちらのプログラムはスロットリーダーを自動的に算出するプログラムです。  
 次エポックの1.5日前になると自動的に次エポックのスロットリーダーが算出されます。
 {% endhint %}
+
 ```bash
 tmux a -t leaderlog
 ```
 
 以下の表示なら正常です。  
 スケジュール予定がある場合、表示されるまでに5分ほどかかります。
+
 ```
 ~ CNCLI Leaderlog started ~
-Shelley transition epoch found: 208
 ```
-Ctrl+b d でバックグラウンド実行に切り替えます(デタッチ)
+
+Ctrl+bを押した後すぐにd でバックグラウンド実行に切り替えます(デタッチ)
 {% endtab %}
 
 
@@ -560,23 +602,29 @@ tmux a -t logmonitor
 ~~ LOG MONITOR STARTED ~~
 monitoring logs/node.json for traces
 ```
-Ctrl+b d でバックグラウンド実行に切り替えます(デタッチ)
+Ctrl+bを押した後すぐにd でバックグラウンド実行に切り替えます(デタッチ)
+{% endtab %}
+
+{% tab title="autoleaderlog" %}
+
+{% hint style="info" %}
+こちらのプログラムは320000slotを迎えたら自動的にleaderlogを実行する
+{% endhint %}
+
+```bash
+tmux a -t autoleaderlog
+```
+
+スロットが320000以前なら「スケジュール未実行」  
+スロットが320000移行なら「スケジュール実行済み」  
+となればOK  
+
+Ctrl+bを押した後すぐにd でバックグラウンド実行に切り替えます(デタッチ)
 {% endtab %}
 
 {% endtabs %}
 
-###  7-1.　各エポックごとのスロットリーダーを算出する
 
-{% hint style="info" %}
-各エポックのスロットリーダースケジュールは
-エポックの約1.5日前から算出されます。
-その際、leaderlogサービスを再起動する必要があります。(算出されるまでに数分かかります。) 
-```bash
-sudo systemctl reload-or-restart cnode-cncli-leaderlog.service
-```
-
-
-{% endhint %}
 
 ## 🏁 8.ブロックログを表示する
 
