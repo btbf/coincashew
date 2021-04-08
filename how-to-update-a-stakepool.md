@@ -1,5 +1,3 @@
-
-
 ## 🚀 このマニュアルに関する問い合わせ先
 
 {% hint style="success" %}
@@ -15,18 +13,13 @@
 
 {% hint style="success" %} 2021年4月8日時点でこのガイドは v.1.26.1に対応しています。 😁 {% endhint %}
 
-
-
 {% hint style="info" %}
 このマニュアルは、[X Stake Pool](https://xstakepool.com)オペレータの[BTBF](https://twitter.com/btbfpark)が[CoinCashew](https://www.coincashew.com/coins/overview-ada/guide-how-to-build-a-haskell-stakepool-node#9-register-your-stakepool)より許可を得て、日本語翻訳しております。
 {% endhint %}
 
-
  `cardano-node`は常に更新されており、バージョンがアップデートされるたびにプールサーバでも作業が必要です。 [Official Cardano-Node Github Repo](https://github.com/input-output-hk/cardano-node) をフォローし最新情報を取得しましょう。
 
-
 # 📡 1. ノードバージョンアップデート手順
-
 
 {% hint style="info" %}
 1.25.1から1.26.1へのバージョンアップはDB更新が発生します。  
@@ -35,23 +28,23 @@
 特にBP更新時やリレーノード1台のみで運用しているプールはご注意ください。 
 {% endhint %}
 
-
 ## 1-1.GHCとCabalをアップデートする
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 ```
+
 > Press ENTER to proceed or ctrl-c to abort.
 Note that this script can be re-run at any given time.
 
 ⇒Enter
 
 >Press ENTER to proceed or ctrl-c to abort.
-Installation may take a while. 
+Installation may take a while
 
 ⇒Enter
 
->Answer with YES or NO and press ENTER. 
+>Answer with YES or NO and press ENTER
 
 ⇒yesと入力しEnter
 
@@ -61,9 +54,7 @@ answer with YES, otherwise with NO and press ENTER.
 
 ⇒yesと入力しEnter
 
-
-
-```
+```bash
 source ~/.bashrc
 ghcup upgrade
 ghcup install ghc 8.10.4
@@ -87,7 +78,8 @@ cd cardano-node2/
 ```
 
 ## 1-3.ソースコードからビルドする
-```
+
+```bash
 cabal update
 rm -rf $HOME/git/cardano-node2/dist-newstyle/build/x86_64-linux/ghc-8.10.2
 rm -rf $HOME/git/cardano-node2/dist-newstyle/build/x86_64-linux/ghc-8.10.4
@@ -99,40 +91,46 @@ cabal build cardano-node cardano-cli
 ```
 
 ## 1-4.バージョン確認
-```
+
+```bash
 $(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-cli") version
 $(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-node") version
 ```
 
 ## 1-5.ノードをストップする
-```
+
+```bash
 sudo systemctl stop cardano-node
 ```
 
 ## 1-6.バイナリーファイルをシステムフォルダーへコピーする
-```
+
+```bash
 sudo cp $(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-cli") /usr/local/bin/cardano-cli
 ```
-```
+
+```bash
 sudo cp $(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-node") /usr/local/bin/cardano-node
 ```
 
 ## 1-7.システムに反映されたノードバージョンを確認する
-```
+
+```bash
 cardano-node version
 cardano-cli version
 ```
 
 ## 1-8.ノードを起動する
-```
+
+```bash
 sudo systemctl start cardano-node
 tmux a -t cnode
 ```
+
 {% hint style="danger" %}
 DB更新が完了するまで、約60分～120分かかります。  
 更新が完了すると、自動的にノードが起動します。
 {% endhint %}
-
 
 <!--```bash
 cd $HOME/git
@@ -143,13 +141,10 @@ cd cardano-node2
 
 ## 1-1.新しいバイナリーファイルをダウンロードする
 
-
 ```bash
 wget https://hydra.iohk.io/build/5984213/download/1/cardano-node-1.26.1-linux.tar.gz
 tar -xf cardano-node-1.26.1-linux.tar.gz
 ```
-
-
 **cardano-cli** と **cardano-node** が希望のバージョンに更新されたことを確認して下さい。
 
 ```bash
@@ -169,7 +164,6 @@ $(find $HOME/git/cardano-node2/ -type f -name "cardano-node") version
 ```
 sudo systemctl stop cardano-node
 ```
-
 
 **cardano-cli** と **cardano-node** ファイルをbinディレクトリにコピーします。
 
@@ -194,15 +188,14 @@ tmux a -t cnode
 ```
 -->
 
-
 # 2.各ツールを導入している場合は以下の内容を実施ください
 
 {% hint style="danger" %}
 リレーノード／ブロックプロデューサーノードごとに作業内容が異なりますので、タブで切り替えてください。
 {% endhint %}
 
-{% tabs %} 
-{% tab title="リレーノード" %} 
+{% tabs %}
+{% tab title="リレーノード" %}
 
 ## 2-1-1 topologyUpdater.shを更新する
 
@@ -225,14 +218,16 @@ sed -i env \
 ```
 
 ## 2-1-3 gLiveViewを起動する
-```
+
+```bash
 ./gLiveView.sh
 ```
+
 ノードが同期しているか確認する
 
 {% endtab %}
 
-{% tab title="ブロックプロデューサーノード" %} 
+{% tab title="ブロックプロデューサーノード" %}
 
 ## 2-2-1.gLiveViewとcncli.shファイルを更新する
 
@@ -256,6 +251,7 @@ nano env
 ファイル内上部にある設定値を変更します。  
 先頭の **#** を外し、ご自身の環境に合わせCNODE_HOME=の**user_name**やファイル名、ポート番号を設定します。  
 下記以外の**#**がついている項目はそのままで良いです。
+
 ```bash
 CCLI="/usr/local/bin/cardano-cli"
 CNODE_HOME=/home/user_name/cardano-my-node
@@ -281,9 +277,11 @@ POOL_VRF_VKEY="${CNODE_HOME}/vrf.vkey"
 ```
 
 ## 2-2-3 gLiveViewを起動する
-```
+
+```bash
 ./gLiveView.sh
 ```
+
 ノードが同期しているか確認する
 
 ## 2-2-4.ブロックログサービスを再起動する
@@ -292,6 +290,7 @@ POOL_VRF_VKEY="${CNODE_HOME}/vrf.vkey"
 sudo systemctl reload-or-restart cnode-cncli-sync.service
 tmux a -t cncli
 ```
+
 {% hint style="info" %}
 「100.00% synced」になるまで待ちます。  
 100%になったら、Ctrl+bを押した後に d を押し元の画面に戻ります  
@@ -308,8 +307,6 @@ sudo systemctl reload-or-restart autoleaderlog
 {% endtab %}
 {% endtabs %}
 
-
-
 最後に、前バージョンで使用していたバイナリフォルダをリネームし、バックアップとして保持します。最新バージョンを構築したフォルダをcardano-nodeとして使用します。
 
 ```bash
@@ -317,8 +314,6 @@ cd $HOME/git
 mv cardano-node/ cardano-node-old/
 mv cardano-node2/ cardano-node/
 ```
-
-
 
 ### 📂 4.2 バックアップから前バージョンへロールバックする
 最新バージョンに問題がある場合は、以前のバージョンへ戻しましょう。
@@ -329,21 +324,27 @@ mv cardano-node2/ cardano-node/
 
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
+
 ```bash
 killall -s 2 cardano-node
 ```
+
 {% endtab %}
 
 {% tab title="リレーノード1" %}
-```
+
+```bash
 killall -s 2 cardano-node
 ```
+
 {% endtab %}
 
 {% tab title="systemd" %}
-```
+
+```bash
 sudo systemctl stop cardano-node
 ```
+
 {% endtab %}
 {% endtabs %}
 
@@ -375,23 +376,29 @@ sudo cp $(find $HOME/git/cardano-node/dist-newstyle/build -type f -name "cardano
 
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
+
 ```bash
 cd $NODE_HOME
 ./startBlockProducingNode.sh
 ```
+
 {% endtab %}
 
 {% tab title="リレードード1" %}
+
 ```bash
 cd $NODE_HOME
 ./startRelayNode1.sh
 ```
+
 {% endtab %}
 
 {% tab title="systemd" %}
-```
+
+```bash
 sudo systemctl start cardano-node
 ```
+
 {% endtab %}
 {% endtabs %}
 
