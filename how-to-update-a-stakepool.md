@@ -302,15 +302,25 @@ POOL_VRF_SKEY="${CNODE_HOME}/vrf.skey"
 POOL_VRF_VKEY="${CNODE_HOME}/vrf.vkey"
 ```
 
-## 2-2-3 gLiveViewを起動する
+## 2-2-3.gLiveViewを起動する
 
 ```bash
 ./gLiveView.sh
 ```
+ノードが同期しているか確認する。
 
-ノードが同期しているか確認する
+## 2-2-4.CNCLIをバージョンアップする
 
-## 2-2-4.ブロックログサービスを再起動する
+```bash
+rustup update
+cd $HOME/git/cncli
+git fetch --all --prune
+git checkout v2.0.0
+cargo install --path . --force
+cncli --version
+```
+
+## 2-2-5.ブロックログ関連サービスを再起動する
 
 ```bash
 sudo systemctl reload-or-restart cnode-cncli-sync.service
