@@ -19,6 +19,7 @@
 
  `cardano-node`は常に更新されており、バージョンがアップデートされるたびにプールサーバでも作業が必要です。 [Official Cardano-Node Github Repo](https://github.com/input-output-hk/cardano-node) をフォローし最新情報を取得しましょう。
 
+
 # 📡 1. ノードバージョンアップデート手順
 
 {% hint style="info" %}
@@ -67,6 +68,11 @@ ghcup set cabal 3.4.0.0
 cabal --version
 # 3.4.0.0と表示されればOK
 ```
+
+{% hint style="info" %}
+バイナリーファイルは必ずソースコードからビルドするようにし、整合性をチェックしてください。  
+また、IOGは現在ARMアーキテクチャ用のバイナリファイルを提供していません。Raspberry Piを使用してプールを構築する場合は、ARM用コンパイラでコンパイルする必要があります。
+{% endhint %}
 
 ## 1-2.ソースコードをダウンロードする
 
