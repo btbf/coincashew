@@ -275,7 +275,6 @@ chmod 755 gLiveView.sh
 envファイルを編集します
 
 ```bash
-cd scripts
 nano env
 ```
 
