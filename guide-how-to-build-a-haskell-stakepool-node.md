@@ -767,7 +767,7 @@ echo startKesPeriod: ${startKesPeriod}
 ステークプールオペレータは、プールを実行する権限があることを確認するための運用証明書を発行する必要があります。証明書には、オペレータの署名が含まれプールに関する情報（アドレス、キーなど）が含まれます。
 {% endhint %}
 
-**＜startKesPeriod＞**の部分を上記で算出した数値（startKesPeriodの値）に置き換えます。
+**XXX**の部分を上記で算出した数値（startKesPeriodの値）に置き換えます。
 
 {% tabs %}
 {% tab title="エアギャップオフラインマシン" %}
@@ -777,7 +777,7 @@ cardano-cli node issue-op-cert \
     --kes-verification-key-file kes.vkey \
     --cold-signing-key-file $HOME/cold-keys/node.skey \
     --operational-certificate-issue-counter $HOME/cold-keys/node.counter \
-    --kes-period <startKesPeriod> \
+    --kes-period XXX \
     --out-file node.cert
 ```
 {% endtab %}
@@ -2366,9 +2366,9 @@ cardano-cli node key-gen-KES \
 
 kes.vkeyをエアギャップオフラインマシンのcardano-my-nodeディレクトリにコピーします。 
   
-次のコマンドで、新しい `node.cert`ファイルを作成します。このときstartKesPeriodの値を下記の&lt;startKesPeriod&gt;の箇所に置き換えてからコマンドを送信してください。
+次のコマンドで、新しい `node.cert`ファイルを作成します。このときstartKesPeriodの値を下記のXXXの箇所に置き換えてからコマンドを送信してください。
 
-**&lt;startKesPeriod&gt;**の部分を上記で算出した数値（startKesPeriodの値）に置き換えます。
+**XXX**の部分を上記で算出した数値（startKesPeriodの値）に置き換えます。
 
 {% tabs %}
 {% tab title="エアギャップオフラインマシン" %}
@@ -2379,7 +2379,7 @@ cardano-cli node issue-op-cert \
     --kes-verification-key-file kes.vkey \
     --cold-signing-key-file $HOME/cold-keys/node.skey \
     --operational-certificate-issue-counter $HOME/cold-keys/node.counter \
-    --kes-period <startKesPeriod> \
+    --kes-period XXX \
     --out-file node.cert
 chmod a-rwx $HOME/cold-keys
 ```
