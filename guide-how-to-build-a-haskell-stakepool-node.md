@@ -1206,7 +1206,6 @@ echo "$(cat payment.addr)"
 cardano-cli query utxo \
     --address $(cat payment.addr) \
     --mainnet \
-    --mary-era
 ```
 {% endtab %}
 {% endtabs %}
@@ -2088,7 +2087,6 @@ CERT=\${DIRECTORY}/node.cert
 cardano-cli query stake-address-info \
  --address $(cat stake.addr) \
  --mainnet \
- --mary-era
 ```
 {% endtab %}
 {% endtabs %}
@@ -2683,7 +2681,7 @@ cardano-cli transaction submit \
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
-cardano-cli query ledger-state --mainnet --mary-era --out-file ledger-state.json
+cardano-cli query ledger-state --mainnet --out-file ledger-state.json
 jq -r '.esLState._delegationState._pstate._pParams."'"$(cat stakepoolid.txt)"'"  // empty' ledger-state.json
 ```
 {% endtab %}
@@ -2932,7 +2930,6 @@ cardano-cli transaction submit \
 cardano-cli query utxo \
     --address ${destinationAddress} \
     --mainnet \
-    --mary-era
 ```
 {% endtab %}
 {% endtabs %}
@@ -3555,7 +3552,7 @@ cardano-cli transaction submit \
 {% tabs %}
 {% tab title="ブロックプロデューサノード" %}
 ```bash
-cardano-cli query ledger-state --mainnet --mary-era --out-file ledger-state.json
+cardano-cli query ledger-state --mainnet --out-file ledger-state.json
 jq -r '.esLState._delegationState._pstate._pParams."'"$(cat stakepoolid.txt)"'"  // empty' ledger-state.json
 ```
 {% endtab %}
