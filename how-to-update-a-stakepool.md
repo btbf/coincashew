@@ -99,8 +99,8 @@ echo -e "package cardano-crypto-praos\n flags: -external-libsodium-vrf" > cabal.
 cabal build cardano-node cardano-cli
 ```
 
-> ビルド完了までに15分～40分ほどかかります。
-> 
+> ビルド完了までに15分～40分ほどかかります。  
+> Linking /home/xxxx/git/cardano-node2/dist-newstyle/build/x86_64-linux/ghc-8.10.4/cardano-cli-1.26.1/t/cardano-cli-test/build/cardano-cli-test/cardano-cli-test ...　が最後のメッセージならビルド成功
 
 ## 1-4.バージョン確認
 
