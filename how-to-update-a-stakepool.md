@@ -1,7 +1,4 @@
----
-description: >-
-  最新ノードをソースコードからビルドするには、数分～数時間かかる場合があります。その間プールを停止させるとブロック生成のチャンスが失われ、委任者に迷惑がかかります。プール停止時間を最小限に抑えた方法でアップデートするよう心がけましょう。
----
+
 
 ## 🚀 このマニュアルに関する問い合わせ先
 
@@ -16,9 +13,9 @@ description: >-
 
 {% endhint %}
 
-{% hint style="success" %} 2021年1月30日時点でこのガイドは v.1.25.1に対応しています。 😁 {% endhint %}
+{% hint style="success" %} 2021年4月8日時点でこのガイドは v.1.26.1に対応しています。 😁 {% endhint %}
 
-# 📡 1. ノードバージョンアップデート手順
+
 
 {% hint style="info" %}
 このマニュアルは、[X Stake Pool](https://xstakepool.com)オペレータの[BTBF](https://twitter.com/btbfpark)が[CoinCashew](https://www.coincashew.com/coins/overview-ada/guide-how-to-build-a-haskell-stakepool-node#9-register-your-stakepool)より許可を得て、日本語翻訳しております。
@@ -27,7 +24,60 @@ description: >-
 
  `cardano-node`は常に更新されており、バージョンがアップデートされるたびにプールサーバでも作業が必要です。 [Official Cardano-Node Github Repo](https://github.com/input-output-hk/cardano-node) をフォローし最新情報を取得しましょう。
 
-現在の `$HOME/git/cardano-node` ディレクトリに更新する場合は、ディレクトリ全体を新しい場所へコピーしてバックアップを作成します。(ロールバックする際に必要となります)
+
+# 📡 1. ノードバージョンアップデート手順
+
+
+{% hint style="info" %}
+1.25.1から1.26.1へのバージョンアップはDB更新が発生します。  
+この更新には60分～120分以上かかる場合があります。その間ノードは停止状態となりブロック生成が出来なくなります。  
+スロットリーダースケジュールを確認し、次のブロック生成予定までに十分時間があるタイミングで実施してください。
+特にBP更新時やリレーノード1台のみで運用しているプールはご注意ください。 
+{% endhint %}
+
+
+## 1-1.GHCとCabalをアップデートする
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
+```
+> Press ENTER to proceed or ctrl-c to abort.
+Note that this script can be re-run at any given time.
+
+⇒Enter
+
+>Press ENTER to proceed or ctrl-c to abort.
+Installation may take a while. 
+
+⇒Enter
+
+>Answer with YES or NO and press ENTER. 
+
+⇒yesと入力しEnter
+
+>Detected bash shell on your system...
+If you want ghcup to automatically add the required PATH variable to "/home/xxxx/.bashrc"
+answer with YES, otherwise with NO and press ENTER.
+
+⇒yesと入力しEnter
+
+
+
+```
+source ~/.bashrc
+ghcup upgrade
+ghcup install ghc 8.10.4
+ghcup set ghc 8.10.4
+ghc --version
+# 8.10.4と表示されればOK
+
+ghcup install cabal 3.4.0.0
+ghcup set cabal 3.4.0.0
+cabal --version
+# 3.4.0.0と表示されればOK
+```
+
+## 1-2.ソースコードをダウンロードする
 
 ```bash
 cd $HOME/git
@@ -36,229 +86,85 @@ git clone https://github.com/input-output-hk/cardano-node.git cardano-node2
 cd cardano-node2/
 ```
 
-{% hint style="danger" %}
-最新のリリースに必要となる他の更新や依存関係については、パッチノートを参照して下さい。
-{% endhint %}
-
-<!-- 
-{% tabs %} {% tab title="v1.23.0からバージョンアップする場合" %} このリリースは、今後のアレグラとメアリーのハードフォークとそれらがもたらす新機能のサポートを提供します。
-
-・Allegraハードフォークは、Catalyst財務スキームをサポートするために必要ないくつかの機能を追加します。スロット番号を介して、既存のマルチシグスクリプト言語を時間の述語で拡張します。これにより、例えば特定の時点までの使用できないスクリプトアドレスを作成できます。  
-  
-・Maryハードフォークはマルチアセットサポートを追加します。これはERC20及びERC721トークン相当しますが、UTｘO元帳でネイティブにサポートされます。これはGoguen機能セットの一部です。これは非常に重要な機能であり、交換を含む全てのカルダノウォレットの実装に影響します。  
-  
-ステークプールオペレーター(SPO)と取引所は、ノード構成の「オプション」セクションを下記のエントリーで更新する必要がありますので、後ほどmainnet-config.jsonを更新します。
-```bash
-  "options": {
-    "mapBackends": {
-      "cardano.node.resources": [
-        "EKGViewBK"
-      ],
+## 1-3.ソースコードからビルドする
 ```
-{% endtab %}
-
-
-
-{% tab title="1.21.1からバージョンアップする場合" %} このリリースには、今後のアレグラとメアリーのハードフォークとそれらがもたらす新機能をサポートするためのかなりの量の内部変更が含まれています。これはAllegraハードフォーク前の最終リリースではありませんが、AllegraとMaryの両方のハードフォークの機能の大部分が含まれています。  
-  
-・Allegraハードフォークは、Catalyst財務スキームをサポートするために必要ないくつかの機能を追加します。スロット番号を介して、既存のマルチシグスクリプト言語を時間の述語で拡張します。これにより、例えば特定の時点までの使用できないスクリプトアドレスを作成できます。  
-  
-・Maryハードフォークはマルチアセットサポートを追加します。これはERC20及びERC721トークン相当しますが、UTｘO元帳でネイティブにサポートされます。これはGoguen機能セットの一部です。これは非常に重要な機能であり、交換を含む全てのカルダノウォレットの実装に影響します。  
-  
-このリリースでもう１つ注目せうべき変更は、まだ多くのブロックを作成していない小さなプールに役立つプールランキングの調整です。新しいプールが完全でない平均レベルで実行されると想定する代わりに、多かれ少なかれ完全に実行されると想定するように初期ベイジアン事前確率を調整しました。この事前情報は、実際のパフォーマンス履歴に基づいて引き続き更新されるため、パフォーマンスの低いプールはランキングで低下します。この変更はパフォーマンス履歴がほとんどなく、スコアが最初の事前設定の影響を大きく受けるため、これまでにブロックがほとんど生成されていない小さなプールに特に役に立ちます。  
-  
-### v1.23.0リリースに伴う新しい依存関係
-
-GHC バージョン8.10.2をインストールします。
-
-```bash
-cd
-wget https://downloads.haskell.org/ghc/8.10.2/ghc-8.10.2-x86_64-deb9-linux.tar.xz
-tar -xf ghc-8.10.2-x86_64-deb9-linux.tar.xz
-rm ghc-8.10.2-x86_64-deb9-linux.tar.xz
-cd ghc-8.10.2
-./configure
-sudo make install
-```
-
-GHCバージョン 8.10.2がインストールされたことを確認します。
-
-```bash
-source $HOME/.bashrc
-cabal update
-ghc -V
-```
-
-> \#バージョン出力の例
->
-> The Glorious Glasgow Haskell Compilation System, version 8.10.2
-
-
-#### Liveviewを無効にする
-
-このリリースからLiveViewは削除されました。
-
-以下を実行して **mainnet-config.json**の内容を変更します。
-
-* LiveView を SimpleViewへ変更します。
-
-```bash
-cd $NODE_HOME
-sed -i mainnet-config.json \
-    -e "s/LiveView/SimpleView/g"
-```
-
-#### ログ出力をコンソールとJSONファイルの両方に対応する場合の記述方法
-
-```bash
-nano mainnet-config.json
- ```
- 以下を該当する部分に貼り付けます。
-
- ```
-  "defaultScribes": [
-    [
-      "FileSK",
-      "logs/node.json"
-    ],
-    [
-      "StdoutSK",
-      "stdout"
-    ]
-  ],
-```
-```
-   "setupScribes": [
-    {
-      "scFormat": "ScJson",
-      "scKind": "FileSK",
-      "scName": "logs/node.json"
-    },
-    {
-      "scFormat": "ScText",
-      "scKind": "StdoutSK",
-      "scName": "stdout",
-      "scRotation": null
-    }
-  ]
- ```
-
-#### vrf.skeyのパーミッションを変更する（ブロックプロデューサーの場合のみ）
-
-バージョン1.23.0より、vrf.skeyパーミッションチェックが実装され、所有者読み取り専用権限に設定することでノードを起動できます。
-```
-cd $NODE_HOME
-chmod 400 vrf.skey
-```
-
-
-
-#### gLiveViewをインストールします（任意）
-
-LiveViewの代わりにノードを監視するコミュニティ製の監視ツールです。  
-(メモリー使用率が高くなることに注意して下さい)
-
-[インストールはこちらを参照してください](./#18-13-gliveview-node-status-monitoring)
-
-
-{% endtab %} {% endtabs %}
--->
-## 1-1.新しいバイナリーファイルをコンパイルする
-
-古いバイナリーを削除し、最新のバイナリーを再構築します。次のコマンドを実行して、最新のバイナリをプルしてビルドします。必要に応じて、チェックアウト **tag** または **branch** を変更して下さい。
-
-```bash
-cd $HOME/git/cardano-node2
-cabal clean
 cabal update
 rm -rf $HOME/git/cardano-node2/dist-newstyle/build/x86_64-linux/ghc-8.10.2
-git clean -fd
+rm -rf $HOME/git/cardano-node2/dist-newstyle/build/x86_64-linux/ghc-8.10.4
 git fetch --all --recurse-submodules --tags
-git checkout tags/1.25.1 && git pull
-cabal configure -O0 -w ghc-8.10.2
+git checkout tags/1.26.1
+cabal configure -O0 -w ghc-8.10.4
 echo -e "package cardano-crypto-praos\n flags: -external-libsodium-vrf" > cabal.project.local
 cabal build cardano-node cardano-cli
 ```
 
-{% hint style="info" %}
-コンピュータの処理能力によっては、ビルドプロセスに数分から数時間かかる場合があります。  
-ビルド中の表示で、以下が表示されてから次に進むまで、結構時間かかります。
-'hackage.haskell.org'! Falling back to older state (2021-01-09T22:55:53Z).
-Resolving dependencies...
+## 1-4.バージョン確認
+```
+$(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-cli") version
+$(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-node") version
+```
+
+## 1-5.ノードをストップする
+```
+sudo systemctl stop cardano-node
+```
+
+## 1-6.バイナリーファイルをシステムフォルダーへコピーする
+```
+sudo cp $(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-cli") /usr/local/bin/cardano-cli
+```
+```
+sudo cp $(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-node") /usr/local/bin/cardano-node
+```
+
+## 1-7.システムに反映されたノードバージョンを確認する
+```
+cardano-node version
+cardano-cli version
+```
+
+## 1-8.ノードを起動する
+```
+sudo systemctl start cardano-node
+tmux a -t cnode
+```
+{% hint style="danger" %}
+DB更新が完了するまで、約60分～120分かかります。  
+更新が完了すると、自動的にノードが起動します。
 {% endhint %}
+
+
+<!--```bash
+cd $HOME/git
+rm -rf cardano-node-old/
+mkdir cardano-node2
+cd cardano-node2
+```
+
+## 1-1.新しいバイナリーファイルをダウンロードする
+
+
+```bash
+wget https://hydra.iohk.io/build/5984213/download/1/cardano-node-1.26.1-linux.tar.gz
+tar -xf cardano-node-1.26.1-linux.tar.gz
+```
+
 
 **cardano-cli** と **cardano-node** が希望のバージョンに更新されたことを確認して下さい。
 
 ```bash
-$(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-cli") version
+$(find $HOME/git/cardano-node2/ -type f -name "cardano-cli") version
 ```
 ```bash
-$(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-node") version
+$(find $HOME/git/cardano-node2/ -type f -name "cardano-node") version
 ```
 
-## 1-2.mainnet-config.jsonのアップデート  
+## 1-2.バイナリーファイルを更新する 
   
-* 既存のファイルをバックアップします。
-```bash
-cd $NODE_HOME
-cp mainnet-config.json mainnet-config-bk.json
- ```
-
-* 最新のmainnet-config.jsonをダウンロードします。
-```bash
-NODE_BUILD_NUM=$(curl https://hydra.iohk.io/job/Cardano/iohk-nix/cardano-deployment/latest-finished/download/1/index.html | grep -e "build" | sed 's/.*build\/\([0-9]*\)\/download.*/\1/g')
-wget -N https://hydra.iohk.io/build/${NODE_BUILD_NUM}/download/1/${NODE_CONFIG}-config.json
-```
-値を変更します。  
-* TraceBlockFetchDecisionsを「true」に変更します。
-```bash
-sed -i ${NODE_CONFIG}-config.json \
-    -e "s/TraceBlockFetchDecisions\": false/TraceBlockFetchDecisions\": true/g"
-```
-```bash
-sed -i ${NODE_CONFIG}-config.json -e "s/127.0.0.1/0.0.0.0/g" 
-```
-
-## 1-3.ログファイルを作成するように設定する
- ```bash
-nano mainnet-config.json
- ```
-* defaultScribesを下記のように書き換える
- ```bash
-  "defaultScribes": [
-    [
-      "FileSK",
-      "logs/node.json"
-    ],
-    [
-      "StdoutSK",
-      "stdout"
-    ]
-  ],
-```
-* setupScribesを下記のように書き換える
- ```bash
-   "setupScribes": [
-    {
-      "scFormat": "ScJson",
-      "scKind": "FileSK",
-      "scName": "logs/node.json"
-    },
-    {
-      "scFormat": "ScText",
-      "scKind": "StdoutSK",
-      "scName": "stdout",
-      "scRotation": null
-    }
-  ]
- ```
-  
- Ctrl+Oでファイルを保存し、Ctrl+Xで閉じる
 
 {% hint style="danger" %}
 バイナリーファイルを更新する前に、ノードを停止して下さい。
 {% endhint %}
-
 
 ```
 sudo systemctl stop cardano-node
@@ -268,10 +174,10 @@ sudo systemctl stop cardano-node
 **cardano-cli** と **cardano-node** ファイルをbinディレクトリにコピーします。
 
 ```bash
-sudo cp $(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-cli") /usr/local/bin/cardano-cli
+sudo cp $(find $HOME/git/cardano-node2/ -type f -name "cardano-cli") /usr/local/bin/cardano-cli
 ```
 ```bash
-sudo cp $(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-node") /usr/local/bin/cardano-node
+sudo cp $(find $HOME/git/cardano-node2/ -type f -name "cardano-node") /usr/local/bin/cardano-node
 ```
 
 バージョンを確認します。
@@ -279,26 +185,129 @@ sudo cp $(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardan
 cardano-node version
 cardano-cli version
 ```
+> 1.26.1と表示されたらOK
 
-
-{% hint style="success" %}
-ノードを再起動して、更新されたバイナリーを使用します。
-{% endhint %}
-
-
+ノードを再起動します。
 ```
 sudo systemctl start cardano-node
+tmux a -t cnode
+```
+-->
+
+
+# 2.各ツールを導入している場合は以下の内容を実施ください
+
+{% hint style="danger" %}
+リレーノード／ブロックプロデューサーノードごとに作業内容が異なりますので、タブで切り替えてください。
+{% endhint %}
+
+{% tabs %} 
+{% tab title="リレーノード" %} 
+
+## 2-1-1 topologyUpdater.shを更新する
+
+```bash
+cd $NODE_HOME
+sed -i topologyUpdater.sh \
+  -e "s/jq -r .blockNo/jq -r .block/g"
 ```
 
-{% hint style="info" %}
-**●ブロックログを導入している場合は、各種サービスを再起動してください**
+## 2-1-2 gLiveViewを更新する
+
+```bash
+cd ${NODE_HOME}/scripts
+curl -s -o gLiveView.sh https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/gLiveView.sh
+curl -s -o env https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/env
+chmod 755 gLiveView.sh
+sed -i env \
+    -e "s/\#CONFIG=\"\${CNODE_HOME}\/files\/config.json\"/CONFIG=\"\${NODE_HOME}\/mainnet-config.json\"/g" \
+    -e "s/\#SOCKET=\"\${CNODE_HOME}\/sockets\/node0.socket\"/SOCKET=\"\${NODE_HOME}\/db\/socket\"/g"
 ```
+
+## 2-1-3 gLiveViewを起動する
+```
+./gLiveView.sh
+```
+ノードが同期しているか確認する
+
+{% endtab %}
+
+{% tab title="ブロックプロデューサーノード" %} 
+
+## 2-2-1.gLiveViewとcncli.shファイルを更新する
+
+```bash
+cd $NODE_HOME/scripts
+curl -s -o gLiveView.sh https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/gLiveView.sh
+curl -s -o env https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/env
+wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/cncli.sh
+chmod 755 gLiveView.sh
+```
+
+## 2-2-2.設定ファイルを編集する
+
+envファイルを編集します
+
+```bash
+cd scripts
+nano env
+```
+
+ファイル内上部にある設定値を変更します。  
+先頭の **#** を外し、ご自身の環境に合わせCNODE_HOME=の**user_name**やファイル名、ポート番号を設定します。  
+下記以外の**#**がついている項目はそのままで良いです。
+```bash
+CCLI="/usr/local/bin/cardano-cli"
+CNODE_HOME=/home/user_name/cardano-my-node
+CNODE_PORT=6000
+CONFIG="${CNODE_HOME}/mainnet-config.json"
+SOCKET="${CNODE_HOME}/db/socket"
+BLOCKLOG_TZ="Asia/Tokyo"
+```
+
+cncli.shファイルを編集します。
+
+```bash
+nano cncli.sh
+```
+
+ファイル内の設定値を変更します。  
+先頭の **#** を外し、ご自身の環境に合わせてプールIDやファイル名を設定します。
+
+```bash
+POOL_ID="xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+POOL_VRF_SKEY="${CNODE_HOME}/vrf.skey"
+POOL_VRF_VKEY="${CNODE_HOME}/vrf.vkey"
+```
+
+## 2-2-3 gLiveViewを起動する
+```
+./gLiveView.sh
+```
+ノードが同期しているか確認する
+
+## 2-2-4.ブロックログサービスを再起動する
+
+```bash
 sudo systemctl reload-or-restart cnode-cncli-sync.service
+tmux a -t cncli
+```
+{% hint style="info" %}
+「100.00% synced」になるまで待ちます。  
+100%になったら、Ctrl+bを押した後に d を押し元の画面に戻ります  
+(バックグラウンド実行に切り替え)
+{% endhint %}
+
+```bash
 sudo systemctl reload-or-restart cnode-cncli-validate.service
 sudo systemctl reload-or-restart cnode-cncli-leaderlog.service
 sudo systemctl reload-or-restart cnode-logmonitor.service
+sudo systemctl reload-or-restart autoleaderlog
 ```
-{% endhint %}
+
+{% endtab %}
+{% endtabs %}
+
 
 
 最後に、前バージョンで使用していたバイナリフォルダをリネームし、バックアップとして保持します。最新バージョンを構築したフォルダをcardano-nodeとして使用します。
@@ -309,59 +318,7 @@ mv cardano-node/ cardano-node-old/
 mv cardano-node2/ cardano-node/
 ```
 
-## 1-4. Grafana各種パネル設定値を修正する
-各種パネルの「Edit」で設定画面を開き、以下パラメーターに変更する  
-(以下はコマンドラインで実行するコマンドではありませんのでご注意ください)
 
-|  パネル名  |  パラメーター  |
-| ---- | ---- |
-|  Epoch  |  cardano_node_metrics_epoch_int  |
-|  slot  |  cardano_node_metrics_slotInEpoch_int  |
-|  Block Height  |  cardano_node_metrics_blockNum_int  |
-|  Peers  |  cardano_node_metrics_connectedPeers_int  |
-|  Chain Density  |  cardano_node_metrics_density_real  |
-|  Current period  |  cardano_node_metrics_currentKESPeriod_int  |
-|  Expiry period  |  cardano_node_metrics_operationalCertificateExpiryKESPeriod_int  |
-|  Remaining  |  cardano_node_metrics_remainingKESPeriods_int  |
-
-## 1-5. gLiveViewをアップデートする
-
-```bash
-cd $NODE_HOME/scripts
-./gLiveView.sh
-```
-アップデートメッセージを処理する
-```
-The static content from env file does not match with guild-operators repository, do you want to download the updated file? [y|n]
-と表示されたら　"y" を押下  
-  
--------------------
-   
-A new version of Guild LiveView is available
-Installed Version : v1.18.0
-Available Version : v1.19.2
-
-Press 'u' to update to latest version, or any other key to continue
-と表示されたら　"u" を押下
-```
-gLiveViewを再起動する
-```bash
-./gLiveView.sh
-```
-
-
-## 🤯 2. 問題が発生した場合
-
-### 🛣 4.1 更新を忘れていた場合
-
-ノードの更新を忘れ、ノードが古いチェーンで止まっている場合
-
-データベースをリセットし [最新の genesis, config, topology json files](https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/index.html)を取得して下さい。
-
-```bash
-cd $NODE_HOME
-rm -rf db
-```
 
 ### 📂 4.2 バックアップから前バージョンへロールバックする
 最新バージョンに問題がある場合は、以前のバージョンへ戻しましょう。
