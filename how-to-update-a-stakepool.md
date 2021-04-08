@@ -86,9 +86,20 @@ rm -rf $HOME/git/cardano-node2/dist-newstyle/build/x86_64-linux/ghc-8.10.4
 git fetch --all --recurse-submodules --tags
 git checkout tags/1.26.1
 cabal configure -O0 -w ghc-8.10.4
+```
+
+> Warning: Requested index-state 2021-03-15T00:00:00Z is newer than
+'hackage.haskell.org'! Falling back to older state (2021-03-14T23:47:09Z).
+Resolving dependencies...
+
+ここで止まっているかのように見えますが、時間がかかるのでそのままお待ちください。
+
+```bash
 echo -e "package cardano-crypto-praos\n flags: -external-libsodium-vrf" > cabal.project.local
 cabal build cardano-node cardano-cli
 ```
+
+
 
 ## 1-4.バージョン確認
 
