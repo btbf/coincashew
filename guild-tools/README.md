@@ -6,7 +6,7 @@ description: >-
 # ステークプールブロックログ導入手順
 
 {% hint style="info" %}
-最終更新日：2021/3/27 8:40  
+最終更新日：2021/4/9 3:00  
 {% endhint %}
 
 ## 🎉 ∞ お知らせ
@@ -44,9 +44,6 @@ description: >-
 * **env** (設定ファイル)
 * **gLiveView.sh** (ノード監視ツール)
  
-{% hint style="info" %}
-すでに導入済みの方は、[1月30日以前から導入済みの方はこちら](./README.md#10-1-30-karaminohakochira)から  
-ファイルアップデートをお願いします。
 
 {% endhint %}
 
