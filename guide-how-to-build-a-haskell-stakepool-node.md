@@ -12,9 +12,9 @@ description: >-
 {% endhint %}
 
 {% hint style="success" %}
-このマニュアルは、カルダノノードv1.25.1に対応しています。(CLIコマンド修正済み)    
+このマニュアルは、カルダノノードv1.26.1に対応しています。
 [ドキュメント更新情報はこちら](README.md)  
-最終更新日：2021年3月24日の時点guide version 3.4.0「Mary-era 対応！」
+最終更新日：2021年4月8日の時点guide version 4.0.0
 {% endhint %}
 
 ## 🏁 0. 前提条件
@@ -114,23 +114,40 @@ sudo make install
 Cabalをインストールします。
 
 ```bash
-cd
-wget https://downloads.haskell.org/~cabal/cabal-install-3.4.0.0/cabal-install-3.4.0.0-x86_64-ubuntu-16.04.tar.xz
-tar -xf cabal-install-3.4.0.0-x86_64-ubuntu-16.04.tar.xz
-rm cabal-install-3.4.0.0-x86_64-ubuntu-16.04.tar.xz
-mkdir -p $HOME/.local/bin
-mv cabal $HOME/.local/bin/
+curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
+```
+> Press ENTER to proceed or ctrl-c to abort.
+Note that this script can be re-run at any given time.
+
+⇒Enter
+
+>Press ENTER to proceed or ctrl-c to abort.
+Installation may take a while
+
+⇒Enter
+
+>Answer with YES or NO and press ENTER
+
+⇒yesと入力しEnter
+
+>Detected bash shell on your system...
+If you want ghcup to automatically add the required PATH variable to "/home/xxxx/.bashrc"
+answer with YES, otherwise with NO and press ENTER.
+
+⇒yesと入力しEnter
+
+```bash
+source ~/.bashrc
+ghcup upgrade
+ghcup install cabal 3.4.0.0
+ghcup set cabal 3.4.0.0
 ```
 
 GHCをインストールします。
 
 ```bash
-wget https://downloads.haskell.org/ghc/8.10.2/ghc-8.10.2-x86_64-deb9-linux.tar.xz
-tar -xf ghc-8.10.2-x86_64-deb9-linux.tar.xz
-rm ghc-8.10.2-x86_64-deb9-linux.tar.xz
-cd ghc-8.10.2
-./configure
-sudo make install
+ghcup install ghc 8.10.4
+ghcup set ghc 8.10.4
 ```
 
 環境変数を設定しパスを通します。 ノードの場所は **$NODE\_HOME** に設定されます。 最新のノード構成ファイルは**$NODE\_CONFIG** と **$NODE\_BUILD\_NUM**によって取得されます。
@@ -148,12 +165,12 @@ Cabalを更新し、正しいバージョンが正常にインストールされ
 
 ```bash
 cabal update
-cabal -V
-ghc -V
+cabal --version
+ghc --version
 ```
 
 {% hint style="info" %}
-Cabalのライブラリーバージョンは「3.4.0.0」で GHCのバージョンは「8.10.2」であることを確認してください。
+Cabalのライブラリーバージョンは「3.4.0.0」で GHCのバージョンは「8.10.4」であることを確認してください。
 {% endhint %}
 
 ## 🏗 2. ソースコードからノードを構築する
@@ -165,13 +182,13 @@ cd $HOME/git
 git clone https://github.com/input-output-hk/cardano-node.git
 cd cardano-node
 git fetch --all --recurse-submodules --tags
-git checkout tags/1.25.1
+git checkout tags/1.26.1
 ```
 
 Cabalのビルドオプションを構成します。
 
 ```bash
-cabal configure -O0 -w ghc-8.10.2
+cabal configure -O0 -w ghc-8.10.4
 ```
 
 Cabal構成、プロジェクト設定を更新し、ビルドフォルダーをリセットします。
@@ -179,7 +196,7 @@ Cabal構成、プロジェクト設定を更新し、ビルドフォルダーを
 ```bash
 echo -e "package cardano-crypto-praos\n flags: -external-libsodium-vrf" > cabal.project.local
 sed -i $HOME/.cabal/config -e "s/overwrite-policy:/overwrite-policy: always/g"
-rm -rf $HOME/git/cardano-node/dist-newstyle/build/x86_64-linux/ghc-8.10.2
+rm -rf $HOME/git/cardano-node/dist-newstyle/build/x86_64-linux/ghc-8.10.4
 ```
 
 カルダノノードをビルドします。
@@ -444,18 +461,6 @@ tmux ls
 
 ```text
 press Ctrl + b を押した後、すぐに d (デタッチ)
-```
-
-#### ✅ ノードが実行されているか確認します。
-
-```text
-sudo systemctl is-active cardano-node
-```
-
-#### 🔎 ノードのステータスを表示します。
-
-```text
-sudo systemctl status cardano-node
 ```
 
 #### 🔄 ノードサービスを再起動します。
@@ -865,7 +870,6 @@ sudo systemctl start cardano-node
 cd $NODE_HOME
 cardano-cli query protocol-parameters \
     --mainnet \
-    --mary-era \
     --out-file params.json
 ```
 {% endtab %}
@@ -1254,8 +1258,7 @@ echo Current Slot: $currentSlot
 ```bash
 cardano-cli query utxo \
     --address $(cat payment.addr) \
-    --mainnet \
-    --mary-era > fullUtxo.out
+    --mainnet > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
 
@@ -1309,7 +1312,6 @@ cardano-cli transaction build-raw \
     --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee 0 \
     --out-file tx.tmp \
-    --mary-era \
     --certificate stake.cert
 ```
 {% endtab %}
@@ -1359,7 +1361,6 @@ cardano-cli transaction build-raw \
     --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee ${fee} \
     --certificate-file stake.cert \
-    --mary-era \
     --out-file tx.raw
 ```
 {% endtab %}
@@ -1578,8 +1579,7 @@ echo Current Slot: $currentSlot
 ```bash
 cardano-cli query utxo \
     --address $(cat payment.addr) \
-    --mainnet \
-    --mary-era > fullUtxo.out
+    --mainnet > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
 
@@ -1630,7 +1630,6 @@ cardano-cli transaction build-raw \
     --fee 0 \
     --certificate-file pool.cert \
     --certificate-file deleg.cert \
-    --mary-era \
     --out-file tx.tmp
 ```
 {% endtab %}
@@ -1681,7 +1680,6 @@ cardano-cli transaction build-raw \
     --fee ${fee} \
     --certificate-file pool.cert \
     --certificate-file deleg.cert \
-    --mary-era \
     --out-file tx.raw
 ```
 {% endtab %}
@@ -1773,8 +1771,8 @@ cat > $NODE_HOME/topologyUpdater.sh << EOF
 # shellcheck disable=SC2086,SC2034
  
 USERNAME=$(whoami)
-CNODE_PORT=6000 # 自身のリレーノードポート番号を記入
-CNODE_HOSTNAME="CHANGE ME"  # リレーノードのIPアドレスまたはDNSアドレスを記入
+CNODE_PORT=6000
+CNODE_HOSTNAME="xxx.xxx.xxx.xx"  #リレーのIPアドレスに変更する
 CNODE_BIN="/usr/local/bin"
 CNODE_HOME=$NODE_HOME
 CNODE_LOG_DIR="\${CNODE_HOME}/logs"
@@ -1783,16 +1781,16 @@ NETWORKID=\$(jq -r .networkId \$GENESIS_JSON)
 CNODE_VALENCY=1   # optional for multi-IP hostnames
 NWMAGIC=\$(jq -r .networkMagic < \$GENESIS_JSON)
 [[ "\${NETWORKID}" = "Mainnet" ]] && HASH_IDENTIFIER="--mainnet" || HASH_IDENTIFIER="--testnet-magic \${NWMAGIC}"
-[[ "\${NWMAGIC}" = "764824073" ]] && NETWORK_IDENTIFIER="--mainnet" || NETWORK_IDENTIFIER="--testnet-magic \${NWMAGIC}"
+[[ "\${NWMAGIC}" = "1097911063" ]] && NETWORK_IDENTIFIER="--mainnet" || NETWORK_IDENTIFIER="--testnet-magic \${NWMAGIC}"
  
 export PATH="\${CNODE_BIN}:\${PATH}"
 export CARDANO_NODE_SOCKET_PATH="\${CNODE_HOME}/db/socket"
  
-blockNo=\$(/usr/local/bin/cardano-cli query tip \${NETWORK_IDENTIFIER} | jq -r .blockNo )
+blockNo=\$(/usr/local/bin/cardano-cli query tip \${NETWORK_IDENTIFIER} | jq -r .block )
  
 # Note:
-# ノードをIPv4/IPv6デュアルスタックネットワーク構成で実行している場合
-# IPv4で実行するには、以下の curl コマンドに -4 パラメータを追加してください (curl -4 -s ...)
+# if you run your node in IPv4/IPv6 dual stack network configuration and want announced the
+# IPv4 address only please add the -4 parameter to the curl command below  (curl -4 -s ...)
 if [ "\${CNODE_HOSTNAME}" != "CHANGE ME" ]; then
   T_HOSTNAME="&hostname=\${CNODE_HOSTNAME}"
 else
@@ -2556,8 +2554,7 @@ echo Current Slot: $currentSlot
 ```bash
 cardano-cli query utxo \
     --address $(cat payment.addr) \
-    --mainnet \
-    --mary-era > fullUtxo.out
+    --mainnet > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
 
@@ -2597,7 +2594,6 @@ cardano-cli transaction build-raw \
     --fee 0 \
     --certificate-file pool.cert \
     --certificate-file deleg.cert \
-    --mary-era \
     --out-file tx.tmp
 ```
 {% endtab %}
@@ -2644,7 +2640,6 @@ cardano-cli transaction build-raw \
     --fee ${fee} \
     --certificate-file pool.cert \
     --certificate-file deleg.cert \
-    --mary-era \
     --out-file tx.raw
 ```
 {% endtab %}
@@ -2814,8 +2809,7 @@ echo destinationAddress: $destinationAddress
 ```bash
 cardano-cli query utxo \
     --address $(cat payment.addr) \
-    --mainnet \
-    --mary-era > fullUtxo.out
+    --mainnet > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
 
@@ -2850,7 +2844,6 @@ cardano-cli transaction build-raw \
     --tx-out ${destinationAddress}+0 \
     --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee 0 \
-    --mary-era \
     --out-file tx.tmp
 ```
 {% endtab %}
@@ -2896,7 +2889,6 @@ cardano-cli transaction build-raw \
     --tx-out ${destinationAddress}+${amountToSend} \
     --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee ${fee} \
-    --mary-era \
     --out-file tx.raw
 ```
 {% endtab %}
@@ -3003,7 +2995,6 @@ echo Current Slot: $currentSlot
 ```bash
 rewardBalance=$(cardano-cli query stake-address-info \
     --mainnet \
-    --mary-era \
     --address $(cat stake.addr) | jq -r ".[0].rewardAccountBalance")
 echo rewardBalance: $rewardBalance
 ```
@@ -3029,7 +3020,6 @@ echo destinationAddress: $destinationAddress
 ```bash
 cardano-cli query utxo \
     --address $(cat payment.addr) \
-    --mary-era \
     --mainnet > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
@@ -3067,7 +3057,6 @@ cardano-cli transaction build-raw \
     --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee 0 \
     --withdrawal ${withdrawalString} \
-    --mary-era \
     --out-file tx.tmp
 ```
 {% endtab %}
@@ -3113,7 +3102,6 @@ cardano-cli transaction build-raw \
     --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee ${fee} \
     --withdrawal ${withdrawalString} \
-    --mary-era \
     --out-file tx.raw
 ```
 {% endtab %}
@@ -3157,7 +3145,6 @@ cardano-cli transaction submit \
 ```bash
 cardano-cli query utxo \
     --address ${destinationAddress} \
-    --mary-era \
     --mainnet
 ```
 {% endtab %}
@@ -3211,7 +3198,6 @@ echo destinationAddress: $destinationAddress
 cd $NODE_HOME
 rewardBalance=$(cardano-cli query stake-address-info \
     --mainnet \
-    --mary-era \
     --address $(cat stake.addr) | jq -r ".[0].rewardAccountBalance")
 echo rewardBalance: $rewardBalance
 ```
@@ -3226,8 +3212,7 @@ echo rewardBalance: $rewardBalance
 ```bash
 cardano-cli query utxo \
     --address $(cat payment.addr) \
-    --mainnet \
-    --mary-era > fullUtxo.out
+    --mainnet > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
 
@@ -3266,7 +3251,6 @@ cardano-cli transaction build-raw \
     --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee 0 \
     --withdrawal ${withdrawalString} \
-    --mary-era \
     --out-file tx.tmp
 ```
 {% endtab %}
@@ -3313,7 +3297,6 @@ cardano-cli transaction build-raw \
     --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee ${fee} \
     --withdrawal ${withdrawalString} \
-    --mary-era \
     --out-file tx.raw
 ```
 {% endtab %}
@@ -3358,7 +3341,6 @@ cardano-cli transaction submit \
 ```bash
 cardano-cli query utxo \
     --address ${destinationAddress} \
-    --mary-era \
     --mainnet
 ```
 {% endtab %}
@@ -3446,7 +3428,6 @@ cardano-cli stake-pool deregistration-certificate \
 ```bash
 cardano-cli query utxo \
     --address $(cat payment.addr) \
-    --mary-era \
     --mainnet > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
@@ -3482,7 +3463,6 @@ cardano-cli transaction build-raw \
     --invalid-hereafter $(( ${slotNo} + 10000)) \
     --fee 0 \
     --certificate-file pool.dereg \
-    --mary-era \
     --out-file tx.tmp
 ```
 {% endtab %}
@@ -3528,7 +3508,6 @@ cardano-cli transaction build-raw \
     --invalid-hereafter $(( ${slotNo} + 10000)) \
     --fee ${fee} \
     --certificate-file pool.dereg \
-    --mary-era \
     --out-file tx.raw
 ```
 {% endtab %}
