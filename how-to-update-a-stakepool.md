@@ -52,7 +52,7 @@ Installation may take a while
 
 >Answer with YES or NO and press ENTER
 
-⇒yesと入力しEnter
+⇒noと入力しEnter
 
 >Detected bash shell on your system...
 If you want ghcup to automatically add the required PATH variable to "/home/xxxx/.bashrc"
