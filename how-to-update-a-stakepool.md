@@ -344,6 +344,13 @@ sudo systemctl reload-or-restart cnode-logmonitor.service
 sudo systemctl reload-or-restart autoleaderlog
 ```
 
+## 2-2-6.params.jsonを更新する
+```bash
+cd $NODE_HOME
+cardano-cli query protocol-parameters \
+    --mainnet \
+    --out-file params.json
+```
 {% endtab %}
 {% endtabs %}
 

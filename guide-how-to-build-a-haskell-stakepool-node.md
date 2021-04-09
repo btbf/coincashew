@@ -1291,7 +1291,7 @@ keyDepositの値を出力します。
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
-keyDeposit=$(cat $NODE_HOME/params.json | jq -r '.keyDeposit')
+keyDeposit=$(cat $NODE_HOME/params.json | jq -r '.stakeAddressDeposit')
 echo keyDeposit: $keyDeposit
 ```
 {% endtab %}
