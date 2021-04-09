@@ -744,7 +744,7 @@ echo slotsPerKESPeriod: ${slotsPerKESPeriod}
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
-slotNo=$(cardano-cli query tip --mainnet | jq -r '.slotNo')
+slotNo=$(cardano-cli query tip --mainnet | jq -r '.slot')
 echo slotNo: ${slotNo}
 ```
 {% endtab %}
@@ -1249,7 +1249,7 @@ ttlパラメータを設定するには、最新のスロット番号を取得�
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
 cd $NODE_HOME
-currentSlot=$(cardano-cli query tip --mainnet | jq -r '.slotNo')
+currentSlot=$(cardano-cli query tip --mainnet | jq -r '.slot')
 echo Current Slot: $currentSlot
 ```
 {% endtab %}
@@ -1570,7 +1570,7 @@ cardano-cli stake-address delegation-certificate \
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
-currentSlot=$(cardano-cli query tip --mainnet | jq -r '.slotNo')
+currentSlot=$(cardano-cli query tip --mainnet | jq -r '.slot')
 echo Current Slot: $currentSlot
 ```
 {% endtab %}
@@ -2349,7 +2349,7 @@ addr1q85kms3xw788pzxcr8g8d4umxjcr57w55k2gawnpwzklu97sc26z2lhct48alhew43ry674692u
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
 cd $NODE_HOME
-slotNo=$(cardano-cli query tip --mainnet | jq -r '.slotNo')
+slotNo=$(cardano-cli query tip --mainnet | jq -r '.slot')
 slotsPerKESPeriod=$(cat $NODE_HOME/${NODE_CONFIG}-shelley-genesis.json | jq -r '.slotsPerKESPeriod')
 kesPeriod=$((${slotNo} / ${slotsPerKESPeriod}))
 startKesPeriod=${kesPeriod}
@@ -2544,7 +2544,7 @@ ttlパラメータを設定するには、最新のスロット番号を取得�
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
 cd $NODE_HOME
-currentSlot=$(cardano-cli query tip --mainnet | jq -r '.slotNo')
+currentSlot=$(cardano-cli query tip --mainnet | jq -r '.slot')
 echo Current Slot: $currentSlot
 ```
 {% endtab %}
@@ -2783,7 +2783,7 @@ sed -i ${NODE_CONFIG}-config.json \
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
-currentSlot=$(cardano-cli query tip --mainnet | jq -r '.slotNo')
+currentSlot=$(cardano-cli query tip --mainnet | jq -r '.slot')
 echo Current Slot: $currentSlot
 ```
 {% endtab %}
@@ -2992,7 +2992,7 @@ cardano-cli query utxo \
 {% tabs %}
 {% tab title="ブロックプロデューサノード" %}
 ```bash
-currentSlot=$(cardano-cli query tip --mainnet | jq -r '.slotNo')
+currentSlot=$(cardano-cli query tip --mainnet | jq -r '.slot')
 echo Current Slot: $currentSlot
 ```
 {% endtab %}
@@ -3181,7 +3181,7 @@ cardano-cli query utxo \
 {% tabs %}
 {% tab title="ブロックプロデューサノード" %}
 ```bash
-currentSlot=$(cardano-cli query tip --mainnet | jq -r '.slotNo')
+currentSlot=$(cardano-cli query tip --mainnet | jq -r '.slot')
 echo Current Slot: $currentSlot
 ```
 {% endtab %}
