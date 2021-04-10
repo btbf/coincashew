@@ -1612,7 +1612,7 @@ poolDepositを出力します。
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
-poolDeposit=$(cat $NODE_HOME/params.json | jq -r '.poolDeposit')
+poolDeposit=$(cat $NODE_HOME/params.json | jq -r '.stakePoolDeposit')
 echo poolDeposit: $poolDeposit
 ```
 {% endtab %}
