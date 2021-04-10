@@ -6,7 +6,7 @@ description: >-
 # ステークプールブロックログ導入手順
 
 {% hint style="info" %}
-最終更新日：2021/4/9 3:00  
+最終更新日：2021/4/11 0:44  
 {% endhint %}
 
 ## 🎉 ∞ お知らせ
@@ -85,7 +85,7 @@ sudo apt-get update -y && sudo apt-get install -y automake build-essential pkg-c
 cd $HOME/git
 git clone https://github.com/AndrewWestberg/cncli
 cd cncli
-git checkout v2.0.1
+git checkout v2.0.2
 cargo install --path . --force
 ```
 
@@ -113,7 +113,7 @@ sudo systemctl stop cnode-cncli-leaderlog.service
 rustup update
 cd $HOME/git/cncli
 git fetch --all --prune
-git checkout v2.0.1
+git checkout v2.0.2
 cargo install --path . --force
 cncli --version
 ```
