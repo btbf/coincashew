@@ -14,7 +14,7 @@ description: >-
 {% hint style="success" %}
 このマニュアルは、カルダノノードv1.26.1に対応しています。  
 [ドキュメント更新情報はこちら](README.md)  
-最終更新日：2021年4月8日の時点guide version 4.0.0
+最終更新日：2021年4月9日の時点guide version 4.1.0
 {% endhint %}
 
 ## 🏁 0. 前提条件
