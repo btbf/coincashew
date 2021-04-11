@@ -1469,6 +1469,7 @@ payment.addrに入金されている必要があります。
 ```bash
 cd $NODE_HOME
 wget -N https://git.io/JUcnl
+```
 {% endtab %}
 
 
