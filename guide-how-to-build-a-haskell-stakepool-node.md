@@ -1444,6 +1444,10 @@ payment.addrに入金されている必要があります。
 "homepage": "https://myadapoolnamerocks.com"
 }
 ```
+{% hint style="warning" %}
+**ticker**名の長さは3～5文字にする必要があります。文字はA-Zと0-9のみで構成する必要があります。  
+**description**の長さは255文字以内(255byte)となります。（ひらがな、漢字、カタカナは1文字2byte）
+{% endhint %}
 
 6.**Commit new file**をクリックします。
 
