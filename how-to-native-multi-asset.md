@@ -56,8 +56,7 @@ echo "$(cat payment.addr)"
 ```
 cardano-cli query utxo \
     --address $(cat payment.addr) \
-    --mainnet \
-    --mary-era
+    --mainnet
 ```
 残高が表示されるか確認してください。  
 
@@ -70,7 +69,6 @@ cardano-cli query utxo \
 ```
 cardano-cli query protocol-parameters \
     --mainnet \
-    --mary-era \
     --out-file params.json
 ```
 
@@ -164,7 +162,6 @@ cardano-cli transaction build-raw \
       ${tx_in} \
       --tx-out $(cat payment.addr)+${total_balance}+"${token_t_supply} ${new_asset}.${token_name}" \
       --mint="${token_t_supply} ${new_asset}.${token_name}" \
-      --mary-era \
       --fee 0 \
       --out-file tx.tmp
 ```
@@ -195,7 +192,6 @@ cardano-cli transaction build-raw \
       ${tx_in} \
       --tx-out $(cat payment.addr)+${txOut}+"${token_t_supply} ${new_asset}.${token_name}" \
       --mint="${token_t_supply} ${new_asset}.${token_name}" \
-      --mary-era \
       --fee ${fee} \
       --out-file matx.raw
 ```
@@ -275,7 +271,6 @@ cardano-cli transaction build-raw \
       ${tx_in} \
       --tx-out ${send_addres}+${send_ada}+"${send_token} ${asset[0]}.${token_name}" \
       --tx-out $(cat payment.addr)+${total_balance}+"${asset_balance} ${asset[0]}.${token_name}" \
-      --mary-era \
       --fee 0 \
       --out-file tx.tmp
 ```
@@ -309,7 +304,6 @@ cardano-cli transaction build-raw \
       ${tx_in} \
       --tx-out ${send_addres}+${send_ada}+"${send_token} ${asset[0]}.${token_name}" \
       --tx-out $(cat payment.addr)+${txOut2}+"${asOut} ${asset[0]}.${token_name}" \
-      --mary-era \
       --fee ${fee} \
       --out-file matx.raw
 ```
@@ -386,7 +380,6 @@ cardano-cli transaction build-raw \
       ${tx_in} \
       --tx-out ${send_addres}+${send_ada}+"${send_token} ${asset[0]}.${token_name}" \
       --tx-out $(cat payment.addr)+${total_balance}+"${asset_balance} ${asset[0]}.${token_name}" \
-      --mary-era \
       --fee 0 \
       --out-file tx.tmp
 ```
@@ -420,7 +413,6 @@ cardano-cli transaction build-raw \
       ${tx_in} \
       --tx-out ${send_addres}+${send_ada}+"${send_token} ${asset[0]}.${token_name}" \
       --tx-out $(cat payment.addr)+${txOut2}+"${asOut} ${asset[0]}.${token_name}" \
-      --mary-era \
       --fee ${fee} \
       --out-file matx.raw
 ```
