@@ -1430,7 +1430,10 @@ payment.addrに入金されている必要があります。
 ![](.gitbook/assets/git1.png)
 
 5.ファイル名を **poolMetaData.json** として入力し **json** コンテンツを貼り付けます。
-
+{% hint style="warning" %}
+下記は参考フォーマットとなります。ご自身のプール名、Ticker名に書き換えてください  
+まだhomepageアドレスが無い場合は、ご自身のTwitterアドレスでも大丈夫です。
+{% endhint %}
 ![](.gitbook/assets/git2.png)
 
 ```
@@ -1475,7 +1478,8 @@ wget -N https://git.io/JUcnl
 {% tab title="ご自身のホームページサーバでホストする方法" %}
 
 {% hint style="warning" %}
-下記は参考フォーマットとなります。ご自身のプール名、Ticker名に書き換えてから、ターミナルで実行してください。
+下記は参考フォーマットとなります。ご自身のプール名、Ticker名に書き換えてから、ターミナルで実行してください。  
+まだhomepageアドレスが無い場合は、ご自身のTwitterアドレスでも大丈夫です。
 {% endhint %}
 
 {% tabs %}
