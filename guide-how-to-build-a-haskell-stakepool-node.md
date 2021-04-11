@@ -1210,7 +1210,7 @@ echo "$(cat payment.addr)"
 ```bash
 cardano-cli query utxo \
     --address $(cat payment.addr) \
-    --mainnet \
+    --mainnet
 ```
 {% endtab %}
 {% endtabs %}
