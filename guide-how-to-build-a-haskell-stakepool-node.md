@@ -1429,6 +1429,15 @@ JSONファイルを作成してプールのメタデータを作成します。
 
 5.ファイル名を **poolMetaData.json** として入力し **json** コンテンツを貼り付けます。
 
+```
+{
+"name": "MyPoolName", 
+"description": "My pool description",
+"ticker": "MPN",
+"homepage": "https://myadapoolnamerocks.com"
+}
+```
+
 ![](.gitbook/assets/git2.png)
 
 6.**Commit new file**をクリックします。
@@ -1439,7 +1448,7 @@ JSONファイルを作成してプールのメタデータを作成します。
 
 8.**Rawボタン**をクリックします。
 
-9. 「https://raw」から始まるURLをコピーします。
+9. 「**https://raw**」から始まるURLをコピーします。
 
 > 例: [https://raw.githubusercontent.com/coincashew/test/master/poolMetaData.json](https://raw.githubusercontent.com/coincashew/test/master/poolMetaData.json)
 
@@ -1447,10 +1456,17 @@ JSONファイルを作成してプールのメタデータを作成します。
 
 11.9でコピーしたURLを貼り付けます。
 
-12.短縮されたURLを`--metadata-url` に記述します。
+12.短縮されたURLをpool.cert作成時の`--metadata-url` に記述します。
 
 > 例:  
 > --metadata-url https://git.io/JUcnl
+
+
+13．BPでjsonファイルをダウンロードする。下記のURLを12で作成した**短縮URL**に置き換える
+
+```bash
+cd $NODE_HOME
+wget -N https://git.io/JUcnl
 {% endtab %}
 
 
@@ -1488,6 +1504,9 @@ EOF
 ```bash
 cardano-cli stake-pool metadata-hash --pool-metadata-file poolMetaData.json > poolMetaDataHash.txt
 ```
+
+**poolMetaData.json**をあなたの公開用WEBサーバへアップロードしてください。 
+
 {% endtab %}
 {% endtabs %}
 
@@ -1495,9 +1514,7 @@ cardano-cli stake-pool metadata-hash --pool-metadata-file poolMetaData.json > po
 {% endtabs %}
   
 **poolMetaDataHash.txt**をエアギャップオフラインマシンへコピーしてください  
-**poolMetaData.json**をあなたの公開用WEBサーバへアップロードしてください。  
-WEBサーバ(ホームページ)をまた持っていない場合は、[Githubでホストする方法](./how-to-upload-poolmetadata.json-to-github.md)を参照して下さい。  
-
+ 
 
 最小プールコストを出力します。
 
