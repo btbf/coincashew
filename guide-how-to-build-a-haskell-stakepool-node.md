@@ -1470,7 +1470,10 @@ payment.addrに入金されている必要があります。
 > 例:  
 > --metadata-url https://git.io/JUcnl
 
-13．BPでjsonファイルをダウンロードする。下記のURLを12で作成した**短縮URL**に置き換える
+13．BPでjsonファイルをダウンロードする。  
+{% hint style="warning" %}
+下記のURLを12で作成した**短縮URL**に置き換えてから実行してください
+{% endhint %}
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
