@@ -1416,6 +1416,10 @@ payment.addrに入金されている必要があります。
 
 ## 11-1.プール情報のJSONファイルを作成してプールのメタデータを作成します。
 
+{% hint style="info" %}
+まだホームページがない場合は「jsonファイルをGithubでホストする方法」を実施してください
+{% endhint %}
+
 {% tabs %}
 {% tab title="jsonファイルをGithubでホストする方法" %}
 
