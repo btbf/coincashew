@@ -2512,7 +2512,7 @@ cardano-cli stake-pool registration-certificate \
     --mainnet \
     --pool-relay-ipv4 <リレーノードのパプリックIPへ書き換え> \
     --pool-relay-port 6000 \
-    --metadata-url <url where you uploaded poolMetaData.json> \
+    --metadata-url https://xxx.xxx.xxx/poolMetaData.json \
     --metadata-hash $(cat poolMetaDataHash.txt) \
     --out-file pool.cert
 ```
