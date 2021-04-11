@@ -1471,11 +1471,23 @@ payment.addrに入金されている必要があります。
 > --metadata-url https://git.io/JUcnl
 
 13．BPでjsonファイルをダウンロードする。下記のURLを12で作成した**短縮URL**に置き換える
-
+{% tabs %}
+{% tab title="ブロックプロデューサーノード" %}
 ```bash
 cd $NODE_HOME
 wget -N https://git.io/JUcnl
 ```
+{% endtab %}
+{% endtabs %}
+
+{% tabs %}
+{% tab title="ブロックプロデューサーノード" %}
+```bash
+cardano-cli stake-pool metadata-hash --pool-metadata-file poolMetaData.json > poolMetaDataHash.txt
+```
+{% endtab %}
+{% endtabs %}
+
 {% endtab %}
 
 
@@ -1514,12 +1526,9 @@ EOF
 ```bash
 cardano-cli stake-pool metadata-hash --pool-metadata-file poolMetaData.json > poolMetaDataHash.txt
 ```
-
-**poolMetaData.json**をあなたの公開用WEBサーバへアップロードしてください。 
-
 {% endtab %}
 {% endtabs %}
-
+**poolMetaData.json**をあなたの公開用WEBサーバへアップロードしてください。 
 {% endtab %}
 {% endtabs %}
   
