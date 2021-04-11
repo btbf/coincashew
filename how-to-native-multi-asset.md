@@ -134,8 +134,7 @@ echo ${new_asset}
 ```
 cardano-cli query utxo \
     --address $(cat payment.addr) \
-    --mainnet \
-    --mary-era > fullUtxo.out
+    --mainnet > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
 
@@ -241,8 +240,7 @@ send_ada="2000000" #lovelace #送信するADA量
 ```
 cardano-cli query utxo \
     --address $(cat payment.addr) \
-    --mainnet \
-    --mary-era > fullUtxo.out
+    --mainnet > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
 
@@ -353,8 +351,7 @@ asset_totla="37000274" #トークン総供給量
 ```
 cardano-cli query utxo \
     --address $(cat payment.addr) \
-    --mainnet \
-    --mary-era > fullUtxo.out
+    --mainnet > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
 
