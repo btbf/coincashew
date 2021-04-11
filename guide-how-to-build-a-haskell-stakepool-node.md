@@ -1431,6 +1431,8 @@ payment.addrに入金されている必要があります。
 
 5.ファイル名を **poolMetaData.json** として入力し **json** コンテンツを貼り付けます。
 
+![](.gitbook/assets/git2.png)
+
 ```
 {
 "name": "MyPoolName", 
@@ -1439,8 +1441,6 @@ payment.addrに入金されている必要があります。
 "homepage": "https://myadapoolnamerocks.com"
 }
 ```
-
-![](.gitbook/assets/git2.png)
 
 6.**Commit new file**をクリックします。
 
