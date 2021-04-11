@@ -11,7 +11,7 @@ description: カルダノネイティブトークンCLIコマンド手順
 ただし、リレーノードで完結できます。 
 
 {% hint style="info" %}
-更新日：2021/3/6
+更新日：2021/4/11
 {% endhint %}
 
 {% hint style="info" %}
