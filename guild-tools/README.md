@@ -85,7 +85,7 @@ sudo apt-get update -y && sudo apt-get install -y automake build-essential pkg-c
 cd $HOME/git
 git clone https://github.com/AndrewWestberg/cncli
 cd cncli
-git checkout v2.0.2
+git checkout v2.0.0
 cargo install --path . --force
 ```
 
@@ -113,7 +113,7 @@ sudo systemctl stop cnode-cncli-leaderlog.service
 rustup update
 cd $HOME/git/cncli
 git fetch --all --prune
-git checkout v2.0.2
+git checkout v2.0.0
 cargo install --path . --force
 cncli --version
 ```
