@@ -1470,28 +1470,22 @@ payment.addrに入金されている必要があります。
 > 例:  
 > --metadata-url https://git.io/JUcnl
 
-13．ブロックプロデューサーノードでjsonファイルをダウンロードする。  
+13．**ブロックプロデューサーノード**でjsonファイルをダウンロードし、ハッシュ値を計算する。  
 {% hint style="warning" %}
 下記のURLを12で作成した**短縮URL**に置き換えてから実行してください
 {% endhint %}
 
-{% tabs %}
-{% tab title="ブロックプロデューサーノード" %}
 ```bash
 cd $NODE_HOME
 wget -N https://git.io/JUcnl
 ```
-{% endtab %}
-{% endtabs %}
 
 メタデータファイルのハッシュ値を計算します。
-{% tabs %}
-{% tab title="ブロックプロデューサーノード" %}
+
 ```bash
 cardano-cli stake-pool metadata-hash --pool-metadata-file poolMetaData.json > poolMetaDataHash.txt
 ```
-{% endtab %}
-{% endtabs %}
+
 
 {% endtab %}
 
