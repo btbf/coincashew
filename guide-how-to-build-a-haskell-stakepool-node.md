@@ -1497,6 +1497,7 @@ cardano-cli stake-pool metadata-hash --pool-metadata-file poolMetaData.json > po
 まだhomepageアドレスが無い場合は、ご自身のTwitterアドレスでも大丈夫です。
 {% endhint %}
 
+**ブロックプロデューサーノード**でjsonファイルを作成し、ハッシュ値を計算する。
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
