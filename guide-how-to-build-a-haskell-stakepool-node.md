@@ -2556,7 +2556,7 @@ echo minPoolCost: ${minPoolCost}
 minPoolCost は340000000 lovelace \(340 ADA\)です。 `--pool-cost`は最低でもこの値以上に指定します。
 {% endhint %}
 
-poolMetaData.jsonを変更する場合は、メタデータファイルのハッシュを再計算し、更新されたpoolMetaData.jsonをWEBサーバへアップロードしてください。 詳細については [項目11](guide-how-to-build-a-haskell-stakepool-node.md#11-sutkupruwoshimasu)を参照して下さい。
+poolMetaData.jsonを変更する場合は、メタデータファイルのハッシュを再計算し、更新されたpoolMetaData.jsonをWEBサーバへアップロードしてください。 詳細については [項目11-1](guide-how-to-build-a-haskell-stakepool-node.md#11-1-prunojsonfairuwoshiteprunometadtawoshimasu)を参照して下さい。
 
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
