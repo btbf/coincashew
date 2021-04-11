@@ -1474,6 +1474,7 @@ payment.addrに入金されている必要があります。
 {% hint style="warning" %}
 下記のURLを12で作成した**短縮URL**に置き換えてから実行してください
 {% endhint %}
+
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
@@ -1483,6 +1484,7 @@ wget -N https://git.io/JUcnl
 {% endtab %}
 {% endtabs %}
 
+メタデータファイルのハッシュ値を計算します。
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
