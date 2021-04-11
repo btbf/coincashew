@@ -1414,10 +1414,10 @@ cardano-cli transaction submit \
 payment.addrに入金されている必要があります。
 {% endhint %}
 
-JSONファイルを作成してプールのメタデータを作成します。
+## 11-1.プール情報のJSONファイルを作成してプールのメタデータを作成します。
 
 {% tabs %}
-{% tab title="Githubでホストする方法" %}
+{% tab title="jsonファイルをGithubでホストする方法" %}
 ## poolMetaData.jsonをホストするクイックステップ
 
 1.Githubアカウントを作成しログインします [https://github.com/](https://github.com/)  
