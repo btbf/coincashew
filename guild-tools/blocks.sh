@@ -242,7 +242,7 @@ find "${TMP_FOLDER:?}" -type f -not \( -name 'protparams.json' -o -name '.dialog
            println "OFF" "            他のプールがこのスロットのためにブロックを作った可能性"
            println "OFF" "Ghosted   - ブロックは作成されましたが「Orpah(孤立ブロック)」となっております。"
            println "OFF" "            スロットバトル・ハイトバトルで敗北したか、ブロック伝播の問題で有効なブロックになっていません"
-           println "OFF" "Stolen    - IOHK OBFT NODEによってブロックが生成された可能性"
+           println "OFF" "Stolen    - スロットバトルでの敗北の可能性"
            println "OFF" "Invalid   - プールはブロックの作成に失敗しました。"
            println "OFF" "            次のコードでデコードできます 'echo  | base64 -d | jq -r' "
          fi
@@ -356,7 +356,7 @@ find "${TMP_FOLDER:?}" -type f -not \( -name 'protparams.json' -o -name '.dialog
            println "OFF" "            他のプールがこのスロットのためにブロックを作った可能性"
            println "OFF" "Ghosted   - ブロックは作成されましたが「Orpah(孤立ブロック)」となっております。"
            println "OFF" "            スロットバトル・ハイトバトルで敗北したか、ブロック伝播の問題で有効なブロックになっていません"
-           println "OFF" "Stolen    - IOHK OBFT NODEによってブロックが生成された可能性"
+           println "OFF" "Stolen    - スロットバトルでの敗北の可能性"
            println "OFF" "Invalid   - プールはブロックの作成に失敗しました。"
            println "OFF" "            次のコードでデコードできます 'echo  | base64 -d | jq -r' "
          fi
