@@ -531,6 +531,7 @@ sudo systemctl stop cnode-cncli-sync.service
 sudo systemctl stop cnode-cncli-validate.service
 sudo systemctl stop cnode-cncli-leaderlog.service
 sudo systemctl stop cnode-logmonitor.service
+sudo systemctl stop autoleaderlog.service
 ```
 
 ###  ●各種サービスを再起動する方法
@@ -540,6 +541,7 @@ sudo systemctl reload-or-restart cnode-cncli-sync.service
 sudo systemctl reload-or-restart cnode-cncli-validate.service
 sudo systemctl reload-or-restart cnode-cncli-leaderlog.service
 sudo systemctl reload-or-restart cnode-logmonitor.service
+sudo systemctl reload-or-restart autoleaderlog.service
 ```
 {% endhint %}
 
