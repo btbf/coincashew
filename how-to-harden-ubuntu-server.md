@@ -154,13 +154,14 @@ PermitEmptyPasswords no
 
 ポート番号をランダムな数値へ変更する (49513～65535までの番号)
 
+
+```bash
+Port xxxxx　先頭の#を外してランダムな数値へ変更してください
+```
 {% hint style="info" %}
 ローカルマシンからSSHログインする際、ポート番号を以下で設定した番号に合わせてください。
 {% endhint %}
 
-```bash
-Port xxxxx　先頭の#を外して下さい
-```
 
 > Ctrl+O で保存し、Ctrl+Xで閉じる
 
