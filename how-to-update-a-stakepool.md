@@ -11,7 +11,7 @@
 
 {% endhint %}
 
-{% hint style="success" %} 2021年4月8日時点でこのガイドは v.1.26.1に対応しています。 😁 {% endhint %}
+{% hint style="success" %} 2021年4月18日時点でこのガイドは v.1.26.2に対応しています。 😁 {% endhint %}
 
 {% hint style="info" %}
 このマニュアルは、[X Stake Pool](https://xstakepool.com)オペレータの[BTBF](https://twitter.com/btbfpark)が[CoinCashew](https://www.coincashew.com/coins/overview-ada/guide-how-to-build-a-haskell-stakepool-node#9-register-your-stakepool)より許可を得て、日本語翻訳しております。
@@ -19,8 +19,108 @@
 
  `cardano-node`は常に更新されており、バージョンがアップデートされるたびにプールサーバでも作業が必要です。 [Official Cardano-Node Github Repo](https://github.com/input-output-hk/cardano-node) をフォローし最新情報を取得しましょう。
 
+# 0. 1.26.2緊急アップデート
 
-# 📡 1. ノードバージョンアップデート手順
+{% hint style="info" %}
+このバージョンはブロックプロデューサーノードでの不具合を改善するものとなり、BPノードを優先的にバージョンアップしてください。
+(リレーノードには適用しなくても問題ないです)
+{% endhint %}
+
+## 0-2.ソースコードをダウンロードする
+
+```bash
+cd $HOME/git
+rm -rf cardano-node-old/
+git clone https://github.com/input-output-hk/cardano-node.git cardano-node2
+cd cardano-node2/
+```
+
+## 0-3.ソースコードからビルドする
+
+```bash
+cabal update
+rm -rf $HOME/git/cardano-node2/dist-newstyle/build/x86_64-linux/ghc-8.10.2
+rm -rf $HOME/git/cardano-node2/dist-newstyle/build/x86_64-linux/ghc-8.10.4
+git fetch --all --recurse-submodules --tags
+git checkout tags/1.26.2
+cabal configure -O0 -w ghc-8.10.4
+```
+```bash
+echo -e "package cardano-crypto-praos\n flags: -external-libsodium-vrf" > cabal.project.local
+cabal build cardano-node cardano-cli
+```
+
+> Warning: Requested index-state 2021-03-15T00:00:00Z is newer than
+'hackage.haskell.org'! Falling back to older state (2021-03-14T23:47:09Z).
+Resolving dependencies...
+
+ここで止まっているかのように見えますが、時間がかかるのでそのままお待ちください。
+
+
+> ビルド完了までに15分～40分ほどかかります。  
+> Linking /home/btbf/git/cardano-node2/dist-newstyle/build/x86_64-linux/ghc-8.10.2/cardano-cli-1.26.2/t/cardano-cli-test/build/cardano-cli-test/cardano-cli-test ...　が最後のメッセージならビルド成功
+
+## 0-4.バージョン確認
+
+```bash
+$(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-cli") version
+$(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-node") version
+```
+
+## 0-5.ノードをストップする
+
+```bash
+sudo systemctl stop cardano-node
+```
+
+## 0-6.バイナリーファイルをシステムフォルダーへコピーする
+
+```bash
+sudo cp $(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-cli") /usr/local/bin/cardano-cli
+```
+
+```bash
+sudo cp $(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-node") /usr/local/bin/cardano-node
+```
+
+## 0-7.システムに反映されたノードバージョンを確認する
+
+```bash
+cardano-node version
+cardano-cli version
+```
+
+## 0-8.ノードを起動する
+
+```bash
+sudo systemctl start cardano-node
+tmux a -t cnode
+```
+
+## 0-9.ブロックログ関連サービスを再起動する（BPサーバーのみ）
+
+```bash
+sudo systemctl reload-or-restart cnode-cncli-sync.service
+tmux a -t cncli
+```
+
+{% hint style="info" %}
+「100.00% synced」になるまで待ちます。  
+100%になったら、Ctrl+bを押した後に d を押し元の画面に戻ります  
+(バックグラウンド実行に切り替え)
+{% endhint %}
+
+```bash
+sudo systemctl reload-or-restart cnode-cncli-validate.service
+sudo systemctl reload-or-restart cnode-cncli-leaderlog.service
+sudo systemctl reload-or-restart cnode-logmonitor.service
+sudo systemctl reload-or-restart autoleaderlog
+```
+
+以上、ここで終了です。
+
+
+# 📡 1. 1.25.1からのノードバージョンアップデート手順
 
 {% hint style="danger" %}
 全ての更新を終えるまで約3時間～4時間ほどかかる場合があります。  
