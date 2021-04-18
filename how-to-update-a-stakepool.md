@@ -58,7 +58,7 @@ Resolving dependencies...
 
 
 > ビルド完了までに15分～40分ほどかかります。  
-> Linking /home/btbf/git/cardano-node2/dist-newstyle/build/x86_64-linux/ghc-8.10.2/cardano-cli-1.26.2/t/cardano-cli-test/build/cardano-cli-test/cardano-cli-test ...　が最後のメッセージならビルド成功
+> Linking /home/btbf/git/cardano-node2/dist-newstyle/build/x86_64-linux/ghc-8.10.4/cardano-cli-1.26.2/t/cardano-cli-test/build/cardano-cli-test/cardano-cli-test ...　が最後のメッセージならビルド成功
 
 ## 0-4.バージョン確認
 
