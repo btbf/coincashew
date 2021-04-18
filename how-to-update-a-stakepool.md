@@ -97,6 +97,14 @@ sudo systemctl start cardano-node
 tmux a -t cnode
 ```
 
+前バージョンで使用していたバイナリフォルダをリネームし、バックアップとして保持します。最新バージョンを構築したフォルダをcardano-nodeとして使用します。
+
+```bash
+cd $HOME/git
+mv cardano-node/ cardano-node-old/
+mv cardano-node2/ cardano-node/
+```
+
 ## 0-9.ブロックログ関連サービスを再起動する（BPサーバーのみ）
 
 ```bash
