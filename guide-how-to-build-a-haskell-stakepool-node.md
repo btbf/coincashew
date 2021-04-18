@@ -111,9 +111,10 @@ make
 sudo make install
 ```
 
-Cabalをインストールします。
+GHCUPをインストールします。
 
 ```bash
+cd $HOME
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 ```
 > Press ENTER to proceed or ctrl-c to abort.
