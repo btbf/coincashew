@@ -201,7 +201,7 @@ CNODE_HOME=/home/<user_name>/cardano-my-node
 CNODE_PORT=6000
 CONFIG="${CNODE_HOME}/mainnet-config.json"
 SOCKET="${CNODE_HOME}/db/socket"
-BLOCKLOG_TZ="Asia/Tokyo"　　
+BLOCKLOG_TZ="Asia/Tokyo"
 　　
 POOL_FOLDER="${CNODE_HOME}"
 POOL_ID_FILENAME="stakepoolid.txt"
