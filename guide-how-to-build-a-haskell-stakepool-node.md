@@ -1482,7 +1482,7 @@ payment.addrに入金されている必要があります。
 
 ```bash
 cd $NODE_HOME
-curl -s -o poolMetaData.json https://git.io/JUcnl
+wget -O poolMetaData.json https://git.io/JUcnl
 ```
 
 メタデータファイルのハッシュ値を計算します。
