@@ -2890,7 +2890,7 @@ echo amountToSend: $amountToSend
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
-destinationAddress=<送金先アドレス>
+destinationAddress=送金先アドレス
 echo destinationAddress: $destinationAddress
 ```
 {% endtab %}
@@ -3278,7 +3278,7 @@ echo Current Slot: $currentSlot
 {% tabs %}
 {% tab title="ブロックプロデューサノード" %}
 ```bash
-destinationAddress=<入金先アドレスを指定する>
+destinationAddress=入金先アドレスを指定する
 echo destinationAddress: $destinationAddress
 ```
 {% endtab %}
