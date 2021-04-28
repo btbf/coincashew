@@ -2317,7 +2317,7 @@ sudo systemctl restart prometheus-node-exporter.service
 {% tabs %}
 {% tab title="リレーノード1" %}
 ```text
-sudo systemctl status grafana-server.service prometheus.service prometheus-node-exporter.service
+sudo systemctl --no-pager status grafana-server.service prometheus.service prometheus-node-exporter.service
 ```
 {% endtab %}
 {% endtabs %}
