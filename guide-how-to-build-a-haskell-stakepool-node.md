@@ -14,7 +14,7 @@ description: >-
 {% hint style="success" %}
 このマニュアルは、カルダノノードv1.26.2に対応しています。  
 [ドキュメント更新情報はこちら](README.md)  
-最終更新日：2021年4月18日の時点guide version 4.1.1
+最終更新日：2021年4月28日の時点guide version 4.1.2
 {% endhint %}
 
 ## 🏁 0. 前提条件
@@ -2317,7 +2317,7 @@ sudo systemctl restart prometheus-node-exporter.service
 {% tabs %}
 {% tab title="リレーノード1" %}
 ```text
-sudo systemctl status grafana-server.service prometheus.service prometheus-node-exporter.service
+sudo systemctl --no-pager status grafana-server.service prometheus.service prometheus-node-exporter.service
 ```
 {% endtab %}
 {% endtabs %}
@@ -2867,6 +2867,7 @@ sed -i ${NODE_CONFIG}-config.json \
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
+cd $NODE_HOME
 currentSlot=$(cardano-cli query tip --mainnet | jq -r '.slot')
 echo Current Slot: $currentSlot
 ```
@@ -2889,7 +2890,7 @@ echo amountToSend: $amountToSend
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
-destinationAddress=<送金先アドレス>
+destinationAddress=送金先アドレス
 echo destinationAddress: $destinationAddress
 ```
 {% endtab %}
@@ -2994,6 +2995,7 @@ cardano-cli transaction build-raw \
 {% tabs %}
 {% tab title="エアギャップオフラインマシン" %}
 ```bash
+cd $NODE_HOME
 cardano-cli transaction sign \
     --tx-body-file tx.raw \
     --signing-key-file payment.skey \
@@ -3276,7 +3278,7 @@ echo Current Slot: $currentSlot
 {% tabs %}
 {% tab title="ブロックプロデューサノード" %}
 ```bash
-destinationAddress=<入金先アドレスを指定する>
+destinationAddress=入金先アドレスを指定する
 echo destinationAddress: $destinationAddress
 ```
 {% endtab %}
