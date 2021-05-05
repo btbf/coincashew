@@ -537,11 +537,11 @@ sudo systemctl stop autoleaderlog.service
 ###  ●各種サービスを再起動する方法
 
 ```bash
+sudo systemctl reload-or-restart autoleaderlog.service
 sudo systemctl reload-or-restart cnode-cncli-sync.service
 sudo systemctl reload-or-restart cnode-cncli-validate.service
 sudo systemctl reload-or-restart cnode-cncli-leaderlog.service
 sudo systemctl reload-or-restart cnode-logmonitor.service
-sudo systemctl reload-or-restart autoleaderlog.service
 ```
 {% endhint %}
 
