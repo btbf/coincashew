@@ -290,7 +290,7 @@ sudo systemctl restart fail2ban
 * Prometheus-node-exporter用のポート12798・9100をリレーノードのIPのみ受け付ける用に設定してください。  
 * ブロックプロデューサーノードおよびリレーノード用に設定を変更して下さい。  
 * ブロックプロデューサーノードでは、リレーノードのIPのみ受け付ける用に設定してください。  
-
+{% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
 sudo ufw allow <22またはランダムなポート番号>/tcp
