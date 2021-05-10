@@ -286,19 +286,34 @@ sudo systemctl restart fail2ban
 
 * SSH接続用のポート22番\(または設定したランダムなポート番号 \#\)
 * ノード用のポート6000番または6001番
-* ノード監視Grafana用3000番ポート \(このノードで起動している場合\)
-* ブロックプロデューサーノードおよびリレーノード用に設定を変更して下さい。
-* ブロックプロデューサーノードでは、リレーノードのIPのみ受け付ける用に設定してください。
+* ノード監視Grafana用3000番ポート
+* Prometheus-node-exporter用のポート12798・9100をリレーノードのIPのみ受け付ける用に設定してください。  
+* ブロックプロデューサーノードおよびリレーノード用に設定を変更して下さい。  
+* ブロックプロデューサーノードでは、リレーノードのIPのみ受け付ける用に設定してください。  
 
+{% tab title="ブロックプロデューサーノード" %}
 ```bash
 sudo ufw allow <22またはランダムなポート番号>/tcp
-#リレーノードのIPを指定する場合
-#sudo ufw allow from <リレーノードIP> to any port <BP用のポート番号>
+sudo ufw allow from <リレーノードIP> to any port <BP用のポート番号>
+sudo ufw allow from <リレーノードIP> to any port 12798
+sudo ufw allow from <リレーノードIP> to any port 9100
+sudo ufw allow 6000/tcp
+sudo ufw enable
+sudo ufw status numbered
+```
+{% endtab %}
+
+{% tab title="リレーノード1" %}
+```bash
+sudo ufw allow <22またはランダムなポート番号>/tcp
 sudo ufw allow 6000/tcp
 sudo ufw allow 3000/tcp
 sudo ufw enable
 sudo ufw status numbered
 ```
+{% endtab %}
+{% endtabs %}
+
 
 設定が有効であることを確認します。
 
