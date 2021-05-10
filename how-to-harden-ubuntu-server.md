@@ -294,7 +294,7 @@ sudo systemctl restart fail2ban
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
 sudo ufw allow <22またはランダムなポート番号>/tcp
-sudo ufw allow from <リレーノードIP> to any port <BP用のポート番号>
+sudo ufw allow from <リレーノードIP> to any port <BP用のポート番号(6000)>
 sudo ufw allow from <リレーノードIP> to any port 12798
 sudo ufw allow from <リレーノードIP> to any port 9100
 sudo ufw allow 6000/tcp
