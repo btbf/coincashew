@@ -19,7 +19,7 @@
 
  `cardano-node`は常に更新されており、バージョンがアップデートされるたびにプールサーバでも作業が必要です。 [Official Cardano-Node Github Repo](https://github.com/input-output-hk/cardano-node) をフォローし最新情報を取得しましょう。
 
-# 1. 1.27.0 アップデート
+# 1. カルダノノード1.27.0 アップデート
 
 {% hint style="info" %}
 ノードバージョン1.27.0は、ステークプールによって提案された新しいCLIコマンドのサポートなど重要な新機能を提供します。
