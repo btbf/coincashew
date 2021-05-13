@@ -61,7 +61,7 @@ cd cardano-node2/
 sudo systemctl stop cardano-node
 ```
 
-## 0-3.ソースコードからビルドする
+## 1-3.ソースコードからビルドする
 
 ```bash
 cabal update
@@ -97,7 +97,7 @@ $(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-cli") 
 $(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-node") version
 ```
 
-## 1-6.バイナリーファイルをシステムフォルダーへコピーする
+## 1-5.バイナリーファイルをシステムフォルダーへコピーする
 
 ```bash
 sudo cp $(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-cli") /usr/local/bin/cardano-cli
@@ -107,14 +107,14 @@ sudo cp $(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardan
 sudo cp $(find $HOME/git/cardano-node2/dist-newstyle/build -type f -name "cardano-node") /usr/local/bin/cardano-node
 ```
 
-## 1-7.システムに反映されたノードバージョンを確認する
+## 1-6.システムに反映されたノードバージョンを確認する
 
 ```bash
 cardano-node version
 cardano-cli version
 ```
 
-## 1-8.ノードを起動する
+## 1-7.ノードを起動する
 
 ```bash
 sudo systemctl start cardano-node
@@ -130,7 +130,7 @@ mv cardano-node/ cardano-node-old/
 mv cardano-node2/ cardano-node/
 ```
 
-## 2-2-4.CNCLIをバージョンアップする（BPサーバーのみ）
+## 2.CNCLIをバージョンアップする（BPサーバーのみ）
 
 サービスを止める
 ```
@@ -151,7 +151,7 @@ cncli --version
 ```
 
 
-## 0-9.ブロックログ関連サービスを再起動する（BPサーバーのみ）
+## 3.ブロックログ関連サービスを再起動する（BPサーバーのみ）
 
 ```bash
 sudo systemctl reload-or-restart cnode-cncli-sync.service
@@ -182,7 +182,8 @@ mv cardano-node2/ cardano-node/
 
 ノードバージョンアップは以上です。
 
-# 📂 3 前バージョンへロールバックする場合
+
+# 📂 4 前バージョンへロールバックする場合
 最新バージョンに問題がある場合は、以前のバージョンへ戻す場合のみ実行してください。
 
 {% hint style="danger" %}
