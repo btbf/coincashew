@@ -3479,11 +3479,11 @@ echo current epoch: ${epoch}
 {% tabs %}
 {% tab title="ブロックプロデューサノード" %}
 ```bash
-eMax=$(cat $NODE_HOME/params.json | jq -r '.eMax')
-echo eMax: ${eMax}
+poolRetireMaxEpoch=$(cat $NODE_HOME/params.json | jq -r '.poolRetireMaxEpoch')
+echo poolRetireMaxEpoch: ${poolRetireMaxEpoch}
 
 minRetirementEpoch=$(( ${epoch} + 1 ))
-maxRetirementEpoch=$(( ${epoch} + ${eMax} ))
+maxRetirementEpoch=$(( ${epoch} + ${poolRetireMaxEpoch} ))
 
 echo earliest epoch for retirement is: ${minRetirementEpoch}
 echo latest epoch for retirement is: ${maxRetirementEpoch}
@@ -3546,6 +3546,11 @@ echo Number of UTXOs: ${txcnt}
 {% endtab %}
 {% endtabs %}
 
+```
+currentSlot=$(cardano-cli query tip --mainnet | jq -r '.slot')
+echo Current Slot: $currentSlot
+```
+
 build-raw transactionコマンドを実行します。
 
 {% tabs %}
@@ -3554,7 +3559,7 @@ build-raw transactionコマンドを実行します。
 cardano-cli transaction build-raw \
     ${tx_in} \
     --tx-out $(cat payment.addr)+${total_balance} \
-    --invalid-hereafter $(( ${slotNo} + 10000)) \
+    --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee 0 \
     --certificate-file pool.dereg \
     --out-file tx.tmp
@@ -3599,7 +3604,7 @@ echo txOut: ${txOut}
 cardano-cli transaction build-raw \
     ${tx_in} \
     --tx-out $(cat payment.addr)+${txOut} \
-    --invalid-hereafter $(( ${slotNo} + 10000)) \
+    --invalid-hereafter $(( ${currentSlot} + 10000)) \
     --fee ${fee} \
     --certificate-file pool.dereg \
     --out-file tx.raw
