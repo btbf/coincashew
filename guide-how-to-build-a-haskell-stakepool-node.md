@@ -1509,7 +1509,7 @@ cardano-cli stake-pool metadata-hash --pool-metadata-file poolMetaData.json > po
 cd $NODE_HOME
 cat > poolMetaData.json << EOF
 {
-"name": "MyPoolName", 
+"name": "MyPoolName",
 "description": "My pool description",
 "ticker": "MPN",
 "homepage": "https://myadapoolnamerocks.com"
