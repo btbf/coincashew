@@ -1441,9 +1441,9 @@ payment.addrに入金されている必要があります。
 {% endhint %}
 ![](.gitbook/assets/git2.png)
 
-```
+```bash
 {
-"name": "MyPoolName", 
+"name": "MyPoolName",
 "description": "My pool description",
 "ticker": "MPN",
 "homepage": "https://myadapoolnamerocks.com"
