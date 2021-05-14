@@ -2557,7 +2557,9 @@ echo minPoolCost: ${minPoolCost}
 minPoolCost は340000000 lovelace \(340 ADA\)です。 `--pool-cost`は最低でもこの値以上に指定します。
 {% endhint %}
 
-poolMetaData.jsonをGithubでホストしている場合はダウンロードする
+poolMetaData.jsonをGithubでホストしている場合はダウンロードする  
+短縮URLをご自身のものに修正してからコマンドを実行してください
+
 {% tabs %}
 {% tab title="poolMetaData.jsonをGithubでホストしている場合" %}
 ```bash
