@@ -12,9 +12,9 @@ description: >-
 {% endhint %}
 
 {% hint style="success" %}
-このマニュアルは、カルダノノードv1.26.2に対応しています。  
+このマニュアルは、カルダノノードv1.27.0に対応しています。  
 [ドキュメント更新情報はこちら](README.md)  
-最終更新日：2021年4月28日の時点guide version 4.1.2
+最終更新日：2021年5月14日の時点guide version 4.2.0
 {% endhint %}
 
 ## 🏁 0. 前提条件
@@ -188,7 +188,7 @@ cd $HOME/git
 git clone https://github.com/input-output-hk/cardano-node.git
 cd cardano-node
 git fetch --all --recurse-submodules --tags
-git checkout tags/1.26.2
+git checkout tags/1.27.0
 ```
 
 Cabalのビルドオプションを構成します。
