@@ -6,7 +6,7 @@ description: >-
 # ステークプールブロックログ導入手順
 
 {% hint style="info" %}
-最終更新日：2021/4/24 23:44  
+最終更新日：2021/5/18 23:44  
 {% endhint %}
 
 ## 🎉 ∞ お知らせ
@@ -25,6 +25,7 @@ description: >-
 * ブロックチェーン同期用DBを新しく設置します(sqlite3)
 * 日本語マニュアルのフォルダ構成に合わせて作成されています。
 * vrf.skey と vrf.vkeyが必要です。
+* ノードバージョン 1.27.0
 
 ###  ハードウェア最小構成
 * **オペレーティング・システム:** 64-bit Linux \(Ubuntu 20.04 LTS\)
@@ -85,7 +86,7 @@ sudo apt-get update -y && sudo apt-get install -y automake build-essential pkg-c
 cd $HOME/git
 git clone https://github.com/AndrewWestberg/cncli
 cd cncli
-git checkout v2.0.3
+git checkout v2.1.0
 cargo install --path . --force
 ```
 
@@ -113,7 +114,7 @@ sudo systemctl stop cnode-cncli-leaderlog.service
 rustup update
 cd $HOME/git/cncli
 git fetch --all --prune
-git checkout v2.0.3
+git checkout v2.1.0
 cargo install --path . --force
 cncli --version
 ```
