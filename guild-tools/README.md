@@ -97,7 +97,7 @@ cncli --version
 {% hint style="info" %}
 ### 1-1. CNCLI更新手順
 **以下は最新版がリリースされた場合に実行してください**  
-{% endhint %}
+
 cncli旧バージョンからの更新手順
 
 サービスを止める
@@ -131,6 +131,7 @@ cd $NODE_HOME/scripts
 > cncli.shのバージョンアップ確認があれば「Yes」を選択  
 > 再度実行し、sync 100%になることを確認する。
 
+{% endhint %}
 
 ## 🏁 2. sqlite3をインストールする
 ```bash
