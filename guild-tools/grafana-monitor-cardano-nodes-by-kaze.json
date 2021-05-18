@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 2,
   "links": [],
   "panels": [
     {
@@ -135,7 +135,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "(cardano_node_metrics_remainingKESPeriods_int * 1.5)",
+          "expr": "(cardano_node_metrics_remainingKESPeriods_int{instance=\"168.119.226.69:12798\"} * 1.5)",
           "interval": "",
           "legendFormat": "{{alias}}",
           "refId": "A"
@@ -198,7 +198,8 @@
       "pluginVersion": "7.5.3",
       "targets": [
         {
-          "expr": "cardano_node_metrics_currentKESPeriod_int",
+          "exemplar": true,
+          "expr": "cardano_node_metrics_currentKESPeriod_int{instance=\"168.119.226.69:12798\"}",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -206,7 +207,8 @@
           "refId": "A"
         },
         {
-          "expr": "cardano_node_metrics_operationalCertificateExpiryKESPeriod_int",
+          "exemplar": true,
+          "expr": "cardano_node_metrics_operationalCertificateExpiryKESPeriod_int{instance=\"168.119.226.69:12798\"}",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -214,21 +216,23 @@
           "refId": "B"
         },
         {
-          "expr": "cardano_node_metrics_remainingKESPeriods_int",
-          "format": "time_series",
-          "hide": true,
-          "instant": true,
-          "interval": "",
-          "legendFormat": "Remaining",
-          "refId": "C"
-        },
-        {
-          "expr": "cardano_node_metrics_currentKESPeriod_int - cardano_node_metrics_operationalCertificateStartKESPeriod_int + cardano_node_metrics_remainingKESPeriods_int",
+          "exemplar": true,
+          "expr": "cardano_node_metrics_currentKESPeriod_int{instance=\"168.119.226.69:12798\"} - cardano_node_metrics_operationalCertificateStartKESPeriod_int{instance=\"168.119.226.69:12798\"} + cardano_node_metrics_remainingKESPeriods_int{instance=\"168.119.226.69:12798\"}",
           "format": "time_series",
           "instant": true,
           "interval": "",
           "legendFormat": "KES整合性",
           "refId": "E"
+        },
+        {
+          "exemplar": true,
+          "expr": "cardano_node_metrics_remainingKESPeriods_int{instance=\"168.119.226.69:12798\"}",
+          "format": "time_series",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "KES残",
+          "refId": "C"
         }
       ],
       "timeFrom": null,
@@ -583,7 +587,8 @@
       "pluginVersion": "7.5.3",
       "targets": [
         {
-          "expr": "cardano_node_metrics_txsProcessedNum_int",
+          "exemplar": true,
+          "expr": "cardano_node_metrics_txsProcessedNum_int{instance=\"168.119.226.69:12798\"}",
           "instant": false,
           "interval": "",
           "legendFormat": "{{alias}}",
@@ -1452,5 +1457,5 @@
   "timezone": "",
   "title": "Monitor: cardano-node",
   "uid": "K4z3N37w0rk",
-  "version": 20
+  "version": 1
 }
