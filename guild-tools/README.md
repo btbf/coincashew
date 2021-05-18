@@ -485,12 +485,12 @@ Ctrl+Oでファイルを保存し、Ctrl+Xで閉じる
 ```bash
 sudo systemctl reload-or-restart cardano-node
 ```
-> cardano-nodeを再起動すると、以下サービスも連動して再起動します。
-> cnode-cncli-sync.service
-> cnode-cncli-validate.service
-> cnode-cncli-leaderlog.service
-> cnode-logmonitor.service
-> autoleaderlog.service
+> cardano-nodeを再起動すると、以下サービスも連動して再起動します。  
+> cnode-cncli-sync.service  
+> cnode-cncli-validate.service  
+> cnode-cncli-leaderlog.service  
+> cnode-logmonitor.service  
+> autoleaderlog.service  
 
 
 tmux起動確認
@@ -516,9 +516,9 @@ tmux ls
 ```bash
 sudo systemctl stop cnode-cncli-sync.service
 ```
->上記コマンドを実行すると以下サービスも連動して止まります
->cnode-cncli-validate.service
->cnode-cncli-leaderlog.service
+>上記コマンドを実行すると以下サービスも連動して止まります  
+>cnode-cncli-validate.service  
+>cnode-cncli-leaderlog.service  
 
 ```
 sudo systemctl stop cnode-logmonitor.service
@@ -530,9 +530,9 @@ sudo systemctl stop autoleaderlog.service
 ```bash
 sudo systemctl reload-or-restart cnode-cncli-sync.service
 ```
->上記コマンドを実行すると以下サービスも連動して止まります
->cnode-cncli-validate.service
->cnode-cncli-leaderlog.service
+>上記コマンドを実行すると以下サービスも連動して止まります  
+>cnode-cncli-validate.service  
+>cnode-cncli-leaderlog.service  
 
 ```
 sudo systemctl reload-or-restart autoleaderlog.service
