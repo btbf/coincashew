@@ -1,4 +1,4 @@
-# Home
+# カルダノステークプール構築手順 更新履歴
 
 {% hint style="success" %}
 ✨ このマニュアルは[CoinCashew](https://www.coincashew.com/coins/overview-ada/guide-how-to-build-a-haskell-stakepool-node)制作の「Guide: How to build a Cardano Stake Pool」を日本語化した内容です。
