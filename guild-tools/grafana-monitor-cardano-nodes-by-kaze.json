@@ -68,7 +68,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "cardano_node_metrics_Forge_adopted_int",
+          "expr": "cardano_node_metrics_Forge_forged_int",
           "interval": "",
           "legendFormat": "{{alias}}",
           "refId": "A"
