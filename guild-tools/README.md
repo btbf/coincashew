@@ -504,9 +504,9 @@ tmux ls
 * cnode  
 * cncli
 * leaderlog
-* logmonitor
 * validate
 * autoleaderlog
+* logmonitor(5分後に遅延起動)
 {% endhint %}
 
 
@@ -930,7 +930,7 @@ tmux ls
 * cnode  
 * cncli
 * leaderlog
-* logmonitor
 * validate
 * autoleaderlog
+* logmonitor(5分後に遅延起動)
 {% endhint %}
