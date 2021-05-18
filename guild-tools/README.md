@@ -676,7 +676,9 @@ glive・・・gLiveView.sh
 
 {% hint style="info" %}
 cardano-nodeを再起動するとcncli-sync.serviceなど各サービスが落ち、個別に再起動しなければいけない不具合を解消します。  
-→→→cardano-nodeを開始・再起動・停止すると各サービスも連動して開始・再起動・停止するように修正
+  
+▼改修後の挙動▼  
+cardano-nodeを開始・再起動・停止すると各サービスも連動して開始・再起動・停止するように修正しました。
 {% endhint %}
 {% hint style="denger" %}
 ブロック生成スケジュールに余裕がある時間帯に実施してください
@@ -916,3 +918,19 @@ sudo systemctl enable autoleaderlog
 ```bash
 sudo systemctl reload-or-restart cardano-node
 ```
+
+### 10-7.サービス起動確認
+
+```bash
+tmux ls
+```
+
+{% hint style="info" %}
+5つの画面がバックグラウンドで起動中であればOKです
+* cnode  
+* cncli
+* leaderlog
+* logmonitor
+* validate
+* autoleaderlog
+{% endhint %}
