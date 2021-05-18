@@ -498,10 +498,10 @@ cd $NODE_HOME/scripts
 **1行づつコマンドに貼り付けてください**
 
 ```bash
+sudo systemctl start autoleaderlog
 sudo systemctl start cnode-cncli-validate.service
 sudo systemctl start cnode-cncli-leaderlog.service
 sudo systemctl start cnode-logmonitor.service
-sudo systemctl start autoleaderlog
 ```
 
 tmux起動確認
