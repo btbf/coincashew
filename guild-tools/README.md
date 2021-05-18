@@ -6,7 +6,7 @@ description: >-
 # ステークプールブロックログ導入手順
 
 {% hint style="info" %}
-最終更新日：2021/5/18 23:44  
+最終更新日：2021/5/19 7:00  
 {% endhint %}
 
 ## 🎉 ∞ お知らせ
@@ -25,7 +25,6 @@ description: >-
 * ブロックチェーン同期用DBを新しく設置します(sqlite3)
 * 日本語マニュアルのフォルダ構成に合わせて作成されています。
 * vrf.skey と vrf.vkeyが必要です。
-* ノードバージョン 1.27.0
 
 ###  ハードウェア最小構成
 * **オペレーティング・システム:** 64-bit Linux \(Ubuntu 20.04 LTS\)
@@ -105,10 +104,6 @@ cncli旧バージョンからの更新手順
 ```bash
 sudo systemctl stop cnode-cncli-sync.service
 ```
-```bash
-sudo systemctl stop cnode-cncli-validate.service
-sudo systemctl stop cnode-cncli-leaderlog.service
-```
 
 ```bash
 rustup update
@@ -132,16 +127,10 @@ A new version is available, do you want to upgrade? (yes/no): y
 cd $NODE_HOME/scripts
 ./cncli.sh sync
 ```
-  
+
 > cncli.shのバージョンアップ確認があれば「Yes」を選択  
 > 再度実行し、sync 100%になることを確認する。
 
-残りのサービスを開始する
-```bash
-sudo systemctl start cnode-cncli-validate.service
-sudo systemctl start cnode-cncli-leaderlog.service
-```
-{% endhint %}
 
 ## 🏁 2. sqlite3をインストールする
 ```bash
@@ -203,6 +192,9 @@ CNODE_PORT=6000
 CONFIG="${CNODE_HOME}/mainnet-config.json"
 SOCKET="${CNODE_HOME}/db/socket"
 BLOCKLOG_TZ="Asia/Tokyo"
+　　
+POOL_FOLDER="${CNODE_HOME}"
+POOL_ID_FILENAME="stakepoolid.txt"
 ```
 
 cncli.shファイルを編集します。
@@ -236,8 +228,8 @@ cat > $NODE_HOME/service/cnode-cncli-sync.service << EOF
 
 [Unit]
 Description=Cardano Node - CNCLI sync
-BindsTo=cnode-cncli-sync.service
-After=cnode-cncli-sync.service
+BindsTo=cardano-node.service
+After=cardano-node.service
 
 [Service]
 Type=oneshot
@@ -258,7 +250,7 @@ SyslogIdentifier=cnode-cncli-sync
 TimeoutStopSec=5
 
 [Install]
-WantedBy=cnode-cncli-sync.service
+WantedBy=cardano-node.service
 EOF
 ```
 {% endtab %}
@@ -270,8 +262,8 @@ cat > $NODE_HOME/service/cnode-cncli-validate.service << EOF
 
 [Unit]
 Description=Cardano Node - CNCLI validate
-BindsTo=cnode-cncli-validate.service
-After=cnode-cncli-validate.service
+BindsTo=cnode-cncli-sync.service
+After=cnode-cncli-sync.service
 
 [Service]
 Type=oneshot
@@ -292,7 +284,7 @@ SyslogIdentifier=cnode-cncli-validate
 TimeoutStopSec=5
 
 [Install]
-WantedBy=cnode-cncli-validate.service
+WantedBy=cnode-cncli-sync.service
 EOF
 ```
 {% endtab %}
@@ -304,8 +296,8 @@ cat > $NODE_HOME/service/cnode-cncli-leaderlog.service << EOF
 
 [Unit]
 Description=Cardano Node - CNCLI Leaderlog
-BindsTo=cnode-cncli-leaderlog.service
-After=cnode-cncli-leaderlog.service
+BindsTo=cnode-cncli-sync.service
+After=cnode-cncli-sync.service
 
 [Service]
 Type=oneshot
@@ -326,7 +318,7 @@ SyslogIdentifier=cnode-cncli-leaderlog
 TimeoutStopSec=5
 
 [Install]
-WantedBy=cnode-cncli-leaderlog.service
+WantedBy=cnode-cncli-sync.service
 EOF
 ```
 {% endtab %}
@@ -338,8 +330,8 @@ cat > $NODE_HOME/service/cnode-logmonitor.service << EOF
 
 [Unit]
 Description=Cardano Node - CNCLI logmonitor
-BindsTo=cnode-logmonitor.service
-After=cnode-logmonitor.service
+BindsTo=cardano-node.service
+After=cardano-node.service
 
 [Service]
 Type=oneshot
@@ -360,7 +352,7 @@ SyslogIdentifier=cnode-logmonitor
 TimeoutStopSec=5
 
 [Install]
-WantedBy=cnode-logmonitor.service
+WantedBy=cardano-node.service
 EOF
 ```
 {% endtab %}
@@ -373,8 +365,8 @@ cat > $NODE_HOME/service/autoleaderlog.service << EOF
 
 [Unit]
 Description     = autoleaderlog.service
-BindsTo         = autoleaderlog.service
-After           = autoleaderlog.service
+BindsTo         = cardano-node.service
+After           = cardano-node.service
 
 [Service]
 User            = $(whoami)
@@ -392,7 +384,7 @@ TimeoutStopSec=2
 LimitNOFILE=32768
 
 [Install]
-WantedBy    = autoleaderlog.service
+WantedBy    = cardano-node.service
 EOF
 ```
 {% endtab %}
@@ -429,7 +421,30 @@ sudo systemctl enable cnode-logmonitor.service
 sudo systemctl enable autoleaderlog
 ```
 
-### 4-3.ログファイルを作成するように設定する
+## 🏁 5.ブロックチェーンとDBを同期する
+
+**cncli-sync**サービスを開始し、ログ画面を表示します
+```bash
+sudo systemctl start cnode-cncli-sync.service
+tmux a -t cncli
+```
+
+{% hint style="info" %}
+「100.00% synced」になるまで待ちます。  
+100%になったら、Ctrl+bを押した後に d を押し元の画面に戻ります(バックグラウンド実行に切り替え)
+{% endhint %}
+
+
+## 🏁 6.過去のブロック生成実績をDBに登録します。
+
+```bash
+cd $NODE_HOME/scripts
+./cncli.sh init
+```
+
+
+## 🏁 7.ログファイルを作成するように設定する
+
  ```bash
 cd $NODE_HOME
 nano mainnet-config.json
@@ -469,40 +484,13 @@ Ctrl+Oでファイルを保存し、Ctrl+Xで閉じる
 ```bash
 sudo systemctl reload-or-restart cardano-node
 ```
+> cardano-nodeを再起動すると、以下サービスも連動して再起動します。
+> cnode-cncli-sync.service
+> cnode-cncli-validate.service
+> cnode-cncli-leaderlog.service
+> cnode-logmonitor.service
+> autoleaderlog.service
 
-
-## 🏁 5.ブロックチェーンとDBを同期する
-
-**cncli-sync**サービスを開始し、ログ画面を表示します
-```bash
-sudo systemctl start cnode-cncli-sync.service
-tmux a -t cncli
-```
-
-{% hint style="info" %}
-「100.00% synced」になるまで待ちます。  
-100%になったら、Ctrl+bを押した後に d を押し元の画面に戻ります(バックグラウンド実行に切り替え)
-{% endhint %}
-
-
-## 🏁 6.過去のブロック生成実績をDBに登録します。
-
-```bash
-cd $NODE_HOME/scripts
-./cncli.sh init
-```
-
-
-## 🏁 7.残りのサービスをスタートします 
-
-**1行づつコマンドに貼り付けてください**
-
-```bash
-sudo systemctl start autoleaderlog
-sudo systemctl start cnode-cncli-validate.service
-sudo systemctl start cnode-cncli-leaderlog.service
-sudo systemctl start cnode-logmonitor.service
-```
 
 tmux起動確認
 
@@ -526,8 +514,12 @@ tmux ls
 
 ```bash
 sudo systemctl stop cnode-cncli-sync.service
-sudo systemctl stop cnode-cncli-validate.service
-sudo systemctl stop cnode-cncli-leaderlog.service
+```
+>上記コマンドを実行すると以下サービスも連動して止まります
+>cnode-cncli-validate.service
+>cnode-cncli-leaderlog.service
+
+```
 sudo systemctl stop cnode-logmonitor.service
 sudo systemctl stop autoleaderlog.service
 ```
@@ -535,10 +527,14 @@ sudo systemctl stop autoleaderlog.service
 ###  ●各種サービスを再起動する方法
 
 ```bash
-sudo systemctl reload-or-restart autoleaderlog.service
 sudo systemctl reload-or-restart cnode-cncli-sync.service
-sudo systemctl reload-or-restart cnode-cncli-validate.service
-sudo systemctl reload-or-restart cnode-cncli-leaderlog.service
+```
+>上記コマンドを実行すると以下サービスも連動して止まります
+>cnode-cncli-validate.service
+>cnode-cncli-leaderlog.service
+
+```
+sudo systemctl reload-or-restart autoleaderlog.service
 sudo systemctl reload-or-restart cnode-logmonitor.service
 ```
 {% endhint %}
@@ -605,15 +601,15 @@ Ctrl+bを押した後すぐにd でバックグラウンド実行に切り替え
 {% tab title="autoleaderlog" %}
 
 {% hint style="info" %}
-こちらのプログラムは360000slotを迎えたら自動的にleaderlogを実行する
+こちらのプログラムは320000slotを迎えたら自動的にleaderlogを実行する
 {% endhint %}
 
 ```bash
 tmux a -t autoleaderlog
 ```
 
-スロットが360000以前なら「スケジュール未実行」  
-スロットが360000移行なら「スケジュール実行済み」  
+スロットが320000以前なら「スケジュール未実行」  
+スロットが320000移行なら「スケジュール実行済み」  
 となればOK  
 
 Ctrl+bを押した後すぐにd でバックグラウンド実行に切り替えます(デタッチ)
@@ -675,7 +671,7 @@ glive・・・gLiveView.sh
 {% endhint %}
 
 
-## 🏁 10. 1月30日以前から導入済みの方はこちら
+## 🏁 10. 2021年5月19日以前から導入済みの方はこちら
 
 ### 10-1.各種サービスをストップする
 
@@ -685,72 +681,229 @@ sudo systemctl stop cnode-cncli-sync.service
 sudo systemctl stop cnode-cncli-validate.service
 sudo systemctl stop cnode-cncli-leaderlog.service
 sudo systemctl stop cnode-logmonitor.service
+sudo systemctl stop autoleaderlog.service
 ```
 
-### 10-2.各種ファイルをアップデートする
+### 10-2.各種サービスファイルをアップデートする
 
 ```bash
-cd $NODE_HOME/scripts
-wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/cncli.sh
-wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/cntools.config
-wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/cntools.library
-wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/env
-wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/logMonitor.sh
-wget -N https://raw.githubusercontent.com/btbf/coincashew/master/guild-tools/blocks.sh
+cd $NODE_HOME/service
 ```
 
-### 10-3.各種ファイルを編集する
+{% tabs %}
+{% tab title="cncli" %}
+```bash
+cat > $NODE_HOME/service/cnode-cncli-sync.service << EOF 
+# file: /etc/systemd/system/cnode-cncli-sync.service
 
-envファイルを編集します
+[Unit]
+Description=Cardano Node - CNCLI sync
+BindsTo=cardano-node.service
+After=cardano-node.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+Restart=on-failure
+RestartSec=20
+User=$(whoami)
+WorkingDirectory=$NODE_HOME
+ExecStart=/usr/bin/tmux new -d -s cncli
+ExecStartPost=/usr/bin/tmux send-keys -t cncli $NODE_HOME/scripts/cncli.sh Space sync Enter
+ExecStop=/usr/bin/tmux kill-session -t cncli
+KillSignal=SIGINT
+RestartKillSignal=SIGINT
+SuccessExitStatus=143
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=cnode-cncli-sync
+TimeoutStopSec=5
+
+[Install]
+WantedBy=cardano-node.service
+EOF
+```
+{% endtab %}
+
+{% tab title="validate" %}
+```bash
+cat > $NODE_HOME/service/cnode-cncli-validate.service << EOF 
+# file: /etc/systemd/system/cnode-cncli-validate.service
+
+[Unit]
+Description=Cardano Node - CNCLI validate
+BindsTo=cnode-cncli-sync.service
+After=cnode-cncli-sync.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+Restart=on-failure
+RestartSec=20
+User=$(whoami)
+WorkingDirectory=$NODE_HOME
+ExecStart=/usr/bin/tmux new -d -s validate
+ExecStartPost=/usr/bin/tmux send-keys -t validate $NODE_HOME/scripts/cncli.sh Space validate Enter
+ExecStop=/usr/bin/tmux kill-session -t validate
+KillSignal=SIGINT
+RestartKillSignal=SIGINT
+SuccessExitStatus=143
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=cnode-cncli-validate
+TimeoutStopSec=5
+
+[Install]
+WantedBy=cnode-cncli-sync.service
+EOF
+```
+{% endtab %}
+
+{% tab title="leaderlog" %}
+```bash
+cat > $NODE_HOME/service/cnode-cncli-leaderlog.service << EOF 
+# file: /etc/systemd/system/cnode-cncli-leaderlog.service
+
+[Unit]
+Description=Cardano Node - CNCLI Leaderlog
+BindsTo=cnode-cncli-sync.service
+After=cnode-cncli-sync.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+Restart=on-failure
+RestartSec=20
+User=$(whoami)
+WorkingDirectory=$NODE_HOME
+ExecStart=/usr/bin/tmux new -d -s leaderlog
+ExecStartPost=/usr/bin/tmux send-keys -t leaderlog $NODE_HOME/scripts/cncli.sh Space leaderlog Enter
+ExecStop=/usr/bin/tmux kill-session -t leaderlog
+KillSignal=SIGINT
+RestartKillSignal=SIGINT
+SuccessExitStatus=143
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=cnode-cncli-leaderlog
+TimeoutStopSec=5
+
+[Install]
+WantedBy=cnode-cncli-sync.service
+EOF
+```
+{% endtab %}
+
+{% tab title="logmonitor" %}
+```bash
+cat > $NODE_HOME/service/cnode-logmonitor.service << EOF 
+# file: /etc/systemd/system/cnode-logmonitor.service
+
+[Unit]
+Description=Cardano Node - CNCLI logmonitor
+BindsTo=cardano-node.service
+After=cardano-node.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+Restart=on-failure
+RestartSec=20
+User=$(whoami)
+WorkingDirectory=$NODE_HOME
+ExecStart=/usr/bin/tmux new -d -s logmonitor
+ExecStartPost=/usr/bin/tmux send-keys -t logmonitor $NODE_HOME/scripts/logMonitor.sh Enter
+ExecStop=/usr/bin/tmux kill-session -t logmonitor
+KillSignal=SIGINT
+RestartKillSignal=SIGINT
+SuccessExitStatus=143
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=cnode-logmonitor
+TimeoutStopSec=5
+
+[Install]
+WantedBy=cardano-node.service
+EOF
+```
+{% endtab %}
+
+{% tab title="autoleaderlog" %}
+```bash
+cat > $NODE_HOME/service/autoleaderlog.service << EOF
+# The Cardano node service (part of systemd)
+# file: /etc/systemd/system/autoleaderlog.service
+
+[Unit]
+Description     = autoleaderlog.service
+BindsTo         = cardano-node.service
+After           = cardano-node.service
+
+[Service]
+User            = $(whoami)
+Type=oneshot
+RemainAfterExit=yes
+Restart=on-failure
+RestartSec=20
+WorkingDirectory= $NODE_HOME
+ExecStart       = /usr/bin/tmux new -d -s autoleaderlog
+ExecStartPost   = /usr/bin/tmux send-keys -t autoleaderlog $NODE_HOME/scripts/leaderlog_auto.sh Enter
+ExecStop=/usr/bin/tmux kill-session -t autoleaderlog
+KillSignal=SIGINT
+RestartKillSignal=SIGINT
+TimeoutStopSec=2
+LimitNOFILE=32768
+
+[Install]
+WantedBy    = cardano-node.service
+EOF
+```
+{% endtab %}
+
+{% endtabs %}
+
+### 10-3.サービスファイルを無効化する
 
 ```bash
-cd scripts
-nano env
+sudo systemctl disable cnode-cncli-sync.service
+sudo systemctl disable cnode-cncli-validate.service
+sudo systemctl disable cnode-cncli-leaderlog.service
+sudo systemctl disable cnode-logmonitor.service
+sudo systemctl disable autoleaderlog
 ```
 
-ファイル内上部にある設定値を変更します。  
-先頭の **#** を外し、ご自身の環境に合わせ**user_name**パスやファイル名、ポート番号を設定します。  
-下記以外の**#**がついている項目はそのままで良いです。
+### 10-4.サービスファイルを入れ替える
+
+**1行づつコマンドに貼り付けてください**
 ```bash
-CCLI="/usr/local/bin/cardano-cli"
-CNODE_HOME=/home/<user_name>/cardano-my-node
-CNODE_PORT=6000
-CONFIG="${CNODE_HOME}/mainnet-config.json"
-SOCKET="${CNODE_HOME}/db/socket"
-BLOCKLOG_TZ="Asia/Tokyo"　　
-　　
-POOL_FOLDER="${CNODE_HOME}"
-POOL_ID_FILENAME="stakepoolid.txt"
+sudo cp $NODE_HOME/service/cnode-cncli-sync.service /etc/systemd/system/cnode-cncli-sync.service
+sudo cp $NODE_HOME/service/cnode-cncli-validate.service /etc/systemd/system/cnode-cncli-validate.service
+sudo cp $NODE_HOME/service/cnode-cncli-leaderlog.service /etc/systemd/system/cnode-cncli-leaderlog.service
+sudo cp $NODE_HOME/service/cnode-logmonitor.service /etc/systemd/system/cnode-logmonitor.service
+sudo cp $NODE_HOME/service/autoleaderlog.service /etc/systemd/system/autoleaderlog.service
 ```
-
-cncli.shファイルを編集します。
 
 ```bash
-nano cncli.sh
+sudo chmod 644 /etc/systemd/system/cnode-cncli-sync.service
+sudo chmod 644 /etc/systemd/system/cnode-cncli-validate.service
+sudo chmod 644 /etc/systemd/system/cnode-cncli-leaderlog.service
+sudo chmod 644 /etc/systemd/system/cnode-logmonitor.service
+sudo chmod 644 /etc/systemd/system/autoleaderlog.service
 ```
 
-ファイル内の設定値を変更します。  
-先頭の **#** を外し、ご自身の環境に合わせてプールIDやファイル名を設定します。
+###  10-5.サービスファイルを有効化します
 
 ```bash
-POOL_ID="<Pool-ID>"
-POOL_VRF_SKEY="${CNODE_HOME}/vrf.skey"
-POOL_VRF_VKEY="${CNODE_HOME}/vrf.vkey"
+sudo systemctl daemon-reload
+sudo systemctl enable cnode-cncli-sync.service
+sudo systemctl enable cnode-cncli-validate.service
+sudo systemctl enable cnode-cncli-leaderlog.service
+sudo systemctl enable cnode-logmonitor.service
+sudo systemctl enable autoleaderlog
 ```
 
-### 10-4.サービスをスタートする
+### 10-6.ノードを再起動する
 
+ノードを再起動する
 ```bash
-sudo systemctl start cnode-cncli-sync.service
-sudo systemctl start cnode-cncli-validate.service
-sudo systemctl start cnode-cncli-leaderlog.service
-sudo systemctl start cnode-logmonitor.service
+sudo systemctl reload-or-restart cardano-node
 ```
-
-### 10-5. 起動確認する
-```
-cd $NODE_HOME/scripts
-./blocks.sh
-```
-
-[3プログラムのログ画面](./README.md#7-1-3puroguramunoroguwoshimasu)も合わせてご確認ください。
