@@ -288,7 +288,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "cardano_node_metrics_slotNum_int / 129600 ",
+          "expr": "cardano_node_metrics_slotNum_int{instance=\"localhost:12798\"} / 129600",
           "interval": "",
           "legendFormat": "{{alias}}",
           "refId": "A"
