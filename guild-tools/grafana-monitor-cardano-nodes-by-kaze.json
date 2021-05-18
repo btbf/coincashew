@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 3,
   "links": [],
   "panels": [
     {
@@ -135,7 +135,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "(cardano_node_metrics_remainingKESPeriods_int{instance=\"168.119.226.69:12798\"} * 1.5)",
+          "expr": "(cardano_node_metrics_remainingKESPeriods_int * 1.5)",
           "interval": "",
           "legendFormat": "{{alias}}",
           "refId": "A"
@@ -199,7 +199,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "cardano_node_metrics_currentKESPeriod_int{instance=\"168.119.226.69:12798\"}",
+          "expr": "cardano_node_metrics_currentKESPeriod_int",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -208,7 +208,7 @@
         },
         {
           "exemplar": true,
-          "expr": "cardano_node_metrics_operationalCertificateExpiryKESPeriod_int{instance=\"168.119.226.69:12798\"}",
+          "expr": "cardano_node_metrics_operationalCertificateExpiryKESPeriod_int",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -217,7 +217,7 @@
         },
         {
           "exemplar": true,
-          "expr": "cardano_node_metrics_currentKESPeriod_int{instance=\"168.119.226.69:12798\"} - cardano_node_metrics_operationalCertificateStartKESPeriod_int{instance=\"168.119.226.69:12798\"} + cardano_node_metrics_remainingKESPeriods_int{instance=\"168.119.226.69:12798\"}",
+          "expr": "cardano_node_metrics_currentKESPeriod_int - cardano_node_metrics_operationalCertificateStartKESPeriod_int + cardano_node_metrics_remainingKESPeriods_int",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -226,7 +226,7 @@
         },
         {
           "exemplar": true,
-          "expr": "cardano_node_metrics_remainingKESPeriods_int{instance=\"168.119.226.69:12798\"}",
+          "expr": "cardano_node_metrics_remainingKESPeriods_int",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -288,7 +288,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "cardano_node_metrics_slotNum_int{instance=\"localhost:12798\"} / 129600 ",
+          "expr": "cardano_node_metrics_slotNum_int / 129600 ",
           "interval": "",
           "legendFormat": "{{alias}}",
           "refId": "A"
@@ -588,7 +588,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "cardano_node_metrics_txsProcessedNum_int{instance=\"168.119.226.69:12798\"}",
+          "expr": "cardano_node_metrics_txsProcessedNum_int",
           "instant": false,
           "interval": "",
           "legendFormat": "{{alias}}",
