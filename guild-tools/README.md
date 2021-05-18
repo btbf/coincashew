@@ -674,6 +674,14 @@ glive・・・gLiveView.sh
 
 ## 🏁 10. 2021年5月19日以前から導入済みの方はこちら
 
+{% hint style="info" %}
+cardano-nodeを再起動するとcncli-sync.serviceなど各サービスが落ち、個別に再起動しなければいけない不具合を解消します。  
+→→→cardano-nodeを開始・再起動・停止すると各サービスも連動して開始・再起動・停止するように修正
+{% endhint %}
+{% hint style="denger" %}
+ブロック生成スケジュールに余裕がある時間帯に実施してください
+{% endhint %}
+
 ### 10-1.各種サービスをストップする
 
 ```bash
