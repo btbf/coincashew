@@ -2490,16 +2490,6 @@ sudo systemctl reload-or-restart cardano-node
 {% endtabs %}
 
 {% hint style="info" %}
-**●ブロックログを導入している場合は、各種サービスを再起動してください**
-```
-sudo systemctl reload-or-restart cnode-cncli-sync.service
-sudo systemctl reload-or-restart cnode-cncli-validate.service
-sudo systemctl reload-or-restart cnode-cncli-leaderlog.service
-sudo systemctl reload-or-restart cnode-logmonitor.service
-```
-{% endhint %}
-
-{% hint style="info" %}
 \*\*\*\*✨ **ヒント:** ホットキーを作成したら、コールドキーへのアクセス件を変更しセキュリティを向上させることができます。これによって誤削除、誤った編集などから保護できます。
 
 ロックするには
@@ -2794,6 +2784,7 @@ jq -r '.esLState._delegationState._pstate._pParams."'"$(cat stakepoolid.txt)"'" 
 {% endtabs %}
 -->
 
+<!--
 ### 🧩 18.5 SSHを介したファイルの転送
 
 一般的な使用例
@@ -2827,9 +2818,8 @@ rsync -avzhe “ssh -p <SSH-PORT>” <PATH TO LOCAL PC DESTINATION> <USERNAME>@<
 >
 > `rsync -avzhe "ssh -p 12345" ./node.cert myusername@6.1.2.3:/home/myusername/cardano-my-node/node.cert`
 
-
-
-### ✅ 18.7 ITNキーでステークプールティッカーを確認する。
+-->
+### ✅ 18.5 ITNキーでステークプールティッカーを確認する。
 
 信頼できるステークプールのなりすましや、プール運営を悪用する人から身を守るために、所有者はITNステークプールの所有権を証明することでティッカーを証明できます。
 
@@ -2855,7 +2845,7 @@ cat stakepoolid.sig
 
 ITNで作成したファイルで、所有者の公開鍵を見つけます。このデータは末尾が「.pub」で保存されている可能性があります。
 
-### 📚 18.8 ノードの構成ファイル更新
+### 📚 18.6 ノードの構成ファイル更新
 
 最新の.jsonファイルをダウンロードして、構成ファイルを最新の状態に保ちます。
 
@@ -2870,7 +2860,7 @@ sed -i ${NODE_CONFIG}-config.json \
     -e "s/127.0.0.1/0.0.0.0/g"
 ```
 
-### 💸 18.9 簡単なトランザクション送信の例をご紹介します
+### 💸 18.7 簡単なトランザクション送信の例をご紹介します
 
 **10 ADA** を payment.addrから自分のアドレスへ送信する例です 🙃
 
@@ -3051,14 +3041,14 @@ cardano-cli query utxo \
 100322a39d02c2ead....                                              0        10000000
 ```
 
-### 🔓 18.10 ノードのセキュリティを強化する
+### 🔓 18.8 ノードのセキュリティを強化する
 
 {% hint style="info" %}
 絶賛翻訳中！！
 {% endhint %}
 
 
-### 🍰 18.11 報酬を請求する
+### 🍰 18.9 報酬を請求する
 
 2つの送金方法があります。
 {% hint style="info" %}
@@ -3074,7 +3064,7 @@ cardano-cli query utxo \
 {% endhint %}
 
 
-#### 18.11.1 payment.addrへ送金する方法
+#### 18.10.1 payment.addrへ送金する方法
 
 ステークプールの報酬を請求する例を見ていきます。
 
@@ -3265,7 +3255,7 @@ cardano-cli query utxo \
 ```
 
 
-#### 18.11.2 任意のアドレスへ送金する方法
+#### 18.10.2 任意のアドレスへ送金する方法
 
 {% hint style="info" %}
 報酬は `stake.addr` アドレスに蓄積されていきます。  
