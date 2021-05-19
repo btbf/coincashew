@@ -213,7 +213,7 @@ POOL_VRF_SKEY="${CNODE_HOME}/vrf.skey"
 POOL_VRF_VKEY="${CNODE_HOME}/vrf.vkey"
 ```
 
-## 🏁 4.サービスファイル4種類を作成・登録します。
+## 🏁 4.サービスファイル5種類を作成・登録します。
 
 ```bash
 cd $NODE_HOME
