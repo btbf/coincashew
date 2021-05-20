@@ -297,8 +297,8 @@ cat > $NODE_HOME/service/cnode-cncli-leaderlog.service << EOF
 
 [Unit]
 Description=Cardano Node - CNCLI Leaderlog
-BindsTo=cnode-cncli-sync.service
-After=cnode-cncli-sync.service
+BindsTo=cnode-cncli-leaderlog.service
+After=cnode-cncli-leaderlog.service
 
 [Service]
 Type=oneshot
@@ -319,7 +319,7 @@ SyslogIdentifier=cnode-cncli-leaderlog
 TimeoutStopSec=5
 
 [Install]
-WantedBy=cnode-cncli-sync.service
+WantedBy=cnode-cncli-leaderlog.service
 EOF
 ```
 {% endtab %}
@@ -777,8 +777,8 @@ cat > $NODE_HOME/service/cnode-cncli-leaderlog.service << EOF
 
 [Unit]
 Description=Cardano Node - CNCLI Leaderlog
-BindsTo=cnode-cncli-sync.service
-After=cnode-cncli-sync.service
+BindsTo=cnode-cncli-leaderlog.service
+After=cnode-cncli-leaderlog.service
 
 [Service]
 Type=oneshot
@@ -799,7 +799,7 @@ SyslogIdentifier=cnode-cncli-leaderlog
 TimeoutStopSec=5
 
 [Install]
-WantedBy=cnode-cncli-sync.service
+WantedBy=cnode-cncli-leaderlog.service
 EOF
 ```
 {% endtab %}
