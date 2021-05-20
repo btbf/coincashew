@@ -168,7 +168,6 @@ chmod 755 cncli.sh
 chmod 755 logMonitor.sh
 chmod 755 gLiveView.sh
 chmod 755 blocks.sh
-chmod 755 leaderlog_auto.sh
 cd ../
 chmod 400 vrf.vkey
 ```
@@ -494,11 +493,6 @@ sudo systemctl reload-or-restart cnode-cncli-sync.service
 >上記コマンドを実行すると以下サービスも連動して止まります  
 >cnode-cncli-validate.service  
 >cnode-cncli-leaderlog.service  
-
-```
-sudo systemctl reload-or-restart autoleaderlog.service
-sudo systemctl reload-or-restart cnode-logmonitor.service
-```
 {% endhint %}
 
 
@@ -838,6 +832,5 @@ tmux ls
 * cncli
 * leaderlog
 * validate
-* autoleaderlog
 * logmonitor(5分後に遅延起動)
 {% endhint %}
