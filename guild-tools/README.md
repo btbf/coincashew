@@ -85,7 +85,7 @@ sudo apt-get update -y && sudo apt-get install -y automake build-essential pkg-c
 cd $HOME/git
 git clone https://github.com/AndrewWestberg/cncli
 cd cncli
-git checkout v2.1.0
+git checkout v2.1.1
 cargo install --path . --force
 ```
 
@@ -109,7 +109,7 @@ sudo systemctl stop cnode-cncli-sync.service
 rustup update
 cd $HOME/git/cncli
 git fetch --all --prune
-git checkout v2.1.0
+git checkout v2.1.1
 cargo install --path . --force
 cncli --version
 ```
@@ -160,7 +160,6 @@ wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/mast
 wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/logMonitor.sh
 wget -N https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/gLiveView.sh
 wget -N https://raw.githubusercontent.com/btbf/coincashew/master/guild-tools/blocks.sh
-wget -N https://raw.githubusercontent.com/btbf/coincashew/master/guild-tools/leaderlog_auto.sh
 ```
 
 ###  3-1.パーミッションを設定する
@@ -358,38 +357,6 @@ EOF
 ```
 {% endtab %}
 
-{% tab title="autoleaderlog" %}
-```bash
-cat > $NODE_HOME/service/autoleaderlog.service << EOF
-# The Cardano node service (part of systemd)
-# file: /etc/systemd/system/autoleaderlog.service
-
-[Unit]
-Description     = autoleaderlog.service
-BindsTo         = cardano-node.service
-After           = cardano-node.service
-
-[Service]
-User            = $(whoami)
-Type=oneshot
-RemainAfterExit=yes
-Restart=on-failure
-RestartSec=20
-WorkingDirectory= $NODE_HOME
-ExecStart       = /usr/bin/tmux new -d -s autoleaderlog
-ExecStartPost   = /usr/bin/tmux send-keys -t autoleaderlog $NODE_HOME/scripts/leaderlog_auto.sh Enter
-ExecStop=/usr/bin/tmux kill-session -t autoleaderlog
-KillSignal=SIGINT
-RestartKillSignal=SIGINT
-TimeoutStopSec=2
-LimitNOFILE=32768
-
-[Install]
-WantedBy    = cardano-node.service
-EOF
-```
-{% endtab %}
-
 {% endtabs %}
 
 ###  4-1サービスファイルをシステムフォルダにコピーして権限を付与します。  
@@ -400,7 +367,6 @@ sudo cp $NODE_HOME/service/cnode-cncli-sync.service /etc/systemd/system/cnode-cn
 sudo cp $NODE_HOME/service/cnode-cncli-validate.service /etc/systemd/system/cnode-cncli-validate.service
 sudo cp $NODE_HOME/service/cnode-cncli-leaderlog.service /etc/systemd/system/cnode-cncli-leaderlog.service
 sudo cp $NODE_HOME/service/cnode-logmonitor.service /etc/systemd/system/cnode-logmonitor.service
-sudo cp $NODE_HOME/service/autoleaderlog.service /etc/systemd/system/autoleaderlog.service
 ```
 
 ```bash
@@ -408,7 +374,6 @@ sudo chmod 644 /etc/systemd/system/cnode-cncli-sync.service
 sudo chmod 644 /etc/systemd/system/cnode-cncli-validate.service
 sudo chmod 644 /etc/systemd/system/cnode-cncli-leaderlog.service
 sudo chmod 644 /etc/systemd/system/cnode-logmonitor.service
-sudo chmod 644 /etc/systemd/system/autoleaderlog.service
 ```
 
 ###  4-2サービスファイルを有効化します
@@ -419,7 +384,6 @@ sudo systemctl enable cnode-cncli-sync.service
 sudo systemctl enable cnode-cncli-validate.service
 sudo systemctl enable cnode-cncli-leaderlog.service
 sudo systemctl enable cnode-logmonitor.service
-sudo systemctl enable autoleaderlog
 ```
 
 ## 🏁 5.ブロックチェーンとDBを同期する
@@ -490,7 +454,6 @@ sudo systemctl reload-or-restart cardano-node
 > cnode-cncli-validate.service  
 > cnode-cncli-leaderlog.service  
 > cnode-logmonitor.service  
-> autoleaderlog.service  
 
 
 tmux起動確認
@@ -505,7 +468,6 @@ tmux ls
 * cncli
 * leaderlog
 * validate
-* autoleaderlog
 * logmonitor(5分後に遅延起動)
 {% endhint %}
 
@@ -522,7 +484,6 @@ sudo systemctl stop cnode-cncli-sync.service
 
 ```
 sudo systemctl stop cnode-logmonitor.service
-sudo systemctl stop autoleaderlog.service
 ```
 
 ###  ●各種サービスを再起動する方法
@@ -596,23 +557,6 @@ tmux a -t logmonitor
 ~~ LOG MONITOR STARTED ~~
 monitoring logs/node.json for traces
 ```
-Ctrl+bを押した後すぐにd でバックグラウンド実行に切り替えます(デタッチ)
-{% endtab %}
-
-{% tab title="autoleaderlog" %}
-
-{% hint style="info" %}
-こちらのプログラムは320000slotを迎えたら自動的にleaderlogを実行する
-{% endhint %}
-
-```bash
-tmux a -t autoleaderlog
-```
-
-スロットが320000以前なら「スケジュール未実行」  
-スロットが320000移行なら「スケジュール実行済み」  
-となればOK  
-
 Ctrl+bを押した後すぐにd でバックグラウンド実行に切り替えます(デタッチ)
 {% endtab %}
 
@@ -692,7 +636,6 @@ sudo systemctl stop cnode-cncli-sync.service
 sudo systemctl stop cnode-cncli-validate.service
 sudo systemctl stop cnode-cncli-leaderlog.service
 sudo systemctl stop cnode-logmonitor.service
-sudo systemctl stop autoleaderlog.service
 ```
 
 ### 10-2.各種サービスファイルをアップデートする
@@ -834,38 +777,6 @@ TimeoutStopSec=5
 
 [Install]
 WantedBy=cardano-node.service
-EOF
-```
-{% endtab %}
-
-{% tab title="autoleaderlog" %}
-```bash
-cat > $NODE_HOME/service/autoleaderlog.service << EOF
-# The Cardano node service (part of systemd)
-# file: /etc/systemd/system/autoleaderlog.service
-
-[Unit]
-Description     = autoleaderlog.service
-BindsTo         = cardano-node.service
-After           = cardano-node.service
-
-[Service]
-User            = $(whoami)
-Type=oneshot
-RemainAfterExit=yes
-Restart=on-failure
-RestartSec=20
-WorkingDirectory= $NODE_HOME
-ExecStart       = /usr/bin/tmux new -d -s autoleaderlog
-ExecStartPost   = /usr/bin/tmux send-keys -t autoleaderlog $NODE_HOME/scripts/leaderlog_auto.sh Enter
-ExecStop=/usr/bin/tmux kill-session -t autoleaderlog
-KillSignal=SIGINT
-RestartKillSignal=SIGINT
-TimeoutStopSec=2
-LimitNOFILE=32768
-
-[Install]
-WantedBy    = cardano-node.service
 EOF
 ```
 {% endtab %}
