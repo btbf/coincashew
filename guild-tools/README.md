@@ -790,7 +790,6 @@ sudo systemctl disable cnode-cncli-sync.service
 sudo systemctl disable cnode-cncli-validate.service
 sudo systemctl disable cnode-cncli-leaderlog.service
 sudo systemctl disable cnode-logmonitor.service
-sudo systemctl disable autoleaderlog
 ```
 
 ### 10-4.サービスファイルを入れ替える
@@ -801,7 +800,6 @@ sudo cp $NODE_HOME/service/cnode-cncli-sync.service /etc/systemd/system/cnode-cn
 sudo cp $NODE_HOME/service/cnode-cncli-validate.service /etc/systemd/system/cnode-cncli-validate.service
 sudo cp $NODE_HOME/service/cnode-cncli-leaderlog.service /etc/systemd/system/cnode-cncli-leaderlog.service
 sudo cp $NODE_HOME/service/cnode-logmonitor.service /etc/systemd/system/cnode-logmonitor.service
-sudo cp $NODE_HOME/service/autoleaderlog.service /etc/systemd/system/autoleaderlog.service
 ```
 
 ```bash
@@ -809,7 +807,6 @@ sudo chmod 644 /etc/systemd/system/cnode-cncli-sync.service
 sudo chmod 644 /etc/systemd/system/cnode-cncli-validate.service
 sudo chmod 644 /etc/systemd/system/cnode-cncli-leaderlog.service
 sudo chmod 644 /etc/systemd/system/cnode-logmonitor.service
-sudo chmod 644 /etc/systemd/system/autoleaderlog.service
 ```
 
 ###  10-5.サービスファイルを有効化します
@@ -820,7 +817,6 @@ sudo systemctl enable cnode-cncli-sync.service
 sudo systemctl enable cnode-cncli-validate.service
 sudo systemctl enable cnode-cncli-leaderlog.service
 sudo systemctl enable cnode-logmonitor.service
-sudo systemctl enable autoleaderlog
 ```
 
 ### 10-6.ノードを再起動する
