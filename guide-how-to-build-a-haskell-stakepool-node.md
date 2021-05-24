@@ -2173,6 +2173,7 @@ CERT=\${DIRECTORY}/node.cert
 {% tabs %}
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
+cd $NODE_HOME
 cardano-cli query stake-address-info \
  --address $(cat stake.addr) \
  --mainnet
