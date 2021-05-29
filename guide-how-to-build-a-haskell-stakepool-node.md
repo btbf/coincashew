@@ -3053,9 +3053,9 @@ cardano-cli query utxo \
 
 2つの送金方法があります。
 {% hint style="info" %}
-**1.payment.addrへ送金する方法**は[こちら](guide-how-to-build-a-haskell-stakepool-node.md#18.10.1-paymentaddrhesuru)
+**1.payment.addrへ送金する方法**は[こちら](guide-how-to-build-a-haskell-stakepool-node.md#18-10-1-paymentaddrhesuru)
 
-**2.任意のアドレスへ送金する方法は**[こちら](guide-how-to-build-a-haskell-stakepool-node.md#18.10.2-noadoresuhesuru)
+**2.任意のアドレスへ送金する方法は**[こちら](guide-how-to-build-a-haskell-stakepool-node.md#18-10-2-noadoresuhesuru)
 {% endhint %}
 
     
