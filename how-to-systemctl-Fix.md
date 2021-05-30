@@ -160,9 +160,23 @@ cd $NODE_HOME/scripts
 \*\*\*\*⛓ **システム起動後に、ログモニターを表示するコマンド**
 
 ```text
-journalctl --unit=cardano-node --follow
+journalctl -u cardano-node -f
 ```
 > コマンド入力に戻る場合は「Ctrl＋C」（この場合ノードは終了しません）
+
+{% hint style="info" %}
+スクリプトへのパスを通し、任意の単語で起動出来るようにする。
+```bash
+echo alias cnode='"journalctl -u cardano-node -f"' >> $HOME/.bashrc
+source $HOME/.bashrc
+```
+
+単語を入力するだけで、起動状態(ログ)を確認できます。  
+cnode
+
+{% endhint %}
+
+
 #### 🔄 ノードサービスを再起動するコマンド
 
 ```text
