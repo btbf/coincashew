@@ -567,6 +567,11 @@ cd $NODE_HOME/scripts
 ./blocks.sh
 ```
 
+![](./../.gitbook/assets/blocks1.JPG)
+
+（ｓ）実績概要---エポック毎のブロック生成実績参照
+（ｅ）エポック詳細---個別エポックのブロック生成スケジュールおよび生成実績参照
+
 ![](./../.gitbook/assets/blocklog.JPG)
 
 
