@@ -9,3 +9,4 @@
 * [ブロックログを設定する手順](./guild-tools/README.md)
 * [ネイティブトークンCLIコマンド](/how-to-native-multi-asset.md)
 * [メタデータ付きトランザクションを送信する方法](/how-to-transaction-metadata.md)
+* [systemdサービススクリプト改修手順](/how-to-systemctl-Fix.md)
