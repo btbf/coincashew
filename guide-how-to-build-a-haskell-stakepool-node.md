@@ -271,14 +271,14 @@ source $HOME/.bashrc
 ```bash
 cat > $NODE_HOME/startRelayNode1.sh << EOF 
 #!/bin/bash
-DIRECTORY=\$NODE_HOME
+DIRECTORY=$NODE_HOME
 PORT=6000
 HOSTADDR=0.0.0.0
 TOPOLOGY=\${DIRECTORY}/${NODE_CONFIG}-topology.json
 DB_PATH=\${DIRECTORY}/db
 SOCKET_PATH=\${DIRECTORY}/db/socket
 CONFIG=\${DIRECTORY}/${NODE_CONFIG}-config.json
-cardano-node run --topology \${TOPOLOGY} --database-path \${DB_PATH} --socket-path \${SOCKET_PATH} --host-addr \${HOSTADDR} --port \${PORT} --config \${CONFIG}
+/usr/local/bin/cardano-node run --topology \${TOPOLOGY} --database-path \${DB_PATH} --socket-path \${SOCKET_PATH} --host-addr \${HOSTADDR} --port \${PORT} --config \${CONFIG}
 EOF
 ```
 {% endtab %}
@@ -287,14 +287,14 @@ EOF
 ```bash
 cat > $NODE_HOME/startBlockProducingNode.sh << EOF 
 #!/bin/bash
-DIRECTORY=\$NODE_HOME
+DIRECTORY=$NODE_HOME
 PORT=6000
 HOSTADDR=0.0.0.0
 TOPOLOGY=\${DIRECTORY}/${NODE_CONFIG}-topology.json
 DB_PATH=\${DIRECTORY}/db
 SOCKET_PATH=\${DIRECTORY}/db/socket
 CONFIG=\${DIRECTORY}/${NODE_CONFIG}-config.json
-cardano-node run --topology \${TOPOLOGY} --database-path \${DB_PATH} --socket-path \${SOCKET_PATH} --host-addr \${HOSTADDR} --port \${PORT} --config \${CONFIG}
+/usr/local/bin/cardano-node run --topology \${TOPOLOGY} --database-path \${DB_PATH} --socket-path \${SOCKET_PATH} --host-addr \${HOSTADDR} --port \${PORT} --config \${CONFIG}
 EOF
 ```
 {% endtab %}
@@ -366,27 +366,27 @@ killall -s 2 cardano-node
 {% tabs %}
 {% tab title="リレーノード1" %}
 ```bash
-cat > $NODE_HOME/cardano-node.service << EOF
+cat > $NODE_HOME/cardano-node.service << EOF 
 # The Cardano node service (part of systemd)
-# file: /etc/systemd/system/cardano-node.service
+# file: /etc/systemd/system/cardano-node.service 
 
 [Unit]
 Description     = Cardano node service
 Wants           = network-online.target
-After           = network-online.target
+After           = network-online.target 
 
 [Service]
-User            = $(whoami)
-Type            = forking
-WorkingDirectory= $NODE_HOME
-ExecStart       = /usr/bin/tmux new -d -s cnode
-ExecStartPost   = /usr/bin/tmux send-keys -t cnode $NODE_HOME/startRelayNode1.sh Enter
+User            = ${USER}
+Type            = simple
+WorkingDirectory= ${NODE_HOME}
+ExecStart       = /bin/bash -c '${NODE_HOME}/startRelayNode1.sh'
 KillSignal=SIGINT
 RestartKillSignal=SIGINT
 TimeoutStopSec=2
 LimitNOFILE=32768
 Restart=always
 RestartSec=5
+SyslogIdentifier=cardano-node
 
 [Install]
 WantedBy	= multi-user.target
@@ -396,27 +396,27 @@ EOF
 
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
-cat > $NODE_HOME/cardano-node.service << EOF
+cat > $NODE_HOME/cardano-node.service << EOF 
 # The Cardano node service (part of systemd)
-# file: /etc/systemd/system/cardano-node.service
+# file: /etc/systemd/system/cardano-node.service 
 
 [Unit]
 Description     = Cardano node service
 Wants           = network-online.target
-After           = network-online.target
+After           = network-online.target 
 
 [Service]
-User            = $(whoami)
-Type            = forking
-WorkingDirectory= $NODE_HOME
-ExecStart       = /usr/bin/tmux new -d -s cnode
-ExecStartPost   = /usr/bin/tmux send-keys -t cnode $NODE_HOME/startBlockProducingNode.sh Enter
+User            = ${USER}
+Type            = simple
+WorkingDirectory= ${NODE_HOME}
+ExecStart       = /bin/bash -c '${NODE_HOME}/startBlockProducingNode.sh'
 KillSignal=SIGINT
 RestartKillSignal=SIGINT
 TimeoutStopSec=2
 LimitNOFILE=32768
 Restart=always
 RestartSec=5
+SyslogIdentifier=cardano-node
 
 [Install]
 WantedBy	= multi-user.target
@@ -454,19 +454,7 @@ sudo systemctl start cardano-node
 \*\*\*\*⛓ **システム起動後に、ログモニターを表示します**
 
 ```text
-tmux a -t cnode
-```
-
-**バックグラウンド起動中のセッション(別画面)を確認する**
-
-```text
-tmux ls
-```
-
-#### 🚧 セッションをバックグラウンド実行に切り替え、コマンドラインを表示します。
-
-```text
-press Ctrl + b を押した後、すぐに d (デタッチ)
+journalctl --unit=cardano-node --follow
 ```
 
 #### 🔄 ノードサービスを再起動します。
@@ -483,9 +471,18 @@ sudo systemctl stop cardano-node
 
 #### 🗄 ログのフィルタリング
 
+昨日のログ
 ```bash
 journalctl --unit=cardano-node --since=yesterday
+```
+
+今日のログ
+```bash
 journalctl --unit=cardano-node --since=today
+```
+
+期間指定
+```bash
 journalctl --unit=cardano-node --since='2020-07-29 00:00:00' --until='2020-07-29 12:00:00'
 ```
 
