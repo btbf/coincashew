@@ -141,6 +141,17 @@ sudo systemctl enable cardano-node
 sudo systemctl start cardano-node
 ```
 
+ログモニターを表示し、ログが流れるか確認する
+```text
+journalctl --unit=cardano-node --follow
+```
+
+gliveviewを起動し、ノード状況を確認する
+```
+cd $NODE_HOME/scripts
+./gLiveView.sh
+```
+
 {% hint style="danger" %}
 以下は、systemdを有効活用するためのコマンドです。  
 必要に応じで実行するようにし、一連の流れで実行しないでください
