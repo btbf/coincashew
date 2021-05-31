@@ -17,7 +17,8 @@ cleanup() {
   exit $err
 }
 trap cleanup HUP INT TERM
-trap 'stty echo' EXIT
+STTY_SETTINGS="$(stty -g < /dev/tty)"
+trap 'stty "$STTY_SETTINGS" < /dev/tty' EXIT
 
 # Command     : myExit [exit code] [message]
 # Description : gracefully handle an exit and restore terminal to original state
@@ -28,71 +29,74 @@ myExit() {
 
 clear
 
+usage() {
+  cat <<-EOF
+		Usage: $(basename "$0") [-o] [-a] [-b <branch name>]
+		CNTools - The Cardano SPOs best friend
+		
+		-o    Activate offline mode - run CNTools in offline mode without node access, a limited set of functions available
+		-a    Enable advanced/developer features like metadata transactions, multi-asset management etc (not needed for SPO usage)
+		-b    Run CNTools and look for updates on alternate branch instead of master of guild repository (only for testing/development purposes)
+		
+		EOF
+}
+
 CNTOOLS_MODE="CONNECTED"
+ADVANCED_MODE="false"
 PARENT="$(dirname $0)"
 [[ -f "${PARENT}"/.env_branch ]] && BRANCH="$(cat "${PARENT}"/.env_branch)" || BRANCH="master"
 
-while getopts :ob: opt; do
+while getopts :oab: opt; do
   case ${opt} in
     o ) CNTOOLS_MODE="OFFLINE" ;;
+    a ) ADVANCED_MODE="true" ;;
     b ) BRANCH=${OPTARG}; echo "${BRANCH}" > "${PARENT}"/.env_branch ;;
     \? ) myExit 1 "$(usage)" ;;
     esac
 done
 shift $((OPTIND -1))
 
-URL_RAW="https://raw.githubusercontent.com/cardano-community/guild-operators/${BRANCH}"
-URL="${URL_RAW}/scripts/cnode-helper-scripts"
-URL_DOCS="${URL_RAW}/docs/Scripts"
+#######################################################
+# Version Check                                       #
+#######################################################
+clear
 
-[[ ${CNTOOLS_MODE} = "CONNECTED" ]] && env_mode="" || env_mode="offline"
+if [[ ! -f "${PARENT}"/env ]]; then
+  echo -e "\nCommon env file missing: ${PARENT}/env"
+  echo -e "This is a mandatory prerequisite, please install with prereqs.sh or manually download from GitHub\n"
+  myExit 1
+fi
 
-# env version check
+. "${PARENT}"/env offline &>/dev/null # ignore any errors, re-sourced later
+
 if [[ ${CNTOOLS_MODE} = "CONNECTED" ]]; then
-  if curl -s -m 10 -o "${PARENT}"/env.tmp ${URL}/env 2>/dev/null && [[ -f "${PARENT}"/env.tmp ]]; then
-    if [[ -f "${PARENT}"/env ]]; then
-      if [[ $(grep "_HOME=" "${PARENT}"/env) =~ ^#?([^[:space:]]+)_HOME ]]; then
-        vname=$(tr '[:upper:]' '[:lower:]' <<< ${BASH_REMATCH[1]})
-        sed -e "s@/opt/cardano/[c]node@/opt/cardano/${vname}@g" -e "s@[C]NODE_HOME@${BASH_REMATCH[1]}_HOME@g" -i "${PARENT}"/env.tmp
-      else
-        myExit 1 "Update for env file failed! Please use prereqs.sh to force an update or manually download $(basename $0) + env from GitHub"
-      fi
-      TEMPL_CMD=$(awk '/^# Do NOT modify/,0' "${PARENT}"/env)
-      TEMPL2_CMD=$(awk '/^# Do NOT modify/,0' "${PARENT}"/env.tmp)
-      if [[ "$(echo ${TEMPL_CMD} | sha256sum)" != "$(echo ${TEMPL2_CMD} | sha256sum)" ]]; then
-        . "${PARENT}"/env offline &>/dev/null # source in offline mode and ignore errors to get some common functions, sourced at a later point again
-        if getAnswer "\nThe static content from env file does not match with guild-operators repository, do you want to download the updated file?"; then
-          cp "${PARENT}"/env "${PARENT}/env_bkp$(date +%s)"
-          STATIC_CMD=$(awk '/#!/{x=1}/^# Do NOT modify/{exit} x' "${PARENT}"/env)
-          printf '%s\n%s\n' "$STATIC_CMD" "$TEMPL2_CMD" > "${PARENT}"/env.tmp
-          mv "${PARENT}"/env.tmp "${PARENT}"/env
-          echo -e "\nenv update successfully applied!"
-          waitToProceed
-        fi
-      fi
-    else
-      mv "${PARENT}"/env.tmp "${PARENT}"/env
-      myExit 0 "Common env file downloaded: ${PARENT}/env\n\
-This is a mandatory prerequisite, please set variables accordingly in User Variables section in the env file and restart CNTools"
+  if [[ "${UPDATE_CHECK}" == "Y" ]]; then
+    echo "Checking for script updates..."
+    # Check availability of checkUpdate function
+    if [[ ! $(command -v checkUpdate) ]]; then
+      echo -e "\nCould not find checkUpdate function in env, make sure you're using official guild docos for installation!"
+      myExit 1
     fi
+    # check for env update
+    ! checkUpdate env && myExit 1
   fi
-  rm -f "${PARENT}"/env.tmp
+  . "${PARENT}"/env
+  rc=$?
+else
+  . "${PARENT}"/env offline
+  rc=$?
 fi
-if ! . "${PARENT}"/env ${env_mode}; then
-  myExit 1 "ERROR: CNTools failed to load common env file\nPlease verify set values in 'User Variables' section in env file or log an issue on GitHub"
-fi
+case $rc in # ignore exit code 0 and 2, any other exits script
+  0) : ;; # ok
+  2) clear ;; # ignore
+  *) myExit 1 "ERROR: CNTools failed to load common env file\nPlease verify set values in 'User Variables' section in env file or log an issue on GitHub" ;;
+esac
 
 # get cntools config parameters
-. "${PARENT}"/cntools.config
+! . "${PARENT}"/cntools.config && myExit 1
 
 # get helper functions from library file
-. "${PARENT}"/cntools.library
-
-# create temporary directory if missing & remove lockfile if it exist
-mkdir -p "${TMP_FOLDER}" # Create if missing
-if [[ ! -d "${TMP_FOLDER}" ]]; then
-  myExit 1 "${FG_RED}ERROR${NC}: Failed to create directory for temporary files:\n${TMP_FOLDER}"
-fi
+! . "${PARENT}"/cntools.library && myExit 1
 
 archiveLog # archive current log and cleanup log archive folder
 
@@ -104,55 +108,121 @@ exec 7>&2 # Link file descriptor #7 with normal stderr.
 exec 8>&1 # Link file descriptor #8 with custom stdout.
 exec 9>&2 # Link file descriptor #9 with custom stderr.
 
-
-
-if [[ "$CNTOOLS_PATCH_VERSION" -eq 999  ]]; then
-  # CNTools was updated using special 999 patch tag, apply correct version in cntools.library and update variables already sourced
-  sed -i "s/CNTOOLS_MAJOR_VERSION=[[:digit:]]\+/CNTOOLS_MAJOR_VERSION=$((++CNTOOLS_MAJOR_VERSION))/" "${PARENT}/cntools.library"
-  sed -i "s/CNTOOLS_MINOR_VERSION=[[:digit:]]\+/CNTOOLS_MINOR_VERSION=0/" "${PARENT}/cntools.library"
-  sed -i "s/CNTOOLS_PATCH_VERSION=[[:digit:]]\+/CNTOOLS_PATCH_VERSION=0/" "${PARENT}/cntools.library"
-  # CNTOOLS_MAJOR_VERSION variable already updated in sed replace command
-  CNTOOLS_MINOR_VERSION=0
-  CNTOOLS_PATCH_VERSION=0
-  CNTOOLS_VERSION="${CNTOOLS_MAJOR_VERSION}.${CNTOOLS_MINOR_VERSION}.${CNTOOLS_PATCH_VERSION}"
+# check for required command line tools
+if ! cmdAvailable "curl" || \
+   ! cmdAvailable "jq" || \
+   ! cmdAvailable "bc" || \
+   ! cmdAvailable "sed" || \
+   ! cmdAvailable "awk" || \
+   ! cmdAvailable "column" || \
+   ! protectionPreRequisites; then myExit 1 "Missing one or more of the required command line tools, press any key to exit"
 fi
 
 # Do some checks when run in connected mode
-
-
-
-# Verify shelley transition epoch
-if [[ -z ${SHELLEY_TRANS_EPOCH} ]]; then # unknown network
+if [[ ${CNTOOLS_MODE} = "CONNECTED" ]]; then
+  # check to see if there are any updates available
   clear
-  SHELLEY_TRANS_EPOCH=$(cat "${SHELLEY_TRANS_FILENAME}" 2>/dev/null)
-  if [[ -z ${SHELLEY_TRANS_EPOCH} ]]; then # not yet identified
-    if [[ ${CNTOOLS_MODE} = "CONNECTED" ]]; then
-      getNodeMetrics
-      epoch=$(jq '.cardano.node.metrics.epoch.int.val //0' <<< "${node_metrics}")
-      slot_in_epoch=$(jq '.cardano.node.metrics.slotInEpoch.int.val //0' <<< "${node_metrics}")
-      slot_num=$(jq '.cardano.node.metrics.slotNum.int.val //0' <<< "${node_metrics}")
-      calc_slot=0
-      byron_epochs=${epoch}
-      shelley_epochs=0
-      while [[ ${byron_epochs} -ge 0 ]]; do
-        calc_slot=$(( (byron_epochs*BYRON_EPOCH_LENGTH) + (shelley_epochs*EPOCH_LENGTH) + slot_in_epoch ))
-        [[ ${calc_slot} -eq ${slot_num} ]] && break
-        ((byron_epochs--))
-        ((shelley_epochs++))
-      done
-      node_sync="NODE SYNC: Epoch[${epoch}] - Slot in Epoch[${slot_in_epoch}] - Slot[${slot_num}]\n"
-      if [[ ${calc_slot} -ne ${slot_num} ]]; then
-        myExit 1 "${FG_YELLOW}WARN${NC}: Failed to calculate shelley transition epoch\n\n${node_sync}"
-      elif [[ ${shelley_epochs} -eq 0 ]]; then
-        myExit 1 "${FG_YELLOW}WARN${NC}: The network has not reached the hard fork from Byron to shelley, please wait to use CNTools until your node is in shelley era or start it in Offline mode\n\n${node_sync}"
+  if [[ "${UPDATE_CHECK}" == "Y" ]]; then 
+    println DEBUG "CNTools version check...\n"
+    if curl -s -f -m ${CURL_TIMEOUT} -o "${PARENT}"/cntools.library.tmp "${URL}/cntools.library" && [[ -f "${PARENT}"/cntools.library.tmp ]]; then
+      GIT_MAJOR_VERSION=$(grep -r ^CNTOOLS_MAJOR_VERSION= "${PARENT}"/cntools.library.tmp |sed -e "s#.*=##")
+      GIT_MINOR_VERSION=$(grep -r ^CNTOOLS_MINOR_VERSION= "${PARENT}"/cntools.library.tmp |sed -e "s#.*=##")
+      GIT_PATCH_VERSION=$(grep -r ^CNTOOLS_PATCH_VERSION= "${PARENT}"/cntools.library.tmp |sed -e "s#.*=##")
+      GIT_VERSION="${GIT_MAJOR_VERSION}.${GIT_MINOR_VERSION}.${GIT_PATCH_VERSION}"
+      if ! versionCheck "${GIT_VERSION}" "${CNTOOLS_VERSION}"; then
+        println DEBUG "A new version of CNTools is available"
+        echo
+        println DEBUG "Installed Version : ${FG_LGRAY}${CNTOOLS_VERSION}${NC}"
+        println DEBUG "Available Version : ${FG_GREEN}${GIT_VERSION}${NC}"
+        if getAnswer "\nDo you want to upgrade to the latest version of CNTools?"; then
+          if curl -s -f -m ${CURL_TIMEOUT} -o "${PARENT}"/cntools.sh.tmp "${URL}/cntools.sh" && \
+          mv -f "${PARENT}"/cntools.sh "${PARENT}/cntools.sh_bkp$(printf '%(%s)T\n' -1)" && \
+          mv -f "${PARENT}"/cntools.library "${PARENT}/cntools.library_bkp$(printf '%(%s)T\n' -1)" && \
+          mv -f "${PARENT}"/cntools.sh.tmp "${PARENT}"/cntools.sh && \
+          mv -f "${PARENT}"/cntools.library.tmp "${PARENT}"/cntools.library && \
+          chmod 750 "${PARENT}"/cntools.sh; then
+            myExit 0 "Update applied successfully!\n\nPlease start CNTools again!"
+          else
+            myExit 1 "${FG_RED}Update failed!${NC}\n\nPlease use prereqs.sh or manually update CNTools"
+          fi
+          waitForInput
+        fi
       else
-        shelleyTransitionEpoch=${byron_epochs}
+        # check if CNTools was recently updated, if so show whats new
+        if curl -s -f -m ${CURL_TIMEOUT} -o "${TMP_DIR}"/cntools-changelog.md "${URL_DOCS}/cntools-changelog.md"; then
+          if ! cmp -s "${TMP_DIR}"/cntools-changelog.md "${PARENT}/cntools-changelog.md"; then
+            # Latest changes not shown, show whats new and copy changelog
+            clear 
+            exec >&6 # normal stdout
+            sleep 0.1
+            if [[ ! -f "${PARENT}/cntools-changelog.md" ]]; then 
+              # special case for first installation or 5.0.0 upgrade, print release notes until previous major version
+              println OFF "~ CNTools - What's New ~\n\n" "$(sed -n "/\[${CNTOOLS_MAJOR_VERSION}\.${CNTOOLS_MINOR_VERSION}\.${CNTOOLS_PATCH_VERSION}\]/,/\[$((CNTOOLS_MAJOR_VERSION-1))\.[0-9]\.[0-9]\]/p" "${TMP_DIR}"/cntools-changelog.md | head -n -2)" | less -X
+            else
+              # print release notes from current until previously installed version
+              [[ $(cat "${PARENT}/cntools-changelog.md") =~ \[([[:digit:]])\.([[:digit:]])\.([[:digit:]])\] ]]
+              cat <(println OFF "~ CNTools - What's New ~\n") <(awk "1;/\[${BASH_REMATCH[1]}\.${BASH_REMATCH[2]}\.${BASH_REMATCH[3]}\]/{exit}" "${TMP_DIR}"/cntools-changelog.md | head -n -2 | tail -n +7) <(echo -e "\n [Press 'q' to quit and proceed to CNTools main menu]\n") | less -X
+            fi
+            exec >&8 # custom stdout
+            cp "${TMP_DIR}"/cntools-changelog.md "${PARENT}/cntools-changelog.md"
+          fi
+        else
+          println ERROR "\n${FG_RED}ERROR${NC}: failed to download changelog from GitHub!"
+          waitForInput
+        fi
       fi
+      rm -f "${PARENT}"/cntools.sh.tmp
+      rm -f "${PARENT}"/cntools.library.tmp
     else
-      myExit 1 "${FG_YELLOW}WARN${NC}: Offline mode enabled and this is an unknown network, please manually create and set shelley transition epoch:\nE.g. : ${FG_CYAN}echo 74 > \"${SHELLEY_TRANS_FILENAME}\"${NC}"
+      println ERROR "\n${FG_RED}ERROR${NC}: failed to download cntools.library from GitHub, unable to perform version check!"
+      waitForInput
     fi
   fi
-  echo "${SHELLEY_TRANS_EPOCH}" > "${SHELLEY_TRANS_FILENAME}"
+
+  # Validate protocol parameters
+  if grep -q "Network.Socket.connect" <<< "${PROT_PARAMS}"; then
+    myExit 1 "${FG_YELLOW}WARN${NC}: node socket path wrongly configured or node not running, please verify that socket set in env file match what is used to run the node\n\n${FG_BLUE}INFO${NC}: re-run CNTools in offline mode with -o parameter if you want to access CNTools with limited functionality"
+  elif [[ -z "${PROT_PARAMS}" ]] || ! jq -er . <<< "${PROT_PARAMS}" &>/dev/null; then
+    myExit 1 "${FG_YELLOW}WARN${NC}: failed to query protocol parameters, ensure your node is running with correct genesis (the node needs to be in sync to 1 epoch after the hardfork)\n\nError message: ${PROT_PARAMS}\n\n${FG_BLUE}INFO${NC}: re-run CNTools in offline mode with -o parameter if you want to access CNTools with limited functionality"
+  fi
+  echo "${PROT_PARAMS}" > "${TMP_DIR}"/protparams.json
+fi
+
+# check that bash version is > 4.4.0
+[[ $(bash --version | head -n 1) =~ ([0-9]+\.[0-9]+\.[0-9]+) ]] || myExit 1 "Unable to get BASH version"
+if ! versionCheck "4.4.0" "${BASH_REMATCH[1]}"; then
+  myExit 1 "BASH does not meet the minimum required version of ${FG_LBLUE}4.4.0${NC}, found ${FG_LBLUE}${BASH_REMATCH[1]}${NC}\n\nPlease upgrade to a newer Linux distribution or compile latest BASH following official docs.\n\nINSTALL:  https://www.gnu.org/software/bash/manual/html_node/Installing-Bash.html\nDOWNLOAD: http://git.savannah.gnu.org/cgit/bash.git/ (latest stable TAG)"
+fi
+
+# check if there are pools in need of KES key rotation
+clear
+kes_rotation_needed="no"
+while IFS= read -r -d '' pool; do
+  if [[ -f "${pool}/${POOL_CURRENT_KES_START}" ]]; then
+    kesExpiration "$(cat "${pool}/${POOL_CURRENT_KES_START}")"
+    if [[ ${expiration_time_sec_diff} -lt ${KES_ALERT_PERIOD} ]]; then
+      kes_rotation_needed="yes"
+      println "\n** WARNING **\nPool ${FG_GREEN}$(basename ${pool})${NC} in need of KES key rotation"
+      if [[ ${expiration_time_sec_diff} -lt 0 ]]; then
+        println DEBUG "${FG_RED}Keys expired!${NC} : ${FG_RED}$(timeLeft ${expiration_time_sec_diff:1})${NC} ago"
+      else
+        println DEBUG "Remaining KES periods : ${FG_RED}${remaining_kes_periods}${NC}"
+        println DEBUG "Time left             : ${FG_RED}$(timeLeft ${expiration_time_sec_diff})${NC}"
+      fi
+    elif [[ ${expiration_time_sec_diff} -lt ${KES_WARNING_PERIOD} ]]; then
+      kes_rotation_needed="yes"
+      println DEBUG "\nPool ${FG_GREEN}$(basename ${pool})${NC} soon in need of KES key rotation"
+      println DEBUG "Remaining KES periods : ${FG_YELLOW}${remaining_kes_periods}${NC}"
+      println DEBUG "Time left             : ${FG_YELLOW}$(timeLeft ${expiration_time_sec_diff})${NC}"
+    fi
+  fi
+done < <(find "${POOL_FOLDER}" -mindepth 1 -maxdepth 1 -type d -print0 | sort -z)
+[[ ${kes_rotation_needed} = "yes" ]] && waitForInput
+
+# Verify that shelley transition epoch was properly identified by env
+if [[ ${SHELLEY_TRANS_EPOCH} -lt 0 ]]; then # unknown network
+  clear
+  myExit 1 "${FG_YELLOW}WARN${NC}: This is an unknown network, please manually set SHELLEY_TRANS_EPOCH variable in env file"
 fi
 
 ###################################################################
