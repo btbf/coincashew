@@ -7,6 +7,6 @@
 * [poolMetaData.jsonをGithubでホストする方法](how-to-upload-poolmetadata.json-to-github.md)
 * [ステークプールを更新する方法](how-to-update-a-stakepool.md)
 * [ブロックログを設定する手順](./guild-tools/README.md)
-* [ネイティブトークンCLIコマンド](/how-to-native-multi-asset.md)
+<!-- * [ネイティブトークンCLIコマンド](/how-to-native-multi-asset.md) -->
 * [メタデータ付きトランザクションを送信する方法](/how-to-transaction-metadata.md)
 * [systemdサービススクリプト改修手順](/how-to-systemctl-Fix.md)
