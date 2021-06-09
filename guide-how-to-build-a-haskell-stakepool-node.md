@@ -661,10 +661,10 @@ mkdir -p $NODE_HOME
 {% hint style="info" %}
 以下の項目を実施する前にBPノードが起動しているか確認してください。
 ```
-tmux a -t cnode
+journalctl --unit=cardano-node --follow
 ```
 ログが流れていればノードが起動しています。
-Ctrl+B を押したあとにdを押すと前の画面に戻ります。
+コマンド入力に戻る場合は「Ctrl＋C」（この場合ノードは終了しません）
 {% endhint %}
 
 ブロックプロデューサーノードでは [Shelley台帳仕様書](https://hydra.iohk.io/build/2473732/download/1/ledger-spec.pdf)で定義されている、３つのキーを生成する必要があります。
@@ -1830,7 +1830,7 @@ cat stakepoolid.txt
 
 {% hint style="info" %}
 この項目はリレーノードで実施します。  
-**リレーノードが起動しているか確認してください** 例）tmux a -t cnode
+**リレーノードが起動しているか確認してください** 例）journalctl --unit=cardano-node --follow
 {% endhint %}
 
 {% hint style="info" %}
