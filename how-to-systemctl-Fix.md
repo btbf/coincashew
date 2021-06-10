@@ -36,6 +36,7 @@ EOF
 {% tab title="ブロックプロデューサーノード" %}
 ```bash
 cat > $NODE_HOME/startBlockProducingNode.sh << EOF 
+#!/bin/bash
 DIRECTORY=$NODE_HOME
 PORT=6000
 HOSTADDR=0.0.0.0
