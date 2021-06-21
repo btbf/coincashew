@@ -93,7 +93,7 @@ CNCLIのバージョンを確認します。
 ```bash
 cncli --version
 ```
-
+{% hint style="info" %}
 ### 1-1. CNCLI更新手順
 **以下は最新版がリリースされた場合に実行してください**  
 
