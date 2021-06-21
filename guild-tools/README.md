@@ -108,7 +108,7 @@ cncli旧バージョンからの更新手順
 rustup update
 cd $HOME/git/cncli
 git fetch --all --prune
-git checkout v2.1.1
+git checkout v3.0.0
 cargo install --path . --force
 ```
 バージョンを確認する
