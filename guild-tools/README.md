@@ -93,49 +93,6 @@ CNCLIのバージョンを確認します。
 ```bash
 cncli --version
 ```
-{% hint style="info" %}
-### 1-1. CNCLI更新手順
-**以下は最新版がリリースされた場合に実行してください**  
-
-cncli旧バージョンからの更新手順
-
-{% hint style="info" %}
-１時間以内にブロック生成スケジュールがないことを確認してから、以下を実施してください
-{% endhint %}
-
-```bash
-rustup update
-cd $HOME/git/cncli
-git fetch --all --prune
-git checkout v3.0.0
-cargo install --path . --force
-```
-バージョンを確認する
-```
-cncli --version
-```
-
-ノードを再起動する
-```bash
-sudo systemctl reload-or-restart cardano-node
-```
-> ノードが同期したことを確認する
-
-```
-tmux a -t cncli
-```
->100% syncedになったことを確認する
-
-各サービスを表示し、envまたはcncli.shのアップデートメッセージがある場合は"n"で拒否
-```
-tmux a -t leaderlog
-tmux a -t validate
-```
-> envまたはcncli.shのアップデートが必要になった場合は改めてアナウンスします。
-
-
-{% endhint %}
-
 ## 🏁 2. sqlite3をインストールする
 ```bash
 sudo apt install sqlite3
@@ -614,8 +571,46 @@ glive・・・gLiveView.sh
 
 {% endhint %}
 
+## 10. CNCLI更新手順
+**以下は最新版がリリースされた場合に実行してください**  
 
-## 🏁 10. 2021年5月19日以前から導入済みの方はこちら
+cncli旧バージョンからの更新手順
+
+{% hint style="info" %}
+１時間以内にブロック生成スケジュールがないことを確認してから、以下を実施してください
+{% endhint %}
+
+```bash
+rustup update
+cd $HOME/git/cncli
+git fetch --all --prune
+git checkout v3.0.0
+cargo install --path . --force
+```
+バージョンを確認する
+```
+cncli --version
+```
+
+ノードを再起動する
+```bash
+sudo systemctl reload-or-restart cardano-node
+```
+> ノードが同期したことを確認する
+
+```
+tmux a -t cncli
+```
+>100% syncedになったことを確認する
+
+各サービスを表示し、envまたはcncli.shのアップデートメッセージがある場合は"n"で拒否
+```
+tmux a -t leaderlog
+tmux a -t validate
+```
+> envまたはcncli.shのアップデートが必要になった場合は改めてアナウンスします。
+
+## 🏁 11. 2021年5月19日以前から導入済みの方はこちら
 
 {% hint style="info" %}
 cardano-nodeを再起動するとcncli-sync.serviceなど各サービスが落ち、個別に再起動しなければいけない不具合を解消します。  
@@ -627,7 +622,7 @@ cardano-nodeを開始・再起動・停止すると各サービスも連動し�
 ブロック生成スケジュールに余裕がある時間帯に実施してください
 {% endhint %}
 
-### 10-1.各種サービスをストップする
+### 11-1.各種サービスをストップする
 
 ```bash
 sudo systemctl stop cnode-cncli-sync.service
@@ -637,7 +632,7 @@ sudo systemctl stop cnode-cncli-leaderlog.service
 sudo systemctl stop cnode-logmonitor.service
 ```
 
-### 10-2.各種サービスファイルをアップデートする
+### 11-2.各種サービスファイルをアップデートする
 
 ```bash
 cd $NODE_HOME/service
@@ -782,7 +777,7 @@ EOF
 
 {% endtabs %}
 
-### 10-3.サービスファイルを無効化する
+### 11-3.サービスファイルを無効化する
 
 ```bash
 sudo systemctl disable cnode-cncli-sync.service
@@ -791,7 +786,7 @@ sudo systemctl disable cnode-cncli-leaderlog.service
 sudo systemctl disable cnode-logmonitor.service
 ```
 
-### 10-4.サービスファイルを入れ替える
+### 11-4.サービスファイルを入れ替える
 
 **1行づつコマンドに貼り付けてください**
 ```bash
@@ -808,7 +803,7 @@ sudo chmod 644 /etc/systemd/system/cnode-cncli-leaderlog.service
 sudo chmod 644 /etc/systemd/system/cnode-logmonitor.service
 ```
 
-###  10-5.サービスファイルを有効化します
+###  11-5.サービスファイルを有効化します
 
 ```bash
 sudo systemctl daemon-reload
@@ -818,14 +813,14 @@ sudo systemctl enable cnode-cncli-leaderlog.service
 sudo systemctl enable cnode-logmonitor.service
 ```
 
-### 10-6.ノードを再起動する
+### 11-6.ノードを再起動する
 
 ノードを再起動する
 ```bash
 sudo systemctl reload-or-restart cardano-node
 ```
 
-### 10-7.サービス起動確認
+### 11-7.サービス起動確認
 
 ```bash
 tmux ls
