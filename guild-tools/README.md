@@ -571,7 +571,7 @@ glive・・・gLiveView.sh
 
 {% endhint %}
 
-## 10. CNCLI更新手順
+## 🏁 10. CNCLI更新手順
 **以下は最新版がリリースされた場合に実行してください**  
 
 cncli旧バージョンからの更新手順
@@ -606,11 +606,11 @@ tmux a -t cncli
 各サービスを表示し、envまたはcncli.shのアップデートメッセージがある場合は"n"で拒否
 ```
 tmux a -t leaderlog
-tmux a -t validate
+tmux a -t vali🏁date
 ```
 > envまたはcncli.shのアップデートが必要になった場合は改めてアナウンスします。
 
-## 🏁 11. 2021年5月19日以前から導入済みの方はこちら
+##  11. 2021年5月19日以前から導入済みの方はこちら
 
 {% hint style="info" %}
 cardano-nodeを再起動するとcncli-sync.serviceなど各サービスが落ち、個別に再起動しなければいけない不具合を解消します。  
