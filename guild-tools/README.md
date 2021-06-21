@@ -85,7 +85,7 @@ sudo apt-get update -y && sudo apt-get install -y automake build-essential pkg-c
 cd $HOME/git
 git clone https://github.com/AndrewWestberg/cncli
 cd cncli
-git checkout v2.1.1
+git checkout v3.0.0
 cargo install --path . --force
 ```
 
