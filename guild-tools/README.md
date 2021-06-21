@@ -100,10 +100,9 @@ cncli --version
 
 cncli旧バージョンからの更新手順
 
-サービスを止める
-```bash
-sudo systemctl stop cnode-cncli-sync.service
-```
+{% hint style="info" %}
+１時間以内にブロック生成スケジュールがないことを確認してから、以下を実施してください
+{% endhint %}
 
 ```bash
 rustup update
@@ -111,25 +110,30 @@ cd $HOME/git/cncli
 git fetch --all --prune
 git checkout v2.1.1
 cargo install --path . --force
+```
+バージョンを確認する
+```
 cncli --version
 ```
 
+ノードを再起動する
 ```bash
-sudo systemctl start cnode-cncli-sync.service
+sudo systemctl reload-or-restart cardano-node
+```
+> ノードが同期したことを確認する
+
+```
 tmux a -t cncli
 ```
+>100% syncedになったことを確認する
 
+各サービスを表示し、envまたはcncli.shのアップデートメッセージがある場合は"n"で拒否
 ```
-#cncliの更新がある場合は、以下メッセージが出ますので「y」を入力してEnter
-A new version is available, do you want to upgrade? (yes/no): y
-
-###同じ画面内で以下コマンドを入力しcncliを再起動
-cd $NODE_HOME/scripts
-./cncli.sh sync
+tmux a -t leaderlog
+tmux a -t validate
 ```
+> envまたはcncli.shのアップデートが必要になった場合は改めてアナウンスします。
 
-> cncli.shのバージョンアップ確認があれば「Yes」を選択  
-> 再度実行し、sync 100%になることを確認する。
 
 {% endhint %}
 
