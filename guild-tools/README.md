@@ -606,7 +606,7 @@ tmux a -t cncli
 各サービスを表示し、envまたはcncli.shのアップデートメッセージがある場合は"n"で拒否
 ```
 tmux a -t leaderlog
-tmux a -t vali🏁date
+tmux a -t validate
 ```
 > envまたはcncli.shのアップデートが必要になった場合は改めてアナウンスします。
 
