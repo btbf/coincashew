@@ -3065,7 +3065,7 @@ cardano-cli query utxo \
 {% endhint %}
 
 
-#### 18.10.1 payment.addrへ送金する方法
+#### 18.9.1 payment.addrへ送金する方法
 
 ステークプールの報酬を請求する例を見ていきます。
 
@@ -3256,7 +3256,7 @@ cardano-cli query utxo \
 ```
 
 
-#### 18.10.2 任意のアドレスへ送金する方法
+#### 18.9.2 任意のアドレスへ送金する方法
 
 {% hint style="info" %}
 報酬は `stake.addr` アドレスに蓄積されていきます。  
@@ -3453,7 +3453,7 @@ cardano-cli query utxo \
 
 
 
-### 🕒 18.12 スロットリーダースケジュール - ブロック生成時期を確認する
+### 🕒 18.10 スロットリーダースケジュール - ブロック生成時期を確認する
 
 {% hint style="info" %}
 [ブロックログツール](./guild-tools/README.md) を導入する
