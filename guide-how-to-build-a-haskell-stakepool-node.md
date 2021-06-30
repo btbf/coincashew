@@ -806,6 +806,7 @@ cardano-cli node key-gen-VRF \
 vrfキーのアクセス権を読み取り専用に更新します。
 ```
 chmod 400 vrf.skey
+chmod 400 vrf.vkey
 ```
 
 次のコマンドを実行して一旦ノードを停止します。  
