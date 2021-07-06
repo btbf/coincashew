@@ -512,7 +512,7 @@ chmod 755 gLiveView.sh
 ```
 
 **env** ファイルによってファイル構成を指定できます。  
-ノードのポート番号を6000以外に設定している場合は、envファイルを開いて修正してください。   
+ノードのポート番号を6000以外に設定している場合は、envファイルを開いてポート番号を修正してください。   
 ```bash
 sed -i env \
     -e "s/\#CONFIG=\"\${CNODE_HOME}\/files\/config.json\"/CONFIG=\"\${NODE_HOME}\/mainnet-config.json\"/g" \
