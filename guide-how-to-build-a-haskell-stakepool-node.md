@@ -127,7 +127,12 @@ Installation may take a while
 
 ⇒Enter
 
->Answer with YES or NO and press ENTER
+>Do you want to install haskell-language-server (HLS) now?
+>HLS is a language-server that provides IDE-like functionality
+
+⇒noと入力しEnter
+
+>Do you want to install stack now?
 
 ⇒noと入力しEnter
 
